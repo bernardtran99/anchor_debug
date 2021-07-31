@@ -93,12 +93,11 @@ void flood(ndn_interest_t interest) {
         //Get all closest interfaces and forward to them
         printf("Forwarding Announcement (Layer 1)...");
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
-        /*
-        for(int i = 0; i < router.fib.capacity; i ++) {
-            //printf("looking at interfaces in fib")
-            ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-        }
-        */
+
+        // for(int i = 0; i < router.fib.capacity; i ++) {
+        //     //printf("looking at interfaces in fib")
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
     }
     else {
         //Normal node flodding announcement (layer 1)
@@ -114,14 +113,14 @@ void flood(ndn_interest_t interest) {
         }
         router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
-        /*
-        for(int i = 0; i < layer1_fib.capacity; i++) {
-            ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-        }
-        */
+
+        // for(int i = 0; i < layer1_fib.capacity; i++) {
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
     }
 }
 
+/*
 //Send announcement function
 void send_ancmt() {
     //include periodic subscribe of send_anct
@@ -133,10 +132,9 @@ void send_ancmt() {
     char interest_buf[4096];
 
     //Sets timestamp
-    /*
-    time_t clk = time(NULL);
-    char* timestamp = ctime(&clk);
-    */
+    //time_t clk = time(NULL);
+    //char* timestamp = ctime(&clk);
+    
 
     //gets ndn timestamp
     ndn_time_ms_t timestamp = ndn_time_now_ms();
@@ -289,13 +287,12 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
-        /*
-        if(interface_num[parameters] >= max_interfaces) {
-            flood(interest_pkt);
-            did_flood[parameters] = true;
-            reply_ancmt();
-        }
-        */
+        // if(interface_num[parameters] >= max_interfaces) {
+        //    flood(interest_pkt);
+        //    did_flood[parameters] = true;
+        //    reply_ancmt();
+        // }
+        
     }
 
     else if((prefix == "ancmt") && stored_selectors[parameters] == true) {
@@ -371,6 +368,7 @@ void debug_pit() {
 void debug_fib() {
 
 }
+*/
 
 int main(int argc, char *argv[]) {
     //ndn_interest_t interest;
@@ -398,19 +396,19 @@ int main(int argc, char *argv[]) {
             send_ancmt();
         }
         //packet is ancmt
-        /*
-        if(ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length) == NDN_SUCCESS) {
-            if(delay_start != true) {
-                pthread_create(&layer1, NULL, start_delay, delay);
-                delay_start = true;
-            }
-            pthread_create(&layer1, NULL, on_interest, NULL);
-            interface_num++;
-            if(interface_num >= max_interfaces) {
-                flood();
-            }
-        }
-        */
+        
+        // if(ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length) == NDN_SUCCESS) {
+        //     if(delay_start != true) {
+        //         pthread_create(&layer1, NULL, start_delay, delay);
+        //         delay_start = true;
+        //     }
+        //     pthread_create(&layer1, NULL, on_interest, NULL);
+        //     interface_num++;
+        //     if(interface_num >= max_interfaces) {
+        //         flood();
+        //     }
+        // }
+        
         ndn_forwarder_process();
         usleep(10000);
     }
