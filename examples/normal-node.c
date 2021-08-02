@@ -26,8 +26,8 @@
 //intitialize pit and fib for layer 1
 ndn_pit_t layer1_pit;
 ndn_fib_t layer1_fib;
-const ndn_forwarder_t router_const;
-ndn_forwarder_t router;
+const ndn_forwarder_t *router_const;
+ndn_forwarder_t *router;
 //char ip_address = "192.168.1.10";
 
 //To start/stop main loop
@@ -85,9 +85,9 @@ void flood(ndn_interest_t interest) {
     printf("%s\n", prefix);
     
     
-    // //gets the forwarder intiailized in the main message
-    // router_const = ndn_forwarder_get();
-    // router = router_const;
+    //gets the forwarder intiailized in the main message
+    router_const = ndn_forwarder_get();
+    router = router_const;
 
     // //Layer 1 Data Packet
     // if(is_anchor) {
