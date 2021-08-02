@@ -106,7 +106,7 @@ void flood(ndn_interest_t interest) {
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         layer1_fib = router->fib;
-        printf(router->pit->capacity);
+        printf("%s\n", router->pit->capacity);
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
             ndn_table_id_t temp_pit_id = ndn_forwarder_get()->pit->slots[i].nametree_id;
