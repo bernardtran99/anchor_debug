@@ -372,45 +372,70 @@ void debug_fib() {
 }
 */
 
-int main(int argc, char *argv[]) {
-    //ndn_interest_t interest;
-    //ndn_udp_face_t *face;
-    //pthread_t layer1;
+// int main(int argc, char *argv[]) {
+//     //ndn_interest_t interest;
+//     //ndn_udp_face_t *face;
+//     //pthread_t layer1;
+//     ndn_name_t prefix_name;
+//     char *ancmt_string = "/ancmt";
+
+//     ndn_lite_startup();
+//     //nameprefix = anmct
+//     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+//     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
+//     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+//     populate_fib();
+
+//     //signature init
+//     ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
+//     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
+//     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
+//     storage = ndn_key_storage_get_instance();
+
+//     running = true;
+//     while (running) {
+//         if(is_anchor && !ancmt_sent) {
+//             send_ancmt();
+//         }
+//         //packet is ancmt
+        
+//         // if(ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length) == NDN_SUCCESS) {
+//         //     if(delay_start != true) {
+//         //         pthread_create(&layer1, NULL, start_delay, delay);
+//         //         delay_start = true;
+//         //     }
+//         //     pthread_create(&layer1, NULL, on_interest, NULL);
+//         //     interface_num++;
+//         //     if(interface_num >= max_interfaces) {
+//         //         flood();
+//         //     }
+//         // }
+        
+//         ndn_forwarder_process();
+//         usleep(10000);
+//     }
+// }
+
+//test main method
+int main() {
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt";
+    
 
     ndn_lite_startup();
-    //nameprefix = anmct
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
-    //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_fib();
-
-    //signature init
+    
     ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     storage = ndn_key_storage_get_instance();
 
+    ndn_interest_t lol;
+    ndn_interest_from_name(&lol, &prefix_name);
+    flood(lol);
+
     running = true;
     while (running) {
-        if(is_anchor && !ancmt_sent) {
-            send_ancmt();
-        }
-        //packet is ancmt
-        
-        // if(ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length) == NDN_SUCCESS) {
-        //     if(delay_start != true) {
-        //         pthread_create(&layer1, NULL, start_delay, delay);
-        //         delay_start = true;
-        //     }
-        //     pthread_create(&layer1, NULL, on_interest, NULL);
-        //     interface_num++;
-        //     if(interface_num >= max_interfaces) {
-        //         flood();
-        //     }
-        // }
-        
         ndn_forwarder_process();
         usleep(10000);
     }
