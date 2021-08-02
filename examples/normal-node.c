@@ -25,7 +25,7 @@
 
 //intitialize pit and fib for layer 1
 ndn_pit_t layer1_pit;
-ndn_fib_t layer1_fib;
+ndn_fib_t *layer1_fib;
 const ndn_forwarder_t *router;
 //char ip_address = "192.168.1.10";
 
@@ -105,7 +105,7 @@ void flood(ndn_interest_t interest) {
         //Normal node flodding announcement (layer 1)
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
-        layer1_fib = &router->fib;
+        layer1_fib = router->fib;
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
             ndn_table_id_t temp_pit_id = ndn_forwarder_get()->pit.slots[i].nametree_id;
