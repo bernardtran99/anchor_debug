@@ -282,7 +282,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
-    //fix time to coorespond to last ancmt timestamp
+    //TODO: fix time to coorespond to last ancmt timestamp
     if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
