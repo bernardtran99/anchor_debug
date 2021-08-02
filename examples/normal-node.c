@@ -26,7 +26,6 @@
 //intitialize pit and fib for layer 1
 ndn_pit_t layer1_pit;
 ndn_fib_t layer1_fib;
-ndn_forwarder_t *router_const;
 ndn_forwarder_t router;
 //char ip_address = "192.168.1.10";
 
@@ -86,41 +85,41 @@ void flood(ndn_interest_t interest) {
     
     
     //gets the forwarder intiailized in the main message
-    router_const = ndn_forwarder_get();
-    router = router_const;
+    //router_const = ndn_forwarder_get();
+    //router = router_const;
 
-    // //Layer 1 Data Packet
-    // if(is_anchor) {
-    //     //Anchor flooding announcement (layer 1)
-    //     //Flood without accounting for time delay or max number of interfaces
-    //     //Get all closest interfaces and forward to them
-    //     printf("Forwarding Announcement (Layer 1)...");
-    //     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    //Layer 1 Data Packet
+    if(is_anchor) {
+        //Anchor flooding announcement (layer 1)
+        //Flood without accounting for time delay or max number of interfaces
+        //Get all closest interfaces and forward to them
+        printf("Forwarding Announcement (Layer 1)...");
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
-    //     // for(int i = 0; i < router.fib.capacity; i ++) {
-    //     //     //printf("looking at interfaces in fib")
-    //     //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-    //     // }
-    // }
-    // else {
-    //     //Normal node flodding announcement (layer 1)
-    //     //Flood while using time delay and accounting for interfaces
-    //     //check pit for incoming interest, then send out interest for each not in pit
-    //     layer1_fib = &router.fib;
-    //     for(int i = 0; i < router->pit.capacity; i++) {
-    //         //printf("looking at interfaces in pit");
-    //         ndn_table_id_t temp_pit_id = &router.pit.slots[i].nametree_id;
-    //         nametree_entry_t temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
-    //         ndn_table_id_t temp_fib_id = temp_nametree_entry.fib_id;
-    //         ndn_fib_unregister_face(&layer1_fib, temp_fib_id);
-    //     }
-    //     router->fib = layer1_fib;
-    //     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
+        //     //printf("looking at interfaces in fib")
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
+    }
+    else {
+        //Normal node flodding announcement (layer 1)
+        //Flood while using time delay and accounting for interfaces
+        //check pit for incoming interest, then send out interest for each not in pit
+        layer1_fib = ndn_forwarder_get().fib;
+        for(int i = 0; i < ndn_forwarder_get().pit.capacity; i++) {
+            //printf("looking at interfaces in pit");
+            ndn_table_id_t temp_pit_id = ndn_forwarder_get().pit.slots[i].nametree_id;
+            nametree_entry_t temp_nametree_entry = ndn_nametree_at(ndn_forwarder_get().nametree, temp_pit_id);
+            ndn_table_id_t temp_fib_id = temp_nametree_entry.fib_id;
+            ndn_fib_unregister_face(&layer1_fib, temp_fib_id);
+        }
+        ndn_forwarder_get().fib = layer1_fib;
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
-    //     // for(int i = 0; i < layer1_fib.capacity; i++) {
-    //     //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-    //     // }
-    // }
+        // for(int i = 0; i < layer1_fib.capacity; i++) {
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
+    }
 }
 
 /*
