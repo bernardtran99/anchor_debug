@@ -87,7 +87,7 @@ void flood(ndn_interest_t interest) {
     
     //gets the forwarder intiailized in the main message
     router_const = ndn_forwarder_get();
-    router = router_const;
+    router = &router_const;
 
     //Layer 1 Data Packet
     if(is_anchor) {
