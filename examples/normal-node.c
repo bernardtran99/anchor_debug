@@ -378,11 +378,11 @@ int main(int argc, char *argv[]) {
     //ndn_udp_face_t *face;
     //pthread_t layer1;
     ndn_name_t prefix_name;
-    char ancmt_string = "/ancmt";
+    char *ancmt_string = "/ancmt";
 
     ndn_lite_startup();
     //nameprefix = anmct
-    ndn_name_from_string(&prefix_name, &ancmt_string, strlen(ancmt_string));
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     populate_fib();
