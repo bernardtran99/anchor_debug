@@ -120,7 +120,7 @@ void flood(ndn_interest_t interest) {
     //     // for(int i = 0; i < layer1_fib.capacity; i++) {
     //     //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
     //     // }
-    }
+    // }
 }
 
 /*
@@ -378,7 +378,7 @@ int main(int argc, char *argv[]) {
     //ndn_udp_face_t *face;
     //pthread_t layer1;
     ndn_name_t prefix_name;
-    char* ancmt_string = "/ancmt";
+    char ancmt_string = "/ancmt";
 
     ndn_lite_startup();
     //nameprefix = anmct
