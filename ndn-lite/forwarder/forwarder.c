@@ -249,7 +249,9 @@ ndn_forwarder_express_interest(uint8_t* interest, size_t length,
   size_t name_len;
   ndn_pit_entry_t* pit_entry;
 
-  if(interest == NULL || on_data == NULL)
+  // if(interest == NULL || on_data == NULL)
+  //   return NDN_INVALID_POINTER;
+  if(interest == NULL)
     return NDN_INVALID_POINTER;
 
   ret = tlv_interest_get_header(interest, length, &options, &name, &name_len);
