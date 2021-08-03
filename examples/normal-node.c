@@ -57,8 +57,8 @@ bool did_flood[10];
 int last_interest;
 
 //ndn keys
-ndn_ecc_prv_t* ecc_secp256r1_prv_key;
-ndn_ecc_pub_t* ecc_secp256r1_pub_key;
+ndn_ecc_prv_t *ecc_secp256r1_prv_key;
+ndn_ecc_pub_t *ecc_secp256r1_pub_key;
 ndn_key_storage_t* storage;
 
 
@@ -76,10 +76,11 @@ uint8_t secp256r1_pub_key_str[64] = {
 0x32, 0x27, 0xDC, 0x05, 0x77, 0xA7, 0xDC, 0xE0, 0xA2, 0x69, 0xC8, 0x8B, 0x4C, 0xBF, 0x25, 0xF2
 };
 
+//may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
-    ndn_name_t prefix_name = interest.name;
+    ndn_name_t *prefix_name = &interest.name;
     printf("%s\n", prefix_name);
     char *prefix = &interest.name.components[0].value[0];
     printf("%s\n", prefix);
