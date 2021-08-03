@@ -433,7 +433,8 @@ int main() {
 
     ndn_interest_t lol;
     ndn_interest_from_name(&lol, &prefix_name);
-    //flood(lol);
+    printf("Flood Test:");
+    flood(lol);
 
     running = true;
     while (running) {
