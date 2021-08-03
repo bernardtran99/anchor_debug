@@ -84,23 +84,23 @@ void flood(ndn_interest_t interest) {
     printf("%s\n", prefix);
     
     
-    //gets the forwarder intiailized in the main message
-    //router_const = ndn_forwarder_get();
-    router = ndn_forwarder_get();
+    // //gets the forwarder intiailized in the main message
+    // //router_const = ndn_forwarder_get();
+    // router = ndn_forwarder_get();
 
-    //Layer 1 Data Packet
-    if(is_anchor) {
-        //Anchor flooding announcement (layer 1)
-        //Flood without accounting for time delay or max number of interfaces
-        //Get all closest interfaces and forward to them
-        printf("Forwarding Announcement (Layer 1)...");
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    // //Layer 1 Data Packet
+    // if(is_anchor) {
+    //     //Anchor flooding announcement (layer 1)
+    //     //Flood without accounting for time delay or max number of interfaces
+    //     //Get all closest interfaces and forward to them
+    //     printf("Forwarding Announcement (Layer 1)...");
+    //     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
-        // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
-        //     //printf("looking at interfaces in fib")
-        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-        // }
-    }
+    //     // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
+    //     //     //printf("looking at interfaces in fib")
+    //     //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+    //     // }
+    // }
     // else {
     //     //Normal node flodding announcement (layer 1)
     //     //Flood while using time delay and accounting for interfaces
