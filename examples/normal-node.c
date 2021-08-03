@@ -81,7 +81,7 @@ void flood(ndn_interest_t interest) {
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
     ndn_name_t *prefix_name = &interest.name;
-    printf("%s\n", prefix_name);
+    //printf("%s\n", prefix_name);
     char *prefix = &interest.name.components[0].value[0];
     printf("%s\n", prefix);
     
@@ -90,19 +90,19 @@ void flood(ndn_interest_t interest) {
     //router_const = ndn_forwarder_get();
     router = ndn_forwarder_get();
 
-    // //Layer 1 Data Packet
-    // if(is_anchor) {
-    //     //Anchor flooding announcement (layer 1)
-    //     //Flood without accounting for time delay or max number of interfaces
-    //     //Get all closest interfaces and forward to them
-    //     printf("Forwarding Announcement (Layer 1)...");
-    //     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    //Layer 1 Data Packet
+    if(is_anchor) {
+        //Anchor flooding announcement (layer 1)
+        //Flood without accounting for time delay or max number of interfaces
+        //Get all closest interfaces and forward to them
+        printf("Forwarding Announcement (Layer 1)...");
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
-    //     // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
-    //     //     //printf("looking at interfaces in fib")
-    //     //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-    //     // }
-    // }
+        // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
+        //     //printf("looking at interfaces in fib")
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
+    }
     // else {
     //     //Normal node flodding announcement (layer 1)
     //     //Flood while using time delay and accounting for interfaces
@@ -435,6 +435,7 @@ int main() {
 
     ndn_interest_t lol;
     ndn_interest_from_name(&lol, &prefix_name);
+    is_anchor = true;
     flood(lol);
 
     running = true;
