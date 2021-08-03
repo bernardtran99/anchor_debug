@@ -78,9 +78,9 @@ uint8_t secp256r1_pub_key_str[64] = {
 
 void flood(ndn_interest_t interest) {
     //multithread: while in time delay period keep accepting other announcements
-    ndn_udp_face_t face;
+    //ndn_udp_face_t face;
     ndn_name_t prefix_name = interest.name;
-    char prefix = interest.name.components[0].value[0];
+    char *prefix = interest.name.components[0].value[0];
     printf("%s\n", prefix);
     
     
