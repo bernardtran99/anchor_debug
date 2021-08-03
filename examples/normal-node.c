@@ -94,7 +94,7 @@ void flood(ndn_interest_t interest) {
         //Flood without accounting for time delay or max number of interfaces
         //Get all closest interfaces and forward to them
         printf("Forwarding Announcement (Layer 1)...");
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        //ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
         //     //printf("looking at interfaces in fib")
@@ -115,7 +115,7 @@ void flood(ndn_interest_t interest) {
         //     ndn_fib_unregister_face(layer1_fib, temp_fib_id);
         // }
         router->fib = layer1_fib;
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        //ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
