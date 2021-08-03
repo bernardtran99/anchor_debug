@@ -76,7 +76,11 @@ ndn_forwarder_init(void)
   ptr += NDN_PIT_RESERVE_SIZE(NDN_PIT_MAX_SIZE);
 }
 
-const ndn_forwarder_t*
+// const ndn_forwarder_t*
+// ndn_forwarder_get(void){
+//   return &forwarder;
+// }
+ndn_forwarder_t*
 ndn_forwarder_get(void){
   return &forwarder;
 }
