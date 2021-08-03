@@ -250,10 +250,6 @@ void start_delay(int param) {
 
 //ruiran 
 void insert_pit(ndn_interest_t interest) {
-    router = ndn_forwarder_get();
-    char *prefix = interest_pkt.name.components[0].value[0];
-    int timstamp = interest_pkt.parameters.value[0];
-    int parameters = interest_pkt.parameters.value[1];
 
 }
 
