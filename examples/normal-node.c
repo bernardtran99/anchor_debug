@@ -198,7 +198,7 @@ void populate_fib() {
     ip_rx_str = "192.168.1.11";
     host_addr = gethostbyname(ip_rx_str);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    ip_rx = paddrs[0]->ip_rx_str;
+    ip_rx = paddrs[0]->s_addr;
     ul_port = strtoul(port_rx_str, NULL, 10);
     port_rx = htons((uint16_t) ul_port);
     ul_port = strtoul(port_tx_str, NULL, 10);
@@ -212,7 +212,7 @@ void populate_fib() {
     ip_rx_str = "192.168.1.12";
     host_addr = gethostbyname(ip_rx_str);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    ip_rx = paddrs[0]->ip_rx_str;
+    ip_rx = paddrs[0]->s_addr;
     ul_port = strtoul(port_rx_str, NULL, 10);
     port_rx = htons((uint16_t) ul_port);
     ul_port = strtoul(port_tx_str, NULL, 10);
