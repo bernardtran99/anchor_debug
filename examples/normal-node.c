@@ -221,7 +221,6 @@ void populate_fib() {
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 }
 
-/*
 int verify_packet(ndn_interest_t* interest) {
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
@@ -236,7 +235,7 @@ int verify_packet(ndn_interest_t* interest) {
     }
     return true;
 }
-
+/*
 void start_delay(int param) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
