@@ -224,7 +224,7 @@ void populate_fib() {
 int verify_packet(ndn_interest_t *interest) {
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
-    int timestamp = interest.parameters.value[0];
+    int timestamp = interest->parameters.value[0];
     int current_time = ndn_time_now_ms();
 
     if((current_time - timestamp) < 0) {
