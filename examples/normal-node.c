@@ -178,7 +178,6 @@ void send_ancmt() {
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
-/*
 void populate_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
     ndn_udp_face_t *face;
@@ -222,6 +221,7 @@ void populate_fib() {
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 }
 
+/*
 int verify_packet(ndn_interest_t* interest) {
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
