@@ -24,6 +24,11 @@
 #include "ndn-lite/encode/ndn-rule-storage.h"
 #include "ndn-lite/forwarder/pit.h"
 
+struct delay_struct {
+    int arg1;
+    ndn_interest_t interest;
+};
+
 //intitialize pit and fib for layer 1
 ndn_pit_t *layer1_pit;
 ndn_fib_t *layer1_fib;
@@ -236,7 +241,7 @@ int verify_packet(ndn_interest_t *interest) {
     return true;
 }
 
-void start_delay(int param) {
+void start_delay(delay_struct param) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
@@ -247,6 +252,7 @@ void start_delay(int param) {
         flood(ancmt);
         did_flood[param] = true;
         reply_ancmt();
+        pthread_exit(NULL);
     }
 }
 
@@ -307,6 +313,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
                 flood(interest_pkt);
                 did_flood[parameters] = true;
                 reply_ancmt();
+                pthread_exit(NULL);
             }
         }
     }
