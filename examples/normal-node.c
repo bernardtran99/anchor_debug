@@ -221,21 +221,21 @@ void populate_fib() {
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 }
 
-int verify_packet(ndn_interest_t* interest) {
+int verify_packet(ndn_interest_t *interest) {
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
-    int timestamp = interest_pkt.parameters.value[0];
+    int timestamp = interest.parameters.value[0];
     int current_time = ndn_time_now_ms();
 
     if((current_time - timestamp) < 0) {
         return false;
     }
-    if(ndn_signed_interest_ecdsa_verify(&interest, &ecc_secp256r1_pub_key) != NDN_SUCCESS) {
+    if(ndn_signed_interest_ecdsa_verify(interest, &ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
     return true;
 }
-/*
+
 void start_delay(int param) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
@@ -257,7 +257,7 @@ void insert_pit(ndn_interest_t interest) {
 
 //ruiran
 void reply_ancmt() {
-    //layer 2 interest reply
+
 }
 
 void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
@@ -275,7 +275,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     
     //printf("%s\n", prefix);
 
-    if(verify_packet(&interest_pkt) == false) {
+    if(verify_packet(interest_pkt) == false) {
         return;
     }
     insert_pit(interest_pkt);
@@ -312,7 +312,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     }
     last_interest = timestamp;
 }
-
+/*
 //
 void reply_interest(ndn_data_t *data, int layer_num) {
 
