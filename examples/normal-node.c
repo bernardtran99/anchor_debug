@@ -127,7 +127,7 @@ void flood(ndn_interest_t interest) {
     }
 }
 
-/*
+
 //Send announcement function
 void send_ancmt() {
     //include periodic subscribe of send_anct
