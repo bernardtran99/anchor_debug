@@ -164,7 +164,7 @@ void send_ancmt() {
 
     //This creates the routes for the interest and sends to nodes
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    ndn_name_from_string(&prefix_name, &prefix_string, strlen(prefix_string));
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     ndn_interest_from_name(&ancmt, &prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
@@ -378,13 +378,13 @@ int main(int argc, char *argv[]) {
     //ndn_interest_t interest;
     //ndn_udp_face_t *face;
     //pthread_t layer1;
-    ndn_name_t *prefix_name;
+    ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt";
 
     ndn_lite_startup();
     //nameprefix = anmct
-    ndn_name_from_string(prefix_name, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(prefix_name, on_interest, NULL);
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     populate_fib();
 
