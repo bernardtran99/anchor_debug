@@ -230,7 +230,7 @@ int verify_packet(ndn_interest_t *interest) {
     if((current_time - timestamp) < 0) {
         return false;
     }
-    if(ndn_signed_interest_ecdsa_verify(interest, &ecc_secp256r1_pub_key) != NDN_SUCCESS) {
+    if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
     return true;
