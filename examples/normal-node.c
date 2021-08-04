@@ -107,17 +107,17 @@ void flood(ndn_interest_t interest) {
         //Normal node flodding announcement (layer 1)
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
-        layer1_fib = router->fib;
+        //layer1_fib = router->fib;
         printf("%s\n", &router->pit->capacity);
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
             ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
-            //ndn_fib_unregister_face(layer1_fib, temp_fib_id);
+            //Segmentation fault here
+            ndn_fib_unregister_face(&router->fib, temp_fib_id);
         }
-        ndn_fib_unregister_face(layer1_fib, temp_fib_id);
-        router->fib = layer1_fib;
+        //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
