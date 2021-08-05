@@ -268,8 +268,8 @@ void reply_ancmt() {
 
 void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     pthread_t layer1;
-    ndn_interest_t* interest_pkt;
-    ndn_interest_from_block(&interest_pkt, &interest, interest_size);
+    ndn_interest_t interest_pkt;
+    ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     char *prefix = interest_pkt.name.components[0].value[0];
 
@@ -278,10 +278,14 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     
     //selector number
     int parameters = interest_pkt.parameters.value[1];
+
+    struct delay_struct args;
+    args.interest = interest_pkt;
+    args.struct_selector = parameters;
     
     //printf("%s\n", prefix);
 
-    if(verify_packet(interest_pkt) == false) {
+    if(verify_packet(&interest_pkt) == false) {
         return;
     }
     insert_pit(interest_pkt);
@@ -292,7 +296,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
-            pthread_create(&layer1, NULL, start_delay, parameters);
+            pthread_create(&layer1, NULL, start_delay, args);
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
