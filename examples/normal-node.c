@@ -25,7 +25,7 @@
 #include "ndn-lite/forwarder/pit.h"
 
 struct delay_struct {
-    int arg1;
+    int struct_selector;
     ndn_interest_t interest;
 };
 
@@ -246,11 +246,11 @@ void start_delay(delay_struct param) {
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
     //then when finished, flood
-    if(did_flood[param] == true) {
+    if(did_flood[param.struct_selector] == true) {
     }
     else {
-        flood(ancmt);
-        did_flood[param] = true;
+        flood(param.interest);
+        did_flood[param.struct_selector] = true;
         reply_ancmt();
         pthread_exit(NULL);
     }
