@@ -241,7 +241,7 @@ int verify_packet(ndn_interest_t *interest) {
     return true;
 }
 
-void start_delay(delay_struct param) {
+void start_delay(struct delay_struct param) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
