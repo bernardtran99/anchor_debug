@@ -287,7 +287,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //printf("%s\n", prefix);
 
     if(verify_packet(&interest_pkt) == false) {
-        return;
+        return NDN_UNSUPPORTED_FORMAT;
     }
     insert_pit(interest_pkt);
 
