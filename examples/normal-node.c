@@ -246,16 +246,17 @@ void reply_ancmt() {
 
 }
 
-void start_delay(struct delay_struct param) {
+void *start_delay(void *args) {
+    struct delay_struct *args = (struct delay_struct *)args;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
     //then when finished, flood
-    if(did_flood[param.struct_selector] == true) {
+    if(did_flood[args.struct_selector] == true) {
     }
     else {
-        flood(param.interest);
-        did_flood[param.struct_selector] = true;
+        flood(args.interest);
+        did_flood[args.struct_selector] = true;
         reply_ancmt();
         pthread_exit(NULL);
     }
@@ -296,7 +297,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
-            pthread_create(&layer1, NULL, start_delay, args);
+            pthread_create(&layer1, NULL, &start_delay, (void *)&args);
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
