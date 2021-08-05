@@ -246,8 +246,8 @@ void reply_ancmt() {
 
 }
 
-void *start_delay(void *args) {
-    struct delay_struct *args = (struct delay_struct *)args;
+void *start_delay(void *arguments) {
+    struct delay_struct *args = arguments;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
