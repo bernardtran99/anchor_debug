@@ -267,7 +267,7 @@ void insert_pit(ndn_interest_t interest) {
 
 }
 
-void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
+int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     pthread_t layer1;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
@@ -323,6 +323,8 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
         }
     }
     last_interest = timestamp;
+    
+    return NDN_FWD_STRATEGY_SUPPRESS;
 }
 /*
 //
