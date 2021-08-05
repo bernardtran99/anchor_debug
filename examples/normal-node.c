@@ -110,7 +110,7 @@ void flood(ndn_interest_t interest) {
         // }
     }
     else {
-        //Normal node flodding announcement (layer 1)
+        //Normal node flooding announcement (layer 1)
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
