@@ -252,11 +252,11 @@ void *start_delay(void *arguments) {
     clock_t start_time = clock();
     while (clock() < start_time + delay) {}
     //then when finished, flood
-    if(did_flood[args.struct_selector] == true) {
+    if(did_flood[args->struct_selector] == true) {
     }
     else {
-        flood(args.interest);
-        did_flood[args.struct_selector] = true;
+        flood(args->interest);
+        did_flood[args->struct_selector] = true;
         reply_ancmt();
         pthread_exit(NULL);
     }
