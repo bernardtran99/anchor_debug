@@ -271,7 +271,7 @@ void on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
-    char *prefix = interest_pkt.name.components[0].value[0];
+    char *prefix = &interest_pkt.name.components[0].value[0];
 
     int timestamp = interest_pkt.parameters.value[0];
     int current_time = ndn_time_now_ms();
