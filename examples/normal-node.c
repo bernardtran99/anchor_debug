@@ -241,6 +241,11 @@ int verify_packet(ndn_interest_t *interest) {
     return true;
 }
 
+//ruiran
+void reply_ancmt() {
+
+}
+
 void start_delay(struct delay_struct param) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
@@ -258,11 +263,6 @@ void start_delay(struct delay_struct param) {
 
 //ruiran 
 void insert_pit(ndn_interest_t interest) {
-
-}
-
-//ruiran
-void reply_ancmt() {
 
 }
 
