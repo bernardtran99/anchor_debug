@@ -197,7 +197,7 @@ void populate_fib() {
     printf("FIB populated\n");
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
-    char* prefix_string = "/ancmt/data/1";
+    char* prefix_string = "/ancmt/1";
     
     in_port_t port_tx, port_rx;
     in_addr_t ip_rx;
