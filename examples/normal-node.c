@@ -146,7 +146,7 @@ void send_ancmt() {
     printf("Sending Announcement...\n");
 
     //include periodic subscribe of send_anct
-    ndn_interest_t* ancmt;
+    ndn_interest_t ancmt;
     ndn_encoder_t encoder;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
@@ -163,13 +163,16 @@ void send_ancmt() {
     //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     //Init ancmt with selector, signature, and timestamp
     //may have to use ex: (uint8_t*)str for middle param
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
     //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
     //Signed interest init
+    ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
+    ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
+    ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     storage = ndn_key_storage_get_instance();
-    ndn_signed_interest_ecdsa_sign(ancmt, storage->self_identity, ecc_secp256r1_prv_key);
+    //ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
     //encoder_init(&encoder, interest_buf, 4096);
     //ndn_interest_tlv_encode(&encoder, &ancmt);
 
@@ -191,6 +194,7 @@ void send_ancmt() {
 
 void populate_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
+    printf("FIB populated\n");
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char* prefix_string = "/ancmt/data/1";
@@ -233,6 +237,7 @@ void populate_fib() {
 }
 
 int verify_packet(ndn_interest_t *interest) {
+    printf("Verifying Packet\n");
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
     int timestamp = interest->parameters.value[0];
@@ -253,6 +258,7 @@ void reply_ancmt() {
 }
 
 void *start_delay(void *arguments) {
+    printf("Delay started\n");
     struct delay_struct *args = arguments;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
@@ -274,6 +280,7 @@ void insert_pit(ndn_interest_t interest) {
 }
 
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
+    printf("On Interest\n");
     pthread_t layer1;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
@@ -405,10 +412,6 @@ int main(int argc, char *argv[]) {
     populate_fib();
 
     //signature init
-    ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
-    ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
-    ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
-    storage = ndn_key_storage_get_instance();
 
     is_anchor = true;
     running = true;
