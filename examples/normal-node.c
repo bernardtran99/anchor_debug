@@ -73,8 +73,7 @@ int last_interest;
 //ndn keys
 ndn_ecc_prv_t *ecc_secp256r1_prv_key;
 ndn_ecc_pub_t *ecc_secp256r1_pub_key;
-ndn_key_storage_t* storage;
-
+//ndn_key_storage_t *storage;
 
 //Signature data for node (private key)
 uint8_t secp256r1_prv_key_str[32] = {
@@ -171,7 +170,7 @@ void send_ancmt() {
     ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
-    *storage = ndn_key_storage_get_instance();
+    ndn_key_storage_t *storage = ndn_key_storage_get_instance();
     ndn_signed_interest_ecdsa_sign(&ancmt, &storage->self_identity, ecc_secp256r1_prv_key);
     //encoder_init(&encoder, interest_buf, 4096);
     //ndn_interest_tlv_encode(&encoder, &ancmt);
