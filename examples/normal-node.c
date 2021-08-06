@@ -23,6 +23,9 @@
 #include "ndn-lite/encode/key-storage.h"
 #include "ndn-lite/encode/ndn-rule-storage.h"
 #include "ndn-lite/forwarder/pit.h"
+#include "ndn-lite/forwarder/fib.h"
+#include "ndn-lite/forwarder/forwarder.h"
+
 
 struct delay_struct {
     int struct_selector;
@@ -121,7 +124,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //Segmentation fault here
-            ndn_fib_unregister_face(router->fib, temp_fib_id);
+            //ndn_fib_remove_entry(router->fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -375,15 +378,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 }
 
 //debug pit
-void debug_pit() {
+void debug_ndn() {
     //get pit data
     //send to http website
     //whenever any new pit entries come in send to http
-}
-
-//debug fib
-void debug_fib() {
-
+    ndn_pit_t debug_pit;
+    ndn_fib_t debug_fib;
 }
 */
 
