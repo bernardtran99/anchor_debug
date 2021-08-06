@@ -170,8 +170,8 @@ void send_ancmt() {
     //Signed interest init
     storage = ndn_key_storage_get_instance();
     ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    encoder_init(&encoder, interest_buf, 4096);
-    ndn_interest_tlv_encode(&encoder, &ancmt);
+    //encoder_init(&encoder, interest_buf, 4096);
+    //ndn_interest_tlv_encode(&encoder, &ancmt);
 
     // //This creates the routes for the interest and sends to nodes
     // //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
