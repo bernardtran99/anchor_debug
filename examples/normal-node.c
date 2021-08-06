@@ -301,6 +301,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //printf("%s\n", prefix);
 
     if(verify_packet(&interest_pkt) == false) {
+        printf("Packet Wrong Format!");
         return NDN_UNSUPPORTED_FORMAT;
     }
     printf("Packet Verified!");
