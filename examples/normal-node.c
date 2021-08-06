@@ -449,7 +449,7 @@ int main(int argc, char *argv[]) {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string);
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
     ndn_lite_startup();
     //nameprefix = anmct
