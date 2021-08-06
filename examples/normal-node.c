@@ -289,10 +289,12 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix = &interest_pkt.name.components[0].value[0];
 
     int timestamp = interest_pkt.parameters.value[0];
+    printf("%s\n", &timestamp);
     int current_time = ndn_time_now_ms();
     
     //selector number
     int parameters = interest_pkt.parameters.value[1];
+    printf("%s\n", &parameters);
 
     struct delay_struct args;
     args.interest = interest_pkt;
