@@ -143,8 +143,8 @@ void flood(ndn_interest_t interest) {
 
 //Send announcement function
 void send_ancmt() {
-    printf("Sending Announcement...");
-    
+    printf("Sending Announcement...\n");
+
     //include periodic subscribe of send_anct
     ndn_interest_t ancmt;
     ndn_encoder_t encoder;
@@ -182,7 +182,7 @@ void send_ancmt() {
     // flood(ancmt);
     
     ancmt_sent = true;
-    printf("Announcement sent.");
+    printf("Announcement sent.\n");
 }
 
 //how do i populate the fib??????????
@@ -413,7 +413,9 @@ int main(int argc, char *argv[]) {
     is_anchor = true;
     running = true;
     while (running) {
+        printf("nope");
         if(is_anchor && !ancmt_sent) {
+            printf("send anct called\n");
             send_ancmt();
         }
         //packet is ancmt
