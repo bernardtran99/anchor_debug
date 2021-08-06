@@ -413,9 +413,9 @@ int main(int argc, char *argv[]) {
     is_anchor = true;
     running = true;
     while (running) {
-        printf("nope");
+        //printf("nope");
         if(is_anchor && !ancmt_sent) {
-            printf("send anct called\n");
+            //printf("send anct called\n");
             send_ancmt();
         }
         //packet is ancmt
