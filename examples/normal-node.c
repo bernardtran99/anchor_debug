@@ -397,32 +397,6 @@ void debug_ndn() {
     ndn_fib_t debug_fib;
 }
 */
-int
-parseArgs(int argc, char *argv[])
-{
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
-
-    sz_port1 = argv[1];
-    sz_addr = argv[2];
-    sz_port2 = argv[3];
-
-
-    host_addr = gethostbyname(sz_addr);
-
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    ndn_name_from_string(&name_prefix, argv[4], strlen(argv[4]);
-    return 0;
-}
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
