@@ -237,7 +237,7 @@ void populate_fib() {
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 }
 
-int verify_packet(ndn_interest_t *interest) {
+bool verify_packet(ndn_interest_t *interest) {
     printf("Verifying Packet\n");
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
@@ -303,6 +303,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     if(verify_packet(&interest_pkt) == false) {
         return NDN_UNSUPPORTED_FORMAT;
     }
+    printf("Packet Verified!");
     insert_pit(interest_pkt);
 
     //check ancmt, stored selectors, and timestamp(maybe)
