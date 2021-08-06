@@ -146,7 +146,7 @@ void send_ancmt() {
     printf("Sending Announcement...\n");
 
     //include periodic subscribe of send_anct
-    ndn_interest_t ancmt;
+    ndn_interest_t* ancmt;
     ndn_encoder_t encoder;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
@@ -163,14 +163,14 @@ void send_ancmt() {
     //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     //Init ancmt with selector, signature, and timestamp
     //may have to use ex: (uint8_t*)str for middle param
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
+    ndn_interest_set_Parameters(ancmt, (uint8_t*)timestamp, sizeof(timestamp));
+    ndn_interest_set_Parameters(ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
     //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
     //Signed interest init
     storage = ndn_key_storage_get_instance();
-    //ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    //  encoder_init(&encoder, interest_buf, 4096);
+    ndn_signed_interest_ecdsa_sign(ancmt, storage->self_identity, ecc_secp256r1_prv_key);
+    //encoder_init(&encoder, interest_buf, 4096);
     //ndn_interest_tlv_encode(&encoder, &ancmt);
 
     // //This creates the routes for the interest and sends to nodes
