@@ -143,6 +143,8 @@ void flood(ndn_interest_t interest) {
 
 //Send announcement function
 void send_ancmt() {
+    printf("Sending Announcement...");
+    
     //include periodic subscribe of send_anct
     ndn_interest_t ancmt;
     ndn_encoder_t encoder;
@@ -154,13 +156,9 @@ void send_ancmt() {
     //Sets timestamp
     //time_t clk = time(NULL);
     //char* timestamp = ctime(&clk);
-    
 
     //gets ndn timestamp
     ndn_time_ms_t timestamp = ndn_time_now_ms();
-    
-
-    printf("Sending Announcement...");
 
     // //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     // //Init ancmt with selector, signature, and timestamp
