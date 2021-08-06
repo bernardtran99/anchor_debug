@@ -405,54 +405,22 @@ parseArgs(int argc, char *argv[])
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    if (argc < 5) {
-        fprintf(stderr, "ERROR: wrong arguments.\n");
-        printf("Usage: <local-port> <remote-ip> <remote-port> <name-prefix>\n");
-        return 1;
-    }
     sz_port1 = argv[1];
     sz_addr = argv[2];
     sz_port2 = argv[3];
-    //sz_prefix = argv[4];
-    //data_need = argv[5];
 
-    if(strlen(sz_port1) <= 0 || strlen(sz_addr) <= 0 || strlen(sz_port2) <= 0){
-        fprintf(stderr, "ERROR: wrong arguments.\n");
-        return 1;
-    }
 
     host_addr = gethostbyname(sz_addr);
-    if(host_addr == NULL){
-        fprintf(stderr, "ERROR: wrong hostname.\n");
-        return 2;
-    }
 
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    if(paddrs[0] == NULL){
-        fprintf(stderr, "ERROR: wrong hostname.\n");
-        return 2;
-    }
     server_ip = paddrs[0]->s_addr;
 
     ul_port = strtoul(sz_port1, NULL, 10);
-    if(ul_port < 1024 || ul_port >= 65536){
-        fprintf(stderr, "ERROR: wrong port number.\n");
-        return 3;
-    }
     port1 = htons((uint16_t) ul_port);
 
     ul_port = strtoul(sz_port2, NULL, 10);
-    if(ul_port < 1024 || ul_port >= 65536){
-        fprintf(stderr, "ERROR: wrong port number.\n");
-        return 3;
-    }
     port2 = htons((uint16_t) ul_port);
-
-    if(ndn_name_from_string(&name_prefix, argv[4], strlen(argv[4])) != NDN_SUCCESS){
-        fprintf(stderr, "ERROR: wrong name.\n");
-        return 4;
-    }
-
+    ndn_name_from_string(&name_prefix, argv[4], strlen(argv[4]);
     return 0;
 }
 
@@ -463,15 +431,29 @@ int main(int argc, char *argv[]) {
     //pthread_t layer1;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
-    int ret;
-    if ((ret = parseArgs(argc, argv)) != 0) {
-        return ret;
-    }
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    sz_port1 = "5000";
+    sz_addr = "172.20.10.2";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string);
     
     ndn_lite_startup();
     //nameprefix = anmct
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_fib();
@@ -503,6 +485,7 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
+    ndn_face_destroy(&face->intf);
 }
 
 //test main method
