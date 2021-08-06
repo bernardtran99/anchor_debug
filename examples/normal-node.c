@@ -128,7 +128,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //Segmentation fault here
-            //ndn_fib_remove_entry(router->fib, temp_fib_id);
+            //ndn_fib_unregister_face(router->fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -171,17 +171,18 @@ void send_ancmt() {
     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
+    //segmentation fault here
     ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    //encoder_init(&encoder, interest_buf, 4096);
-    //ndn_interest_tlv_encode(&encoder, &ancmt);
+    encoder_init(&encoder, interest_buf, 4096);
+    ndn_interest_tlv_encode(&encoder, &ancmt);
 
-    // //This creates the routes for the interest and sends to nodes
-    // //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    // ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-    // ndn_interest_from_name(&ancmt, &prefix_name);
-    // //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
+    //This creates the routes for the interest and sends to nodes
+    //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    ndn_interest_from_name(&ancmt, &prefix_name);
+    //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    // flood(ancmt);
+    flood(ancmt);
     
     ancmt_sent = true;
     printf("Announcement sent.\n");
