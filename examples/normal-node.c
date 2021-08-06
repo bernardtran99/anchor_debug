@@ -128,7 +128,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
-            //ndn_fib_unregister_face(router->fib, temp_fib_id);
+            ndn_fib_unregister_face(router->fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -160,7 +160,7 @@ void send_ancmt() {
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
-    //ndn_interest_from_name(&ancmt, &prefix_name);
+    ndn_interest_from_name(&ancmt, &prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
     //gets ndn timestamp
@@ -211,7 +211,7 @@ void populate_fib() {
     //pi1->pi2: 192.168.1.10
     port_rx_str = "3000"; //1
     port_tx_str = "5000"; //2
-    ip_rx_str = "192.168.1.11";
+    ip_rx_str = "pri2-btran";
     host_addr = gethostbyname(ip_rx_str);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     ip_rx = paddrs[0]->s_addr;
@@ -225,7 +225,7 @@ void populate_fib() {
     //pi2->pi3: 192.168.1.11
     port_rx_str = "3000"; //1
     port_tx_str = "5000"; //2
-    ip_rx_str = "192.168.1.12";
+    ip_rx_str = "rpi3-btran";
     host_addr = gethostbyname(ip_rx_str);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     ip_rx = paddrs[0]->s_addr;
@@ -258,6 +258,11 @@ void reply_ancmt() {
 
 }
 
+//ruiran 
+void insert_pit(ndn_interest_t interest) {
+
+}
+
 void *start_delay(void *arguments) {
     printf("Delay started\n");
     struct delay_struct *args = arguments;
@@ -273,11 +278,6 @@ void *start_delay(void *arguments) {
         reply_ancmt();
         pthread_exit(NULL);
     }
-}
-
-//ruiran 
-void insert_pit(ndn_interest_t interest) {
-
 }
 
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
