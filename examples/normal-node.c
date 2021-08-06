@@ -399,11 +399,12 @@ void debug_ndn() {
 */
 
 int main(int argc, char *argv[]) {
+    printf("Main Loop\n");
     //ndn_interest_t interest;
     //ndn_udp_face_t *face;
     //pthread_t layer1;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt";
+    char *ancmt_string = "/ancm/1";
 
     ndn_lite_startup();
     //nameprefix = anmct
