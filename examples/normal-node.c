@@ -397,17 +397,80 @@ void debug_ndn() {
     ndn_fib_t debug_fib;
 }
 */
+int
+parseArgs(int argc, char *argv[])
+{
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    if (argc < 5) {
+        fprintf(stderr, "ERROR: wrong arguments.\n");
+        printf("Usage: <local-port> <remote-ip> <remote-port> <name-prefix>\n");
+        return 1;
+    }
+    sz_port1 = argv[1];
+    sz_addr = argv[2];
+    sz_port2 = argv[3];
+    //sz_prefix = argv[4];
+    //data_need = argv[5];
+
+    if(strlen(sz_port1) <= 0 || strlen(sz_addr) <= 0 || strlen(sz_port2) <= 0){
+        fprintf(stderr, "ERROR: wrong arguments.\n");
+        return 1;
+    }
+
+    host_addr = gethostbyname(sz_addr);
+    if(host_addr == NULL){
+        fprintf(stderr, "ERROR: wrong hostname.\n");
+        return 2;
+    }
+
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    if(paddrs[0] == NULL){
+        fprintf(stderr, "ERROR: wrong hostname.\n");
+        return 2;
+    }
+    server_ip = paddrs[0]->s_addr;
+
+    ul_port = strtoul(sz_port1, NULL, 10);
+    if(ul_port < 1024 || ul_port >= 65536){
+        fprintf(stderr, "ERROR: wrong port number.\n");
+        return 3;
+    }
+    port1 = htons((uint16_t) ul_port);
+
+    ul_port = strtoul(sz_port2, NULL, 10);
+    if(ul_port < 1024 || ul_port >= 65536){
+        fprintf(stderr, "ERROR: wrong port number.\n");
+        return 3;
+    }
+    port2 = htons((uint16_t) ul_port);
+
+    if(ndn_name_from_string(&name_prefix, argv[4], strlen(argv[4])) != NDN_SUCCESS){
+        fprintf(stderr, "ERROR: wrong name.\n");
+        return 4;
+    }
+
+    return 0;
+}
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     //ndn_interest_t interest;
-    //ndn_udp_face_t *face;
+    ndn_udp_face_t *face;
     //pthread_t layer1;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
+    int ret;
+    if ((ret = parseArgs(argc, argv)) != 0) {
+        return ret;
+    }
     
     ndn_lite_startup();
     //nameprefix = anmct
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
