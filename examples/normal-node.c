@@ -156,6 +156,12 @@ void send_ancmt() {
     //time_t clk = time(NULL);
     //char* timestamp = ctime(&clk);
 
+    //This creates the routes for the interest and sends to nodes
+    //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    ndn_interest_from_name(&ancmt, &prefix_name);
+    //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
+
     //gets ndn timestamp
     ndn_time_ms_t timestamp = ndn_time_now_ms();
 
@@ -172,15 +178,9 @@ void send_ancmt() {
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
     //segmentation fault here
-    ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
+    //ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
     encoder_init(&encoder, interest_buf, 4096);
     ndn_interest_tlv_encode(&encoder, &ancmt);
-
-    //This creates the routes for the interest and sends to nodes
-    //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-    ndn_interest_from_name(&ancmt, &prefix_name);
-    //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
     //flood(ancmt);
     ancmt_sent = true;
