@@ -26,6 +26,11 @@
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
 
+//in the build directory go to make files and normal node -change the link.txt
+//CMAKE again
+//then make
+//link.txt
+///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
 struct delay_struct {
     int struct_selector;
