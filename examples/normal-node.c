@@ -182,8 +182,7 @@ void send_ancmt() {
     ndn_interest_from_name(&ancmt, &prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    flood(ancmt);
-    
+    //flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
 }
