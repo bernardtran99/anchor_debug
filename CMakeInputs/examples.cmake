@@ -8,7 +8,7 @@ set(LIST_EXAMPLES
 #  "app-template"
 #  "ndn-lite-sd-peer"
 #  "udp-basic-producer"
-#  "udp-basic-consumer"
+  "udp-basic-consumer"
 #  "udp-group-producer"
 #  "udp-group-consumer"
 #  "anchor"

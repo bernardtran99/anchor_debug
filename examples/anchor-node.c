@@ -414,6 +414,12 @@ int main(int argc, char *argv[]) {
 
     //signature init
 
+    //testing anchor code with pregenerated ancmt node
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    ndn_forwarder_add_route_by_name(&face->intf, &name_prefix);
+    ndn_interest_from_name(&interest, &name_prefix);
+    ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
+
     is_anchor = true;
     running = true;
     while (running) {
