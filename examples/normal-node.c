@@ -412,6 +412,7 @@ int main(int argc, char *argv[]) {
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     storage = ndn_key_storage_get_instance();
 
+    is_anchor = true;
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
