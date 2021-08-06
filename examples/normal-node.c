@@ -162,26 +162,26 @@ void send_ancmt() {
 
     printf("Sending Announcement...");
 
-    //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
-    //Init ancmt with selector, signature, and timestamp
-    //may have to use ex: (uint8_t*)str for middle param
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
-    //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
+    // //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
+    // //Init ancmt with selector, signature, and timestamp
+    // //may have to use ex: (uint8_t*)str for middle param
+    // ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
+    // ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
+    // //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
-    //Signed interest init
-    storage = ndn_key_storage_get_instance();
-    ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    encoder_init(&encoder, interest_buf, 4096);
-    ndn_interest_tlv_encode(&encoder, &ancmt);
+    // //Signed interest init
+    // storage = ndn_key_storage_get_instance();
+    // ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
+    // encoder_init(&encoder, interest_buf, 4096);
+    // ndn_interest_tlv_encode(&encoder, &ancmt);
 
-    //This creates the routes for the interest and sends to nodes
-    //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-    ndn_interest_from_name(&ancmt, &prefix_name);
-    //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
+    // //This creates the routes for the interest and sends to nodes
+    // //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    // ndn_interest_from_name(&ancmt, &prefix_name);
+    // //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    //flood(ancmt);
+    // flood(ancmt);
     
     ancmt_sent = true;
     printf("Announcement sent.");
