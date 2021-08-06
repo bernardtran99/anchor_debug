@@ -416,7 +416,7 @@ int main(int argc, char *argv[]) {
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
-            send_ancmt();
+            //send_ancmt();
         }
         //packet is ancmt
         
