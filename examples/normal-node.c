@@ -181,7 +181,7 @@ void send_ancmt() {
     ndn_interest_from_name(&ancmt, &prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    flood(ancmt);
+    //flood(ancmt);
     
     ancmt_sent = true;
     printf("Announcement sent.");
@@ -416,7 +416,7 @@ int main(int argc, char *argv[]) {
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
-            //send_ancmt();
+            send_ancmt();
         }
         //packet is ancmt
         
