@@ -404,8 +404,8 @@ int main(int argc, char *argv[]) {
     //ndn_udp_face_t *face;
     //pthread_t layer1;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancm/1";
-
+    char *ancmt_string = "/ancmt/1";
+    
     ndn_lite_startup();
     //nameprefix = anmct
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
