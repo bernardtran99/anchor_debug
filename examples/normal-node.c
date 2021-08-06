@@ -180,7 +180,7 @@ void send_ancmt() {
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
     //segmentation fault here
     //ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    encoder_init(&encoder, &interest_buf, 4096);
+    encoder_init(&encoder, interest_buf, 4096);
     // ndn_interest_tlv_encode(&encoder, &ancmt);
 
     //flood(ancmt);
