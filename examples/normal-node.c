@@ -160,12 +160,12 @@ void send_ancmt() {
     //gets ndn timestamp
     ndn_time_ms_t timestamp = ndn_time_now_ms();
 
-    // //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
-    // //Init ancmt with selector, signature, and timestamp
-    // //may have to use ex: (uint8_t*)str for middle param
-    // ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
-    // ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
-    // //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
+    //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
+    //Init ancmt with selector, signature, and timestamp
+    //may have to use ex: (uint8_t*)str for middle param
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
+    //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
     // //Signed interest init
     // storage = ndn_key_storage_get_instance();
