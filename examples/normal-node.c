@@ -57,7 +57,7 @@ int time_slice = 3;
 
 //Selector integers
 //selector will be set from hash function of previous block
-int selector[10] = {}; //change from 0 to 9
+int selector[10] = {0,1,2,3,4,5,6,7,8,9}; //change from 0 to 9
 bool stored_selectors[10];
 
 bool delay_start[10];
@@ -247,7 +247,7 @@ bool verify_packet(ndn_interest_t *interest) {
     if((current_time - timestamp) < 0) {
         return false;
     }
-    if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
+    else if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
     return true;

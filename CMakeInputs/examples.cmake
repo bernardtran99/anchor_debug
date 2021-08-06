@@ -14,6 +14,7 @@ set(LIST_EXAMPLES
 #  "anchor"
 #  "basic-node"
   "normal-node"
+  "ancmt-interest-debug"
 #  "access-control-producer"
 #  "access-control-consumer"
 #  "access-control-controller"
