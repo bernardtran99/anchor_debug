@@ -209,9 +209,9 @@ void populate_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    sz_port1 = "5000";
+    sz_port1 = "3000";
     sz_addr = "rpi2-btran";
-    sz_port2 = "3000";
+    sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -224,9 +224,9 @@ void populate_fib() {
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     //pi2->pi3: 192.168.1.11
-    sz_port1 = "5000";
+    sz_port1 = "3000";
     sz_addr = "rpi3-btran";
-    sz_port2 = "3000";
+    sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
