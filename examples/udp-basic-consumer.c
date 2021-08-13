@@ -133,7 +133,7 @@ main(int argc, char *argv[])
   face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
   ndn_time_ms_t timestamp = ndn_time_now_ms();
   ndn_interest_set_Parameters(&interest, (uint8_t*)timestamp, sizeof(timestamp));
-  ndn_interest_set_Parameters(&interest, (uint8_t*)selector[0], sizeof(selector[0]));
+  //ndn_interest_set_Parameters(&interest, (uint8_t*)selector[0], sizeof(selector[0]));
   ndn_forwarder_add_route_by_name(&face->intf, &name_prefix);
   ndn_interest_from_name(&interest, &name_prefix);
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
