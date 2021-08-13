@@ -25,6 +25,7 @@
 #include "ndn-lite/forwarder/pit.h"
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
+#include "ndn-lite/util/uniform-time.h"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
