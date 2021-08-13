@@ -99,7 +99,6 @@ void flood(ndn_interest_t interest) {
     char *prefix = &interest.name.components[0].value[0];
     printf("%s\n", prefix);
     
-    
     //gets the forwarder intiailized in the main message
     //router_const = ndn_forwarder_get();
     router = ndn_forwarder_get();
