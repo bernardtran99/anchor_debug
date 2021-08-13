@@ -198,42 +198,44 @@ void populate_fib() {
     printf("FIB populated\n");
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
-    char* prefix_string = "/ancmt/1";
+    char *ancmt_string = "/ancmt/1";
     
-    in_port_t port_tx, port_rx;
-    in_addr_t ip_rx;
-    char *port_rx_str, *port_tx_str, *ip_rx_str;
-    uint32_t ul_port;
-    struct hostent *host_addr;
-    struct in_addr **paddrs;
-
     //myip, my outgoing port, their incoming ip, their incoming port
     //pi1->pi2: 192.168.1.10
-    port_rx_str = "3000"; //1
-    port_tx_str = "5000"; //2
-    ip_rx_str = "pri2-btran";
-    host_addr = gethostbyname(ip_rx_str);
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    sz_port1 = "5000";
+    sz_addr = "rpi2-btran";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    ip_rx = paddrs[0]->s_addr;
-    ul_port = strtoul(port_rx_str, NULL, 10);
-    port_rx = htons((uint16_t) ul_port);
-    ul_port = strtoul(port_tx_str, NULL, 10);
-    port_tx = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port_tx, ip_rx, port_rx);
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     //pi2->pi3: 192.168.1.11
-    port_rx_str = "3000"; //1
-    port_tx_str = "5000"; //2
-    ip_rx_str = "rpi3-btran";
-    host_addr = gethostbyname(ip_rx_str);
+    sz_port1 = "5000";
+    sz_addr = "rpi3-btran";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    ip_rx = paddrs[0]->s_addr;
-    ul_port = strtoul(port_rx_str, NULL, 10);
-    port_rx = htons((uint16_t) ul_port);
-    ul_port = strtoul(port_tx_str, NULL, 10);
-    port_tx = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port_tx, ip_rx, port_rx);
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 }
 
@@ -430,11 +432,10 @@ int main(int argc, char *argv[]) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
     ndn_lite_startup();
-    //nameprefix = anmct
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    //populate_fib();
+    populate_fib();
 
     //signature init
 
