@@ -135,12 +135,15 @@ main(int argc, char *argv[])
   face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
   ndn_forwarder_add_route_by_name(&face->intf, &name_prefix);
   ndn_interest_from_name(&interest, &name_prefix);
+  /*
   if(ndn_interest_set_Parameters(&interest, (uint8_t*)timestamp, sizeof(timestamp)) == 0) {
     printf("set param timestamp\n");
   }
   if(ndn_interest_set_Parameters(&interest, (uint8_t*)selector[1], sizeof(selector[1])) == 0) {
-    printf("set param selector\n");
+    printf("%s\n");
   }
+  */
+  printf("%s\n", ndn_interest_set_Parameters(&interest, (uint8_t*)selector[1], sizeof(selector[1])));
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
   running = true;
