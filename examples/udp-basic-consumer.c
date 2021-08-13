@@ -121,8 +121,8 @@ on_timeout(void* userdata) {
 int
 main(int argc, char *argv[])
 {
-  int selector[10] = {0,1,2,3,4,5,6,7,8,9};
-  ndn_time_ms_t timestamp = ndn_time_now_ms();
+  int *selector[10] = {0,1,2,3,4,5,6,7,8,9};
+  ndn_time_ms_t *timestamp = ndn_time_now_ms();
   ndn_udp_face_t *face;
   ndn_interest_t interest;
   int ret;
@@ -135,14 +135,9 @@ main(int argc, char *argv[])
   face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
   ndn_forwarder_add_route_by_name(&face->intf, &name_prefix);
   ndn_interest_from_name(&interest, &name_prefix);
-  /*
-  if(ndn_interest_set_Parameters(&interest, (uint8_t*)timestamp, sizeof(timestamp)) == 0) {
-    printf("set param timestamp\n");
-  }
-  if(ndn_interest_set_Parameters(&interest, (uint8_t*)selector[1], sizeof(selector[1])) == 0) {
-    printf("%s\n");
-  }
-  */
+
+  ndn_interest_set_Parameters(&interest, (uint8_t*)timestamp, sizeof(timestamp));
+  ndn_interest_set_Parameters(&interest, (uint8_t*)selector[1], sizeof(selector[1]));
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
   running = true;
