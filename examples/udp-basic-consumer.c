@@ -121,8 +121,10 @@ on_timeout(void* userdata) {
 int
 main(int argc, char *argv[])
 {
-  int *selector[10] = &{0,1,2,3,4,5,6,7,8,9};
-  ndn_time_ms_t *timestamp = &ndn_time_now_ms();
+  int selector_ptr[10] = {0,1,2,3,4,5,6,7,8,9};
+  int *selector[10] = &selector_ptr;
+  ndn_time_ms_t time_ptr = ndn_time_now_ms();
+  ndn_time_ms_t *timestamp = &time_ptr;
   ndn_udp_face_t *face;
   ndn_interest_t interest;
   int ret;
