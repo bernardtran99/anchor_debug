@@ -418,7 +418,7 @@ int main(int argc, char *argv[]) {
     struct in_addr ** paddrs;
 
     sz_port1 = "5000";
-    sz_addr = "172.20.10.2";
+    sz_addr = "rpi3-btran";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
