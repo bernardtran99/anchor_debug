@@ -315,6 +315,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
     if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
+        printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
             pthread_create(&layer1, NULL, &start_delay, (void *)&args);
@@ -330,6 +331,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     }
 
     else if((prefix == "ancmt") && stored_selectors[parameters] == true) {
+        printf("Old Ancmt\n");
         interface_num[parameters]++;
         if(interface_num[parameters] >= max_interfaces) {
             if(did_flood[parameters] == true) {
