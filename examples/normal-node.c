@@ -304,6 +304,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     
     //printf("%s\n", prefix);
 
+    //make sure to uncomment verify 
     // if(verify_packet(&interest_pkt) == false) {
     //     printf("Packet Wrong Format!");
     //     return NDN_UNSUPPORTED_FORMAT;
@@ -326,8 +327,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         //    flood(interest_pkt);
         //    did_flood[parameters] = true;
         //    reply_ancmt();
-        // }
-        
+        // }    
     }
 
     else if((prefix == "ancmt") && stored_selectors[parameters] == true) {
