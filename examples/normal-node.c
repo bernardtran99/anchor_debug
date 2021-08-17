@@ -58,7 +58,7 @@ int time_slice = 3;
 
 //Selector integers
 //selector will be set from hash function of previous block
-int selector[10] = {0,1,2,3,4,5,6,7,8,9}; //change from 0 to 9
+int selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; //change from 0 to 9
 bool stored_selectors[10];
 
 bool delay_start[10];
@@ -178,8 +178,8 @@ void send_ancmt() {
     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
-    //segmentation fault here
-    //ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
+    //TODO: segmentation fault here
+    ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
     encoder_init(&encoder, interest_buf, 4096);
     //TODO: Segmentation Fault Here
     ndn_interest_tlv_encode(&encoder, &ancmt);
