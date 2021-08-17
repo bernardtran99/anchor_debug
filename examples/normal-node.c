@@ -184,6 +184,7 @@ void send_ancmt() {
     //TODO: Segmentation Fault Here
     ndn_interest_tlv_encode(&encoder, &ancmt);
 
+    //uncomment here to test flood
     //flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
@@ -446,6 +447,7 @@ int main(int argc, char *argv[]) {
     running = true;
     while (running) {
         //printf("nope");
+        //uncomment here to test send anct
         // if(is_anchor && !ancmt_sent) {
         //     //printf("send anct called\n");
         //     send_ancmt();
