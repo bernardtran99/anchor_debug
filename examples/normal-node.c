@@ -222,10 +222,10 @@ void populate_fib() {
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
     ul_port = strtoul(sz_port1, NULL, 10);
+    printf("Here\n");
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    printf("Here\n");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
