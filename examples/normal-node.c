@@ -217,14 +217,15 @@ void populate_fib() {
     sz_port1 = "3000";
     sz_addr = "rpi2-btran";
     sz_port2 = "5000";
-    printf("Here\n");
     host_addr = gethostbyname(sz_addr);
+    printf("Here\n");
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
     ul_port = strtoul(sz_port1, NULL, 10);
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
+    printf("Here\n");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
