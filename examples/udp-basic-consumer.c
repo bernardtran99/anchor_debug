@@ -122,6 +122,7 @@ int
 main(int argc, char *argv[])
 {
   uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  uint8_t *selector_ptr = selector;
   ndn_time_ms_t time_ptr = ndn_time_now_ms();
   ndn_udp_face_t *face;
   ndn_interest_t interest;
@@ -140,7 +141,7 @@ main(int argc, char *argv[])
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
   printf("%d\n", time_ptr);
   printf("%d\n", selector[1]);
-  ndn_interest_set_Parameters(&interest, (uint8_t*)selector[1], sizeof(selector[1]));
+  ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 8), sizeof(selector[1]));
 
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
