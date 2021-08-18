@@ -211,8 +211,8 @@ void populate_fib() {
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
+    struct hostent *host_addr;
+    struct in_addr **paddrs;
 
     sz_port1 = "3000";
     sz_addr = "rpi2-btran";
