@@ -144,7 +144,7 @@ main(int argc, char *argv[])
   printf("%d\n", sizeof(selector[0]));
   //the number added to the array pointer after indicates the index number of the array
   ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 0), sizeof(selector[0]));
-  ndn_interest_set_Parameters(&interest, (uint8_t*)&time_ptr, 64);
+  ndn_interest_set_Parameters(&interest, (uint8_t*)&time_ptr, sizeof(time_ptr));
   uint64_t test = interest.parameters.value[0];
   printf("%d\n", test);
   test = interest.parameters.value[1];
