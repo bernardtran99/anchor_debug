@@ -213,10 +213,11 @@ void populate_fib() {
     uint32_t ul_port;
     struct hostent *host_addr;
     struct in_addr **paddrs;
-printf("Here\n");
+
     sz_port1 = "3000";
     sz_addr = "rpi2-btran";
     sz_port2 = "5000";
+    printf("Here\n");
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
