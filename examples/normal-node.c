@@ -186,8 +186,8 @@ void send_ancmt() {
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
     ndn_name_t *self_identity_ptr = storage->self_identity;
-    // //TODO: segmentation fault here
-    // ndn_signed_interest_ecdsa_sign(ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
+    //TODO: segmentation fault here
+    ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
     // encoder_init(encoder, interest_buf, 4096);
     // //TODO: Segmentation Fault Here
     // ndn_interest_tlv_encode(encoder, ancmt);
