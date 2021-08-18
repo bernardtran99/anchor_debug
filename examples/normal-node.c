@@ -190,7 +190,9 @@ void send_ancmt() {
     ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
     encoder_init(encoder, interest_buf, 4096);
     // //TODO: Segmentation Fault Here
+    printf("Here\n");
     ndn_interest_tlv_encode(encoder, &ancmt);
+    printf("Here\n");
 
     //uncomment here to test flood
     //flood(ancmt);
