@@ -164,7 +164,8 @@ void send_ancmt() {
     //This creates the routes for the interest and sends to nodes
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     printf("Here\n");
-    ndn_name_from_string(prefix_name, (char*)prefix_string, strlen(prefix_string));
+    ndn_name_t prefix_name1;
+    ndn_name_from_string(&prefix_name1, prefix_string, strlen(prefix_string));
     printf("Here\n");
     //TODO: Segmentation Fault Here
     ndn_interest_from_name(ancmt, prefix_name);
