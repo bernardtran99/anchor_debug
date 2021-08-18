@@ -151,7 +151,7 @@ void send_ancmt() {
     ndn_interest_t *ancmt;
     ndn_encoder_t *encoder;
     ndn_udp_face_t *face;
-    ndn_name_t *prefix_name;
+    ndn_name_t prefix_name;
     char *prefix_string = "/ancmt/1";
     char interest_buf[4096];
 
@@ -165,10 +165,10 @@ void send_ancmt() {
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     printf("Here\n");
     ndn_name_t prefix_name1;
-    ndn_name_from_string(&prefix_name1, prefix_string, strlen(prefix_string));
-    printf("Here\n");
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
-    ndn_interest_from_name(ancmt, prefix_name);
+    ndn_interest_from_name(ancmt, &prefix_name);
+    printf("Here\n");
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
     //gets ndn (timestamp)
