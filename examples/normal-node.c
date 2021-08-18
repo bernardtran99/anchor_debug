@@ -149,7 +149,7 @@ void send_ancmt() {
     //ndn_interest_t *ancmt = new ndn_interest_t();
     //malloc
     ndn_interest_t ancmt;
-    ndn_encoder_t *encoder;
+    ndn_encoder_t encoder;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char *prefix_string = "/ancmt/1";
@@ -163,7 +163,6 @@ void send_ancmt() {
 
     //This creates the routes for the interest and sends to nodes
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    printf("Here\n");
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
     ndn_interest_from_name(&ancmt, &prefix_name);
@@ -188,10 +187,10 @@ void send_ancmt() {
     ndn_name_t *self_identity_ptr = storage->self_identity;
     //TODO: segmentation fault here
     ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
-    encoder_init(encoder, interest_buf, 4096);
+    encoder_init(&encoder, interest_buf, 4096);
     // //TODO: Segmentation Fault Here
     printf("Here\n");
-    ndn_interest_tlv_encode(encoder, &ancmt);
+    ndn_interest_tlv_encode(&encoder, &ancmt);
     printf("Here\n");
 
     //uncomment here to test flood
