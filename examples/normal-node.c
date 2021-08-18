@@ -218,7 +218,7 @@ void populate_fib() {
     sz_addr = "rpi2-btran";
     sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
-    printf("Here\n");
+    
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     printf("Here\n");
     server_ip = paddrs[0]->s_addr;
