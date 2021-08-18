@@ -148,7 +148,7 @@ void send_ancmt() {
     //include periodic subscribe of send_anct
     //ndn_interest_t *ancmt = new ndn_interest_t();
     //malloc
-    ndn_interest_t *ancmt;
+    ndn_interest_t ancmt;
     ndn_encoder_t *encoder;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
@@ -167,33 +167,32 @@ void send_ancmt() {
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
     printf("Here\n");
-    ndn_interest_t ancmt1;
-    ndn_interest_from_name(&ancmt1, &prefix_name);
+    ndn_interest_from_name(&ancmt, &prefix_name);
     printf("Here\n");
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    //gets ndn (timestamp)
-    ndn_time_ms_t timestamp = ndn_time_now_ms();
+    // //gets ndn (timestamp)
+    // ndn_time_ms_t timestamp = ndn_time_now_ms();
 
-    //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
-    //Init ancmt with selector, signature, and timestamp
-    //may have to use ex: (uint8_t*)str for middle param
+    // //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
+    // //Init ancmt with selector, signature, and timestamp
+    // //may have to use ex: (uint8_t*)str for middle param
     
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
-    //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
+    // ndn_interest_set_Parameters(ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
+    // ndn_interest_set_Parameters(ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+    // //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
-    //Signed interest init
-    ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
-    ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
-    ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
-    ndn_key_storage_t *storage = ndn_key_storage_get_instance();
-    ndn_name_t *self_identity_ptr = storage->self_identity;
-    //TODO: segmentation fault here
-    ndn_signed_interest_ecdsa_sign(ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
-    encoder_init(encoder, interest_buf, 4096);
-    //TODO: Segmentation Fault Here
-    ndn_interest_tlv_encode(encoder, ancmt);
+    // //Signed interest init
+    // ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
+    // ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
+    // ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
+    // ndn_key_storage_t *storage = ndn_key_storage_get_instance();
+    // ndn_name_t *self_identity_ptr = storage->self_identity;
+    // //TODO: segmentation fault here
+    // ndn_signed_interest_ecdsa_sign(ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
+    // encoder_init(encoder, interest_buf, 4096);
+    // //TODO: Segmentation Fault Here
+    // ndn_interest_tlv_encode(encoder, ancmt);
 
     //uncomment here to test flood
     //flood(ancmt);
