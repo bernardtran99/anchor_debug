@@ -167,7 +167,8 @@ void send_ancmt() {
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
     printf("Here\n");
-    ndn_interest_from_name(ancmt, &prefix_name);
+    ndn_interest_t ancmt1;
+    ndn_interest_from_name(&ancmt1, &prefix_name);
     printf("Here\n");
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
