@@ -164,6 +164,7 @@ void send_ancmt() {
     //This creates the routes for the interest and sends to nodes
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     ndn_name_from_string(prefix_name, prefix_string, strlen(prefix_string));
+    printf("Here\n");
     //TODO: Segmentation Fault Here
     ndn_interest_from_name(ancmt, prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
@@ -174,7 +175,7 @@ void send_ancmt() {
     //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     //Init ancmt with selector, signature, and timestamp
     //may have to use ex: (uint8_t*)str for middle param
-    printf("Here\n");
+    
     ndn_interest_set_Parameters(ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
     ndn_interest_set_Parameters(ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
     //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
