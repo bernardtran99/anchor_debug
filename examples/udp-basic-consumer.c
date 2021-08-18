@@ -142,7 +142,7 @@ main(int argc, char *argv[])
   printf("%d\n", time_ptr);
   printf("%d\n", selector[1]);
   ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 8), sizeof(selector[1]));
-  uint8_t test = interest.parameters.value[1];
+  uint8_t test = interest.parameters.value[2];
   printf("%d\n", test);
 
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
