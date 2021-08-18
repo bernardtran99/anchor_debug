@@ -444,7 +444,7 @@ int main(int argc, char *argv[]) {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    //populate_fib();
+    populate_fib();
 
     //signature init
 

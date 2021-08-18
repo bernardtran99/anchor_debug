@@ -152,7 +152,6 @@ main(int argc, char *argv[])
   test = interest.parameters.value[2];
   printf("%d\n", test);
 
-
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
   running = true;
