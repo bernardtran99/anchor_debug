@@ -451,7 +451,7 @@ int main(int argc, char *argv[]) {
 
     //signature init
 
-    //is_anchor = true;
+    is_anchor = true;
     running = true;
     while (running) {
         //printf("nope");
