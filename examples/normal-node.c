@@ -176,8 +176,8 @@ void send_ancmt() {
     //Init ancmt with selector, signature, and timestamp
     //may have to use ex: (uint8_t*)str for middle param
     
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
+    ndn_interest_set_Parameters(&ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
     //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
     // //Signed interest init
