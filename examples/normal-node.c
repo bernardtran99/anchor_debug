@@ -58,7 +58,8 @@ int time_slice = 3;
 
 //Selector integers
 //selector will be set from hash function of previous block
-int selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; //change from 0 to 9
+uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; //change from 0 to 9
+uint8_t *selector_ptr = selector;
 bool stored_selectors[10];
 
 bool delay_start[10];
@@ -147,11 +148,11 @@ void send_ancmt() {
     //include periodic subscribe of send_anct
     //ndn_interest_t *ancmt = new ndn_interest_t();
     //malloc
-    ndn_interest_t ancmt;
-    ndn_encoder_t encoder;
+    ndn_interest_t *ancmt;
+    ndn_encoder_t *encoder;
     ndn_udp_face_t *face;
-    ndn_name_t prefix_name;
-    char* prefix_string = "/ancmt/1";
+    ndn_name_t *prefix_name;
+    char *prefix_string = "/ancmt/1";
     char interest_buf[4096];
 
     //. instead ->, initialize as a pointer object first, testing new keyword
@@ -162,9 +163,9 @@ void send_ancmt() {
 
     //This creates the routes for the interest and sends to nodes
     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    ndn_name_from_string(prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
-    ndn_interest_from_name(&ancmt, &prefix_name);
+    ndn_interest_from_name(ancmt, prefix_name);
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
     //gets ndn timestamp
@@ -173,8 +174,8 @@ void send_ancmt() {
     //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     //Init ancmt with selector, signature, and timestamp
     //may have to use ex: (uint8_t*)str for middle param
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)timestamp, sizeof(timestamp));
-    ndn_interest_set_Parameters(&ancmt, (uint8_t*)selector[0], sizeof(selector[0]));
+    ndn_interest_set_Parameters(ancmt, (uint8_t*)&timestamp, sizeof(timestamp));
+    ndn_interest_set_Parameters(ancmt, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
     //ndn_interest_set_Parameters(&ancmt, (uint8_t*)ip_address, sizeof(ip_address));
 
     //Signed interest init
@@ -182,11 +183,12 @@ void send_ancmt() {
     ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
+    ndn_name_t self_identity_ptr = &storage->self_identity;
     //TODO: segmentation fault here
-    ndn_signed_interest_ecdsa_sign(&ancmt, storage->self_identity, ecc_secp256r1_prv_key);
-    encoder_init(&encoder, interest_buf, 4096);
+    ndn_signed_interest_ecdsa_sign(ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
+    encoder_init(encoder, interest_buf, 4096);
     //TODO: Segmentation Fault Here
-    ndn_interest_tlv_encode(&encoder, &ancmt);
+    ndn_interest_tlv_encode(encoder, ancmt);
 
     //uncomment here to test flood
     //flood(ancmt);
@@ -211,8 +213,8 @@ void populate_fib() {
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
-    struct hostent *host_addr;
-    struct in_addr **paddrs;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
 
     sz_port1 = "3000";
     sz_addr = "rpi2-btran";
@@ -220,7 +222,6 @@ void populate_fib() {
     host_addr = gethostbyname(sz_addr);
     
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    printf("Here\n");
     server_ip = paddrs[0]->s_addr;
     ul_port = strtoul(sz_port1, NULL, 10);
     port1 = htons((uint16_t) ul_port);
@@ -446,7 +447,7 @@ int main(int argc, char *argv[]) {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_fib();
+    //populate_fib();
 
     //signature init
 
@@ -455,10 +456,10 @@ int main(int argc, char *argv[]) {
     while (running) {
         //printf("nope");
         //uncomment here to test send anct
-        // if(is_anchor && !ancmt_sent) {
-        //     //printf("send anct called\n");
-        //     send_ancmt();
-        // }
+        if(is_anchor && !ancmt_sent) {
+            //printf("send anct called\n");
+            send_ancmt();
+        }
         //packet is ancmt
         
         // if(ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length) == NDN_SUCCESS) {
