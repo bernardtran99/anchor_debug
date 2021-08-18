@@ -220,8 +220,8 @@ void populate_fib() {
     host_addr = gethostbyname(sz_addr);
     printf("Here\n");
     paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
     printf("Here\n");
+    server_ip = paddrs[0]->s_addr;
     ul_port = strtoul(sz_port1, NULL, 10);
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
