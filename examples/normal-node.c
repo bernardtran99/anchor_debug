@@ -128,7 +128,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
-            ndn_fib_unregister_face(router->fib, temp_fib_id);
+            ndn_fib_unregister_face(router.fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -145,12 +145,16 @@ void send_ancmt() {
     printf("Sending Announcement...\n");
 
     //include periodic subscribe of send_anct
+    //ndn_interest_t *ancmt = new ndn_interest_t();
+    //malloc
     ndn_interest_t ancmt;
     ndn_encoder_t encoder;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char* prefix_string = "/ancmt/1";
     char interest_buf[4096];
+
+    //. instead ->, initialize as a pointer object first, testing new keyword
 
     //Sets timestamp
     //time_t clk = time(NULL);
@@ -246,6 +250,7 @@ bool verify_packet(ndn_interest_t *interest) {
     //check if timestamp is before the current time
     int timestamp = interest->parameters.value[0];
     int current_time = ndn_time_now_ms();
+    //verify time slot
 
     if((current_time - timestamp) < 0) {
         return false;
