@@ -166,13 +166,11 @@ void send_ancmt() {
     printf("Here\n");
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
     //TODO: Segmentation Fault Here
-    printf("Here\n");
     ndn_interest_from_name(&ancmt, &prefix_name);
-    printf("Here\n");
     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
-    // //gets ndn (timestamp)
-    // ndn_time_ms_t timestamp = ndn_time_now_ms();
+    //gets ndn (timestamp)
+    ndn_time_ms_t timestamp = ndn_time_now_ms();
 
     // //parameter may be one whole string so the parameters may have to be sorted and stored in a way that is readabel by other normal nodes
     // //Init ancmt with selector, signature, and timestamp
