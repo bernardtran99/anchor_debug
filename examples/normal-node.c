@@ -118,11 +118,13 @@ void flood(ndn_interest_t interest) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
     }
+
     else {
         //Normal node flooding announcement (layer 1)
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
+        printf("Forwarding Interest (Non-Anchor)");
         printf("%s\n", &router->pit->capacity);
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
@@ -139,6 +141,8 @@ void flood(ndn_interest_t interest) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
     }
+
+    printf("Flooded Interest!");
 }
 
 
@@ -321,7 +325,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //     printf("Packet Wrong Format!");
     //     return NDN_UNSUPPORTED_FORMAT;
     // }
-    printf("Packet Verified!");
+    printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
     //check ancmt, stored selectors, and timestamp(maybe)
