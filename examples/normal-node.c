@@ -93,6 +93,7 @@ uint8_t secp256r1_pub_key_str[64] = {
 
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
+    printf("Flooding...");
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
     ndn_name_t *prefix_name = &interest.name;
@@ -192,7 +193,7 @@ void send_ancmt() {
     ndn_interest_tlv_encode(&encoder, &ancmt);
 
     //uncomment here to test flood
-    //flood(ancmt);
+    flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
 }
