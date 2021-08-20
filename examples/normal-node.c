@@ -298,7 +298,7 @@ void *start_delay(void *arguments) {
 }
 
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
-    printf("Normal-Node On Interest\n");
+    printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
@@ -450,8 +450,8 @@ int main(int argc, char *argv[]) {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
 
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
     
