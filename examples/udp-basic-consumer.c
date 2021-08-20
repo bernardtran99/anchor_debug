@@ -148,7 +148,7 @@ main(int argc, char *argv[])
   uint8_t test;
   for(int i = 0; i < 10; i++) {
     test = interest.parameters.value[i];
-    printf("OUTPUT PARAMETER[1]: %d\n", test);
+    printf("OUTPUT PARAMETER[%d]: %d\n", i, test);
   }
 
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
