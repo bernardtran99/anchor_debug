@@ -93,7 +93,7 @@ uint8_t secp256r1_pub_key_str[64] = {
 
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
-    printf("Flooding...");
+    printf("Flooding...\n");
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
     ndn_name_t *prefix_name = &interest.name;
@@ -110,7 +110,7 @@ void flood(ndn_interest_t interest) {
         //Anchor flooding announcement (layer 1)
         //Flood without accounting for time delay or max number of interfaces
         //Get all closest interfaces and forward to them
-        printf("Forwarding Announcement (Layer 1)...");
+        printf("Forwarding Announcement (Layer 1)...\n");
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
@@ -124,7 +124,7 @@ void flood(ndn_interest_t interest) {
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
-        printf("Forwarding Interest (Non-Anchor)");
+        printf("Forwarding Interest (Non-Anchor)\n");
         printf("%s\n", &router->pit->capacity);
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
