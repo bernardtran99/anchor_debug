@@ -359,6 +359,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             }
         }
     }
+    
     last_interest = timestamp;
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -449,10 +450,11 @@ int main(int argc, char *argv[]) {
     // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     
     ndn_lite_startup();
+    //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
+    populate_fib();
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_fib();
 
     //signature init
 
