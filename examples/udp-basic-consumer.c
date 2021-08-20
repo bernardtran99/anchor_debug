@@ -139,18 +139,18 @@ main(int argc, char *argv[])
   ndn_interest_from_name(&interest, &name_prefix);
 
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
-  printf("%d\n", time_ptr);
-  printf("%d\n", selector[0]);
-  printf("%d\n", sizeof(selector[0]));
+  printf("TIMESTAMP: %d\n", time_ptr);
+  printf("SELECTOR: %d\n", selector_ptr + 1);
+  printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
   //the number added to the array pointer after indicates the index number of the array
   //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 0), sizeof(selector[0]));
-  ndn_interest_set_Parameters(&interest, (uint8_t*)&time_ptr, sizeof(time_ptr));
+  ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector_ptr + 1));
   uint64_t test = interest.parameters.value[0];
-  printf("%d\n", test);
+  printf("OUTPUT PARAMETER[0]: %d\n", test);
   test = interest.parameters.value[1];
-  printf("%d\n", test);
+  printf("OUTPUT PARAMETER[1]: %d\n", test);
   test = interest.parameters.value[2];
-  printf("%d\n", test);
+  printf("OUTPUT PARAMETER[2]: %d\n", test);
 
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
