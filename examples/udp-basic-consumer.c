@@ -121,7 +121,7 @@ on_timeout(void* userdata) {
 int
 main(int argc, char *argv[])
 {
-  uint8_t selector[10] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+  uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   uint8_t *selector_ptr = selector;
   ndn_time_ms_t time_ptr = ndn_time_now_ms();
   ndn_udp_face_t *face;
@@ -143,7 +143,7 @@ main(int argc, char *argv[])
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
   //the number added to the array pointer after indicates the index number of the array
-  ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(time_ptr));
+  ndn_interest_set_Parameters(&interest, (uint8_t*)(selector + 1), sizeof((uint8_t*)(selector + 1)));
   uint8_t test;
   for(int i = 0; i < 10; i++) {
     test = interest.parameters.value[i];
