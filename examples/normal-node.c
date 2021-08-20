@@ -214,7 +214,7 @@ void populate_fib() {
     char *ancmt_string = "/ancmt/1";
     
     //myip, my outgoing port, their incoming ip, their incoming port
-    //pi1->pi2: 192.168.1.10
+    
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
@@ -222,6 +222,7 @@ void populate_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    //pi1->pi2: 192.168.1.10
     sz_port1 = "3000";
     sz_addr = "rpi2-btran";
     sz_port2 = "5000";
@@ -451,9 +452,9 @@ int main(int argc, char *argv[]) {
     
     ndn_lite_startup();
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    populate_fib();
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
+    populate_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
 
     //signature init
