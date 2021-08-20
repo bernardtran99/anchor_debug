@@ -142,7 +142,7 @@ void flood(ndn_interest_t interest) {
         // }
     }
 
-    printf("Flooded Interest!");
+    printf("Flooded Interest!\n");
 }
 
 
