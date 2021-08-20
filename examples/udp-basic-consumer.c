@@ -143,8 +143,7 @@ main(int argc, char *argv[])
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
   //the number added to the array pointer after indicates the index number of the array
-  //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 0), sizeof(selector[0]));
-  ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 2), sizeof(selector_ptr + 2));
+  ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(time_ptr));
   uint8_t test;
   for(int i = 0; i < 10; i++) {
     test = interest.parameters.value[i];
