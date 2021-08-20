@@ -140,12 +140,12 @@ main(int argc, char *argv[])
 
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
   printf("TIMESTAMP: %d\n", time_ptr);
-  printf("SELECTOR: %d\n", selector_ptr + 1);
-  printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
+  printf("SELECTOR: %d\n", selector[1]);
+  printf("SIZE OF SELECTOR: %d\n", sizeof(selector[1]));
   //the number added to the array pointer after indicates the index number of the array
   //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 0), sizeof(selector[0]));
   ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector_ptr + 1));
-  uint64_t test = interest.parameters.value[0];
+  uint8_t test = interest.parameters.value[0];
   printf("OUTPUT PARAMETER[0]: %d\n", test);
   test = interest.parameters.value[1];
   printf("OUTPUT PARAMETER[1]: %d\n", test);
