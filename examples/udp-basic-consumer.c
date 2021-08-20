@@ -145,12 +145,11 @@ main(int argc, char *argv[])
   //the number added to the array pointer after indicates the index number of the array
   //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 0), sizeof(selector[0]));
   ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector_ptr + 1));
-  uint8_t test = interest.parameters.value[0];
-  printf("OUTPUT PARAMETER[0]: %d\n", test);
-  test = interest.parameters.value[1];
-  printf("OUTPUT PARAMETER[1]: %d\n", test);
-  test = interest.parameters.value[2];
-  printf("OUTPUT PARAMETER[2]: %d\n", test);
+  uint8_t test;
+  for(int i = 0; i < 10; i++) {
+    test = interest.parameters.value[i];
+    printf("OUTPUT PARAMETER[1]: %d\n", test);
+  }
 
   ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
