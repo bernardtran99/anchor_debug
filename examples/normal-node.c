@@ -307,13 +307,13 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("PREFIX: %s\n", prefix);
 
     int timestamp = interest_pkt.parameters.value[0];
-    printf("TIMESTAMP: %d\n", &timestamp);
+    printf("TIMESTAMP: %d\n", timestamp);
     int current_time = ndn_time_now_ms();
     printf("LAST INTEREST: %d\n", current_time);
     
     //selector number
     int parameters = interest_pkt.parameters.value[0];
-    printf("SELECTOR: %d\n", &parameters);
+    printf("SELECTOR: %d\n", parameters);
     printf("STORED SELECTOR: %s\n", stored_selectors[parameters]);
 
     struct delay_struct args;
