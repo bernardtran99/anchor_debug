@@ -314,7 +314,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //selector number
     int parameters = interest_pkt.parameters.value[0];
     printf("SELECTOR: %d\n", parameters);
-    printf("STORED SELECTOR: %s\n", stored_selectors[parameters]);
+    printf("STORED SELECTOR: %d\n", stored_selectors[parameters]);
 
     struct delay_struct args;
     args.interest = interest_pkt;
