@@ -425,14 +425,15 @@ void debug_ndn() {
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
+    ndn_lite_startup();
     //ndn_interest_t interest;
-    ndn_udp_face_t *face;
     //pthread_t layer1;
-    ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
 
     in_port_t port1, port2;
     in_addr_t server_ip;
+    ndn_name_t name_prefix;
+    ndn_udp_face_t *face;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
     struct hostent * host_addr;
@@ -441,6 +442,7 @@ int main(int argc, char *argv[]) {
     sz_port1 = "5000";
     sz_addr = "rpi3-btran";
     sz_port2 = "3000";
+
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -448,12 +450,12 @@ int main(int argc, char *argv[]) {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string);
+
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
     
-    ndn_lite_startup();
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(&prefix_name, on_interest, NULL);
     //populate_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
 
