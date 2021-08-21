@@ -309,7 +309,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     int timestamp = interest_pkt.parameters.value[0];
     printf("TIMESTAMP: %d\n", timestamp);
     int current_time = ndn_time_now_ms();
-    printf("LAST INTEREST: %d\n", current_time);
+    printf("LAST INTEREST: %d\n", last_interest);
     
     //selector number
     int parameters = interest_pkt.parameters.value[0];
@@ -333,7 +333,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
-    if((prefix == "ancmt") && stored_selectors[parameters] == false && (current_time - last_interest) > 0) {
+    if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
         printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
@@ -363,7 +363,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
     }
 
-    last_interest = timestamp;
+    last_interest = current_time;
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -457,6 +457,7 @@ int main(int argc, char *argv[]) {
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+    last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     //populate_fib();

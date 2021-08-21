@@ -128,6 +128,9 @@ main(int argc, char *argv[])
   ndn_interest_t interest;
   int ret;
 
+  time_t clk = time(NULL);
+  char* timestamp = ctime(&clk);
+
   if((ret = parseArgs(argc, argv)) != 0){
     return ret;
   }
@@ -139,6 +142,7 @@ main(int argc, char *argv[])
   ndn_interest_from_name(&interest, &name_prefix);
 
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
+  printf("CTIME: %s, %d", timestamp, timestamp);
   printf("TIMESTAMP: %d\n", time_ptr);
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
