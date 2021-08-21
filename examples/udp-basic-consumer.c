@@ -123,13 +123,14 @@ main(int argc, char *argv[])
 {
   uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   uint8_t *selector_ptr = selector;
-  ndn_time_ms_t time_ptr = ndn_time_now_ms();
   ndn_udp_face_t *face;
   ndn_interest_t interest;
   int ret;
 
-  time_t clk = time(NULL);
-  char* timestamp = ctime(&clk);
+  // time_t clk = time(NULL);
+  // char* timestamp = ctime(&clk);
+
+  ndn_time_ms_t time_ptr = ndn_time_now_ms();
 
   if((ret = parseArgs(argc, argv)) != 0){
     return ret;
@@ -143,7 +144,7 @@ main(int argc, char *argv[])
 
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
   printf("CTIME: %s, %d\n", timestamp, timestamp);
-  printf("TIMESTAMP: %d\n", time_ptr);
+  printf("TIMESTAMP: %d, %s\n", time_ptr, (char*)time_ptr);
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
   //the number added to the array pointer after indicates the index number of the array
