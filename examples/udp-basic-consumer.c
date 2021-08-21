@@ -143,7 +143,7 @@ main(int argc, char *argv[])
   ndn_interest_from_name(&interest, &name_prefix);
 
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
-  printf("CTIME: %s, %d\n", timestamp, timestamp);
+  //printf("CTIME: %s, %d\n", timestamp, timestamp);
   printf("TIMESTAMP: %d, %s\n", time_ptr, (char*)time_ptr);
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
