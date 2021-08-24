@@ -141,7 +141,7 @@ main(int argc, char *argv[])
   face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
   ndn_forwarder_add_route_by_name(&face->intf, &name_prefix);
   ndn_interest_from_name(&interest, &name_prefix);
-
+  printf("Here\n");
   //ndn_interest_set_Parameters(&interest, (uint8_t*)time_ptr, sizeof(timestamp));
   //printf("CTIME: %s, %d\n", timestamp, timestamp);
   printf("TIMESTAMP: %d, %s\n", time_ptr, time_ptr);
