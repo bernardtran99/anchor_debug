@@ -304,7 +304,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     char *prefix = &interest_pkt.name.components[0].value[0];
-    printf("PREFIX: 1%s1\n", prefix);
+    char *prefix_check = "ancmt";
+    printf("PREFIX: %s\n", prefix);
 
     int timestamp = interest_pkt.parameters.value[0];
     printf("TIMESTAMP: %d\n", timestamp);
@@ -334,7 +335,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
-    if((prefix == "ancmt") && stored_selectors[parameters] == false) {
+    if(prefix == prefix_check && stored_selectors[parameters] == 0) {
         printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
