@@ -134,7 +134,6 @@ main(int argc, char *argv[])
   if((ret = parseArgs(argc, argv)) != 0){
     return ret;
   }
-  printf("Here\n");
 
   //segmentation faults caused by pointers needing to be used for inputs to ndn_set_param func
   ndn_lite_startup();
@@ -147,7 +146,6 @@ main(int argc, char *argv[])
   printf("TIMESTAMP: %d\n", time_ptr);
   printf("SELECTOR: %d\n", (uint8_t*)(selector_ptr + 1));
   printf("SIZE OF SELECTOR: %d\n", sizeof(selector_ptr + 1));
-  printf("Here\n");
   //the number added to the array pointer after indicates the index number of the array
   ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
   uint8_t test;

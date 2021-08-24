@@ -304,7 +304,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     char *prefix = &interest_pkt.name.components[0].value[0];
-    printf("PREFIX: %s\n", prefix);
+    printf("PREFIX: 1%s1\n", prefix);
 
     int timestamp = interest_pkt.parameters.value[0];
     printf("TIMESTAMP: %d\n", timestamp);
