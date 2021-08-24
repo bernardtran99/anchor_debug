@@ -337,15 +337,15 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     if(stored_selectors[parameters] == false) {
         printf("stored_selectors[parameters] == false\n");
     }
-    if(stored_selectors[parameters] == NULL) {
-        printf("stored_selectors[parameters] == NULL\n");
+    if(stored_selectors[parameters] == 0) {
+        printf("stored_selectors[parameters] == 0\n");
     }
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
-    if(prefix == prefix_check && stored_selectors[parameters] == 0) {
+    if(prefix == prefix_check && stored_selectors[parameters] == false) {
         printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
