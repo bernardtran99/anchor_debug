@@ -307,6 +307,11 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix_check = "ancmt";
     printf("PREFIX: %s\n", prefix);
 
+    printf("/");
+    for (int j = 0; j < interest_pkt.name.component[1].size; j++) {
+        printf("%c", interest_pkt.name.component[1].value[j]);
+    }
+
     int timestamp = interest_pkt.parameters.value[0];
     printf("TIMESTAMP: %d\n", timestamp);
     int current_time = ndn_time_now_ms();
