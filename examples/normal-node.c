@@ -331,6 +331,16 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
+    if(prefix == prefix_check) {
+        printf("prefix == prefix_check\n");
+    }
+    if(stored_selectors[parameters] == false) {
+        printf("stored_selectors[parameters] == false\n");
+    }
+    if(stored_selectors[parameters] == NULL) {
+        printf("stored_selectors[parameters] == NULL\n");
+    }
+
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
