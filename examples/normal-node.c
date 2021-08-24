@@ -334,6 +334,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     if(prefix == prefix_check) {
         printf("prefix == prefix_check\n");
     }
+    if(prefix == "ancmt") {
+        printf("prefix == ancmt\n");
+    }
     if(stored_selectors[parameters] == false) {
         printf("stored_selectors[parameters] == false\n");
     }
