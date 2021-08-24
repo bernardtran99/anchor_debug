@@ -134,6 +134,7 @@ main(int argc, char *argv[])
   if((ret = parseArgs(argc, argv)) != 0){
     return ret;
   }
+  printf("Here\n");
 
   //segmentation faults caused by pointers needing to be used for inputs to ndn_set_param func
   ndn_lite_startup();
