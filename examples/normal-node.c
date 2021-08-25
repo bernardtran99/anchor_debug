@@ -132,7 +132,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
-            ndn_fib_unregister_face(router->fib, temp_fib_id);
+            ndn_fib_unregister_face(router.fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -476,7 +476,7 @@ int main(int argc, char *argv[]) {
 
     //signature init
 
-    is_anchor = true;
+    //is_anchor = true;
     running = true;
     while (running) {
         //printf("nope");
