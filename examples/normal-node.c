@@ -340,24 +340,11 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
-    if(prefix == prefix_check) {
-        printf("prefix == prefix_check\n");
-    }
-    if(prefix == "ancmt") {
-        printf("prefix == ancmt\n");
-    }
-    if(stored_selectors[parameters] == false) {
-        printf("stored_selectors[parameters] == false\n");
-    }
-    if(stored_selectors[parameters] == 0) {
-        printf("stored_selectors[parameters] == 0\n");
-    }
-
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
-    if(prefix == prefix_check && stored_selectors[parameters] == false) {
+    if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == false) {
         printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
@@ -372,7 +359,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         // }    
     }
 
-    else if((prefix == "ancmt") && stored_selectors[parameters] == true) {
+    else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
         printf("Old Ancmt\n");
         interface_num[parameters]++;
         if(interface_num[parameters] >= max_interfaces) {
