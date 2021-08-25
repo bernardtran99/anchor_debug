@@ -343,10 +343,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
-    if(strcmp(prefix, "ancmt") == 0) {
+    if(strcmp(prefix_ptr, "ancmt") == 0) {
         printf("Prefix good\n");
     }
-    if(strcmp(prefix, prefix_check) == 0) {
+    if(strcmp(prefix_ptr, prefix_check) == 0) {
         printf("Prefix good(var)\n");
     }
     if(stored_selectors[parameters] == false) {
@@ -360,7 +360,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //timestamp + selector for new and old
     //TODO: fix time to coorespond to last ancmt timestamp
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
-    if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == false) {
+    if(strcmp(prefix_ptr, "ancmt") == 0 && stored_selectors[parameters] == false) {
         printf("New Ancmt\n");
         stored_selectors[parameters] = true;
         if(delay_start[parameters] != true) {
@@ -375,7 +375,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         // }    
     }
 
-    else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
+    else if(strcmp(prefix_ptr, "ancmt") == 0 && stored_selectors[parameters] == true) {
         printf("Old Ancmt\n");
         interface_num[parameters]++;
         if(interface_num[parameters] >= max_interfaces) {
