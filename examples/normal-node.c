@@ -306,6 +306,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix = &interest_pkt.name.components[0].value[0];
     char *prefix_check = "ancmt";
     printf("PREFIX: %s\n", prefix);
+    printf("PREFIX(int): %d\n", prefix);
+    printf("PREFIX_CHECK(int): %d\n", prefix_check);
 
     
     // for (int i = 0; i < interest_pkt.name.components_size; i++) {
@@ -337,7 +339,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //     printf("Packet Wrong Format!");
     //     return NDN_UNSUPPORTED_FORMAT;
     // }
-    printf("Packet Verified!\n");
+    //printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
     if(strcmp(prefix, "ancmt") == 0) {
