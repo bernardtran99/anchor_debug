@@ -343,6 +343,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     if(strcmp(prefix, "ancmt") == 0) {
         printf("Prefix good\n");
     }
+    if(strcmp(prefix, prefix_check) == 0) {
+        printf("Prefix good(var)\n");
+    }
     if(stored_selectors[parameters] == false) {
         printf("Selector false\n");
     }
