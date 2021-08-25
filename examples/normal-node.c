@@ -308,13 +308,13 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("PREFIX: %s\n", prefix);
 
     
-    for (int i = 0; i < interest_pkt.name.components_size; i++) {
-        printf("/");
-        for (int j = 0; j < interest_pkt.name.components[i].size; j++) {
-            printf("%c", interest_pkt.name.components[i].value[j]);
-        }
-    }
-    printf("\n");
+    // for (int i = 0; i < interest_pkt.name.components_size; i++) {
+    //     printf("/");
+    //     for (int j = 0; j < interest_pkt.name.components[i].size; j++) {
+    //         printf("%c", interest_pkt.name.components[i].value[j]);
+    //     }
+    // }
+    // printf("\n");
 
     int timestamp = interest_pkt.parameters.value[0];
     printf("TIMESTAMP: %d\n", timestamp);
