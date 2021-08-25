@@ -303,7 +303,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
-    char *prefix = interest_pkt.name.components[0].value[0];
+    char prefix = interest_pkt.name.components[0].value[0];
+    char *prefix_ptr = &prefix;
     char *prefix_check = "ancmt";
     printf("PREFIX: %s\n", prefix);
     printf("PREFIX(int): %d\n", prefix);
