@@ -112,7 +112,8 @@ void flood(ndn_interest_t interest) {
         //Anchor flooding announcement (layer 1)
         //Flood without accounting for time delay or max number of interfaces
         //Get all closest interfaces and forward to them
-        printf("Forwarding Announcement (Layer 1)...\n");
+        printf("Forwarding Announcement (Anchor)\n");
+        //insert fib information here
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
@@ -126,18 +127,19 @@ void flood(ndn_interest_t interest) {
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
-        printf("Forwarding Interest (Non-Anchor)\n");
-        printf("PIT Entires: %d\n", sizeof(router->pit->slots));
-        for(int i = 0; i < router->pit->capacity; i++) {
-            printf("Iterate number: %d\n", i);
-            ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
-            nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
-            printf("Here\n");
-            ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
-            //TODO: Segmentation Fault Here
-            ndn_fib_unregister_face(router->fib, temp_fib_id);
-        }
+        printf("Forwarding Announceent (Non-Anchor)\n");
+        //printf("PIT Entires: %d\n", sizeof(router->pit->slots));
+        // for(int i = 0; i < router->pit->capacity; i++) {
+        //     printf("Iterate number: %d\n", i);
+        //     ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
+        //     nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
+        //     printf("Here\n");
+        //     ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
+        //     //TODO: Segmentation Fault Here
+        //     ndn_fib_unregister_face(router->fib, temp_fib_id);
+        // }
         //router->fib = layer1_fib;
+
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
@@ -489,29 +491,29 @@ int main(int argc, char *argv[]) {
     //pthread_t layer1;
     char *ancmt_string = "/ancmt/1";
 
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    ndn_name_t name_prefix;
-    ndn_udp_face_t *face;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
+    // in_port_t port1, port2;
+    // in_addr_t server_ip;
+    // ndn_name_t name_prefix;
+    // ndn_udp_face_t *face;
+    // char *sz_port1, *sz_port2, *sz_addr;
+    // uint32_t ul_port;
+    // struct hostent * host_addr;
+    // struct in_addr ** paddrs;
 
-    sz_port1 = "5000";
-    sz_addr = "rpi3-btran";
-    sz_port2 = "3000";
+    // sz_port1 = "5000";
+    // sz_addr = "rpi3-btran";
+    // sz_port2 = "3000";
 
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
+    // host_addr = gethostbyname(sz_addr);
+    // paddrs = (struct in_addr **)host_addr->h_addr_list;
+    // server_ip = paddrs[0]->s_addr;
+    // ul_port = strtoul(sz_port1, NULL, 10);
+    // port1 = htons((uint16_t) ul_port);
+    // ul_port = strtoul(sz_port2, NULL, 10);
+    // port2 = htons((uint16_t) ul_port);
 
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    //face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
     last_interest = ndn_time_now_ms();
     
