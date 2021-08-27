@@ -64,7 +64,8 @@ uint8_t *selector_ptr = selector;
 bool stored_selectors[10];
 
 bool delay_start[10];
-int delay = 6000000;
+//clock time is in nano seconds, divide by 10^6 for actual time
+int delay = 10000000;
 int max_interfaces = 8;
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
