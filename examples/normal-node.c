@@ -65,7 +65,7 @@ bool stored_selectors[10];
 
 bool delay_start[10];
 //clock time is in nano seconds, divide by 10^6 for actual time
-int delay = 10000000;
+int delay = 3000000;
 int max_interfaces = 8;
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
@@ -132,8 +132,8 @@ void flood(ndn_interest_t interest) {
         for(int i = 0; i < router->pit->capacity; i++) {
             printf("Iterate number: %d\n", i);
             ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
-            printf("Here\n");
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
+            printf("Here\n");
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
             ndn_fib_unregister_face(router->fib, temp_fib_id);
