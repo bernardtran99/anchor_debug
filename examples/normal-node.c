@@ -322,15 +322,15 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     char *prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
-    char prefix_convert[10];
-    int j = sprintf(prefix_convert, "%s", prefix);
-    char *prefix_check = "ancmt";
-    printf("PREFIX: `%s`\n", prefix);
-    printf("PREFIX_CONVERT: `%s`\n", prefix_convert);
-    printf("PREFIX_CHECK: `%s`\n", prefix_check);
-    printf("PREFIX(int): %d\n", prefix);
-    printf("PREFIX CONVERT(int): %d\n", prefix_convert);
-    printf("PREFIX_CHECK(int): %d\n", prefix_check);
+    // char prefix_convert[10];
+    // int j = sprintf(prefix_convert, "%s", prefix);
+    // char *prefix_check = "ancmt";
+    printf("PREFIX: %s\n", prefix);
+    // printf("PREFIX_CONVERT: `%s`\n", prefix_convert);
+    // printf("PREFIX_CHECK: `%s`\n", prefix_check);
+    // printf("PREFIX(int): %d\n", prefix);
+    // printf("PREFIX CONVERT(int): %d\n", prefix_convert);
+    // printf("PREFIX_CHECK(int): %d\n", prefix_check);
     
 
     
@@ -366,18 +366,18 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //printf("Packet Verified!\n");
     insert_pit(interest_pkt);
 
-    if(strcmp(prefix, "ancmt") == 0) {
-        printf("Prefix good\n");
-    }
-    if(strcmp(prefix, prefix_check) == 0) {
-        printf("Prefix good(var)\n");
-    }
-    if(stored_selectors[parameters] == false) {
-        printf("Selector false\n");
-    }
-    if(stored_selectors[parameters] == true) {
-        printf("Selector true\n");
-    }
+    // if(strcmp(prefix, "ancmt") == 0) {
+    //     printf("Prefix good\n");
+    // }
+    // if(strcmp(prefix, prefix_check) == 0) {
+    //     printf("Prefix good(var)\n");
+    // }
+    // if(stored_selectors[parameters] == false) {
+    //     printf("Selector false\n");
+    // }
+    // if(stored_selectors[parameters] == true) {
+    //     printf("Selector true\n");
+    // }
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
