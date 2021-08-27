@@ -95,7 +95,7 @@ uint8_t secp256r1_pub_key_str[64] = {
 
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
-    printf("Flooding...\n");
+    printf("\nFlooding\n");
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
     ndn_name_t *prefix_name = &interest.name;
@@ -152,7 +152,7 @@ void flood(ndn_interest_t interest) {
 
 //Send announcement function
 void send_ancmt() {
-    printf("Sending Announcement...\n");
+    printf("\nSending Announcement...\n");
 
     //include periodic subscribe of send_anct
     //ndn_interest_t *ancmt = new ndn_interest_t();
@@ -212,7 +212,7 @@ void send_ancmt() {
 
 void populate_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
-    printf("FIB populated\n");
+    printf("\nFIB populated\n");
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
@@ -258,7 +258,7 @@ void populate_fib() {
 }
 
 bool verify_packet(ndn_interest_t *interest) {
-    printf("Verifying Packet\n");
+    printf("\nVerifying Packet\n");
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
     int timestamp = interest->parameters.value[0];
@@ -285,13 +285,14 @@ void insert_pit(ndn_interest_t interest) {
 }
 
 void *start_delay(void *arguments) {
-    printf("Delay started\n");
+    printf("\nDelay started\n");
     struct delay_struct *args = arguments;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
-    printf("Delay Time: %d seconds\n", clock()/1000000);
+    printf("Delay Time: %d seconds\n", delay/1000000);
     while (clock() < start_time + delay) {
     }
+    printf("Delay Complete\n");
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
         printf("Already flooded\n");
