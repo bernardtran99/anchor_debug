@@ -127,7 +127,8 @@ void flood(ndn_interest_t interest) {
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
         printf("Forwarding Interest (Non-Anchor)\n");
-        printf("%s\n", &router->pit->capacity);
+        printf("Here\n");
+        //printf("%s\n", &router->pit->capacity);
         for(int i = 0; i < router->pit->capacity; i++) {
             //printf("looking at interfaces in pit");
             ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
@@ -288,14 +289,12 @@ void *start_delay(void *arguments) {
     struct delay_struct *args = arguments;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
+    printf("Delay Time: %d seconds\n", clock()/1000000);
     while (clock() < start_time + delay) {
-        if((clock() % 1000000) == 0) {
-            printf("Clock Time: %d\n", clock()/1000000);
-        }
     }
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
-        
+        printf("Already flooded\n")
     }
     else {
         flood(args->interest);
