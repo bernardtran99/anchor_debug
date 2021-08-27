@@ -294,7 +294,7 @@ void *start_delay(void *arguments) {
     }
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
-        printf("Already flooded\n")
+        printf("Already flooded\n");
     }
     else {
         flood(args->interest);
