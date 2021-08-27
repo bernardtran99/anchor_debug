@@ -297,6 +297,22 @@ void *start_delay(void *arguments) {
     }
 }
 
+char *trimwhitespace(char *str) {
+    char *end;
+
+    while(isspace((unsigned char)*str)) str++;
+
+    if(*str == 0)
+    return str;
+
+    end = str + strlen(str) - 1;
+    while(end > str && isspace((unsigned char)*end)) end--;
+
+    end[1] = '\0';
+
+    return str;
+}
+
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
@@ -304,6 +320,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     char *prefix = &interest_pkt.name.components[0].value[0];
+    prefix = trimwhitespace(prefix);
     char prefix_convert[10];
     int j = sprintf(prefix_convert, "%s", prefix);
     char *prefix_check = "ancmt";
