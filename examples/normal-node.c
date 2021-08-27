@@ -289,8 +289,8 @@ void *start_delay(void *arguments) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {
-        if((clock() % 1000) == 0) {
-            printf("Clock Time: %d\n", clock()/1000);
+        if((clock() % 1000000) == 0) {
+            printf("Clock Time: %d\n", clock()/1000000);
         }
     }
     //then when finished, flood
