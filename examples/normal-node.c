@@ -64,7 +64,7 @@ uint8_t *selector_ptr = selector;
 bool stored_selectors[10];
 
 bool delay_start[10];
-int delay = 60000;
+int delay = 6000000;
 int max_interfaces = 8;
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
@@ -133,6 +133,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
+            printf("Here\n")
             ndn_fib_unregister_face(router->fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
@@ -286,9 +287,12 @@ void *start_delay(void *arguments) {
     struct delay_struct *args = arguments;
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
-    while (clock() < start_time + delay) {}
+    while (clock() < start_time + delay) {
+        printf("Clock Time: %d\n", clock());
+    }
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
+        
     }
     else {
         flood(args->interest);
