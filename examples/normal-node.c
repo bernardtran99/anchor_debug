@@ -133,7 +133,7 @@ void flood(ndn_interest_t interest) {
             nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
             ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
             //TODO: Segmentation Fault Here
-            printf("Here\n")
+            printf("Here\n");
             ndn_fib_unregister_face(router->fib, temp_fib_id);
         }
         //router->fib = layer1_fib;
