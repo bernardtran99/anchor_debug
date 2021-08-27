@@ -306,12 +306,12 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix = &interest_pkt.name.components[0].value[0];
     char prefix_convert[10];
     int j = sprintf(prefix_convert, "%s", prefix);
-    char *prefix_check;
-    prefix_check = "ancmt";
+    char *prefix_check = "ancmt";
     printf("PREFIX: %s\n", prefix);
-    printf("PREFIX CONVERT: %s\n", prefix_convert);
-    printf("PREFIX CONVERT(int): %d\n", prefix_convert);
+    printf("PREFIX_CONVERT: %s\n", prefix_convert);
+    printf("PREFIX_CHECK: %s\n", prefix_check);
     printf("PREFIX(int): %d\n", prefix);
+    printf("PREFIX CONVERT(int): %d\n", prefix_convert);
     printf("PREFIX_CHECK(int): %d\n", prefix_check);
     
 
