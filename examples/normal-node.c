@@ -288,7 +288,9 @@ void *start_delay(void *arguments) {
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     while (clock() < start_time + delay) {
-        printf("Clock Time: %d\n", clock());
+        if((clock() % 1000) == 0) {
+            printf("Clock Time: %d\n", clock()/1000);
+        }
     }
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
