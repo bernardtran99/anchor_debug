@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -299,6 +300,8 @@ void *start_delay(void *arguments) {
 
 char *trimwhitespace(char *str) {
     char *end;
+
+    while(isspace((unsigned char)*str)) str++;
 
     if(*str == 0)
     return str;
