@@ -493,7 +493,7 @@ int main(int argc, char *argv[]) {
 
     // in_port_t port1, port2;
     // in_addr_t server_ip;
-    // ndn_name_t name_prefix;
+    ndn_name_t name_prefix;
     // ndn_udp_face_t *face;
     // char *sz_port1, *sz_port2, *sz_addr;
     // uint32_t ul_port;
@@ -549,7 +549,7 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
-    ndn_face_destroy(&face->intf);
+    //ndn_face_destroy(&face->intf);
 }
 
 //test main method
