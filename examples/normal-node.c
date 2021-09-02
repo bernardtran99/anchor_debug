@@ -41,6 +41,7 @@ struct delay_struct {
 
 //intitialize pit and fib for layer 1
 ndn_pit_t *layer1_pit;
+ndn_fib_t *router_fib;
 ndn_fib_t *layer1_fib;
 ndn_forwarder_t *router;
 //char ip_address = "192.168.1.10";
@@ -197,9 +198,9 @@ void send_ancmt() {
     ndn_name_t *self_identity_ptr = storage->self_identity;
     //FIXED TODO: segmentation fault here
     ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
-    encoder_init(&encoder, interest_buf, 4096);
-    //FIXED TODO: Segmentation Fault Here
-    ndn_interest_tlv_encode(&encoder, &ancmt);
+    // encoder_init(&encoder, interest_buf, 4096);
+    // //FIXED TODO: Segmentation Fault Here
+    // ndn_interest_tlv_encode(&encoder, &ancmt);
 
     //uncomment here to test flood
     flood(ancmt);
@@ -211,9 +212,9 @@ void send_ancmt() {
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
-void populate_fib() {
+void populate_outgoing_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
-    printf("\nFIB populated\n");
+    printf("\nOutgoing FIB populated\n");
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
@@ -256,9 +257,66 @@ void populate_fib() {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+    router = ndn_forwarder_get();
+    router_fib = router.fib;
 }
 
-bool verify_packet(ndn_interest_t *interest) {
+void populate_incoming_fib() {
+    printf("\nIncoming FIB populated\n");
+    char *ancmt_string = "/ancmt/1";
+
+    ndn_name_t name_prefix;
+    ndn_udp_face_t *face;
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    // sz_port1 = "5000";
+    // sz_addr = "rpi1-btran";
+    // sz_port2 = "3000";
+    // host_addr = gethostbyname(sz_addr);
+    // paddrs = (struct in_addr **)host_addr->h_addr_list;
+    // server_ip = paddrs[0]->s_addr;
+    // ul_port = strtoul(sz_port1, NULL, 10);
+    // port1 = htons((uint16_t) ul_port);
+    // ul_port = strtoul(sz_port2, NULL, 10);
+    // port2 = htons((uint16_t) ul_port);
+    // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    // sz_port1 = "5000";
+    // sz_addr = "rpi2-btran";
+    // sz_port2 = "3000";
+    // host_addr = gethostbyname(sz_addr);
+    // paddrs = (struct in_addr **)host_addr->h_addr_list;
+    // server_ip = paddrs[0]->s_addr;
+    // ul_port = strtoul(sz_port1, NULL, 10);
+    // port1 = htons((uint16_t) ul_port);
+    // ul_port = strtoul(sz_port2, NULL, 10);
+    // port2 = htons((uint16_t) ul_port);
+    // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    sz_port1 = "5000";
+    sz_addr = "rpi3-btran";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
+    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+}
+
+bool verify_interest(ndn_interest_t *interest) {
     printf("\nVerifying Packet\n");
     //check signature is correct from the public key is valid for all normal nodes
     //check if timestamp is before the current time
@@ -367,7 +425,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //printf("%s\n", prefix);
 
     //make sure to uncomment verify 
-    // if(verify_packet(&interest_pkt) == false) {
+    // if(verify_interest(&interest_pkt) == false) {
     //     printf("Packet Wrong Format!");
     //     return NDN_UNSUPPORTED_FORMAT;
     // }
@@ -489,36 +547,12 @@ int main(int argc, char *argv[]) {
     ndn_lite_startup();
     //ndn_interest_t interest;
     //pthread_t layer1;
-    char *ancmt_string = "/ancmt/1";
+    //char *ancmt_string = "/ancmt/1";
 
-    // in_port_t port1, port2;
-    // in_addr_t server_ip;
-    ndn_name_t name_prefix;
-    // ndn_udp_face_t *face;
-    // char *sz_port1, *sz_port2, *sz_addr;
-    // uint32_t ul_port;
-    // struct hostent * host_addr;
-    // struct in_addr ** paddrs;
-
-    // sz_port1 = "5000";
-    // sz_addr = "rpi3-btran";
-    // sz_port2 = "3000";
-
-    // host_addr = gethostbyname(sz_addr);
-    // paddrs = (struct in_addr **)host_addr->h_addr_list;
-    // server_ip = paddrs[0]->s_addr;
-    // ul_port = strtoul(sz_port1, NULL, 10);
-    // port1 = htons((uint16_t) ul_port);
-    // ul_port = strtoul(sz_port2, NULL, 10);
-    // port2 = htons((uint16_t) ul_port);
-
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
-    //face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    //populate_fib();
+    populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
 
     //signature init
@@ -526,7 +560,6 @@ int main(int argc, char *argv[]) {
     //is_anchor = true;
     running = true;
     while (running) {
-        //printf("nope");
         //uncomment here to test send anct
         if(is_anchor && !ancmt_sent) {
             //printf("send anct called\n");
