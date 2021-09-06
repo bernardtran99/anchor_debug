@@ -3,7 +3,8 @@
 #include <stdlib.h> 
 #include <errno.h> 
 #include <unistd.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h> //linux only
+//#include <Winsock2.h> //windows only
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <netinet/in.h> 
