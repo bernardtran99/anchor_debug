@@ -10,6 +10,8 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -27,6 +29,8 @@
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
 #include "ndn-lite/util/uniform-time.h"
+
+#define PORT 8888
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -93,6 +97,38 @@ uint8_t secp256r1_pub_key_str[64] = {
 0x6E, 0xBE, 0x0F, 0xD2, 0xA2, 0x05, 0x0F, 0x00, 0xAC, 0x6F, 0x5D, 0x4B, 0x29, 0x77, 0x2D, 0x54,
 0x32, 0x27, 0xDC, 0x05, 0x77, 0xA7, 0xDC, 0xE0, 0xA2, 0x69, 0xC8, 0x8B, 0x4C, 0xBF, 0x25, 0xF2
 };
+
+void send_debug_message() {
+    int sock = 0, valread;
+    struct sockaddr_in serv_addr;
+    char *hello = "Hello from client";
+    char buffer[1024] = {0};
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+   
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+       
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if(inet_pton(AF_INET, "192.168.1.7", &serv_addr.sin_addr)<=0) 
+    {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+   
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+    send(sock , hello , strlen(hello) , 0 );
+    //printf("Hello message sent\n");
+    valread = read( sock , buffer, 1024);
+    printf("%s\n",buffer);
+}
 
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
@@ -531,18 +567,15 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("It says: %s\n", data_pkt.content_value);
 }
 
-//debug pit
-void debug_ndn() {
-    //get pit data
-    //send to http website
-    //whenever any new pit entries come in send to http
-    ndn_pit_t debug_pit;
-    ndn_fib_t debug_fib;
-}
 */
+
+
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
+
+    send_debug_message();
+    
     ndn_lite_startup();
     //ndn_interest_t interest;
     //pthread_t layer1;
@@ -581,6 +614,8 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
+
+    close(sockfd);
     //ndn_face_destroy(&face->intf);
 }
 
