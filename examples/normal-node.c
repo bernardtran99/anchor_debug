@@ -99,7 +99,7 @@ uint8_t secp256r1_pub_key_str[64] = {
 0x32, 0x27, 0xDC, 0x05, 0x77, 0xA7, 0xDC, 0xE0, 0xA2, 0x69, 0xC8, 0x8B, 0x4C, 0xBF, 0x25, 0xF2
 };
 
-void send_debug_message() {
+int send_debug_message() {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
     char *hello = "Hello from client";
@@ -129,6 +129,7 @@ void send_debug_message() {
     //printf("Hello message sent\n");
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer);
+    return 0;
 }
 
 //may have to use interest as a pointer
@@ -615,8 +616,6 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
-
-    close(sockfd);
     //ndn_face_destroy(&face->intf);
 }
 
