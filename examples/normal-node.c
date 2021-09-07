@@ -99,10 +99,10 @@ uint8_t secp256r1_pub_key_str[64] = {
 0x32, 0x27, 0xDC, 0x05, 0x77, 0xA7, 0xDC, 0xE0, 0xA2, 0x69, 0xC8, 0x8B, 0x4C, 0xBF, 0x25, 0xF2
 };
 
-int send_debug_message() {
+int send_debug_message(char *input) {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
-    char *hello = "Hello from client";
+    char *hello = input;
     char buffer[1024] = {0};
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -187,6 +187,7 @@ void flood(ndn_interest_t interest) {
     }
 
     printf("Flooded Interest!\n");
+    send_debug_message("Flooded Interest");
 }
 
 
@@ -244,6 +245,7 @@ void send_ancmt() {
     flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
+    send_debug_message("Announcment Sent");
 }
 
 bool verify_interest(ndn_interest_t *interest) {
@@ -260,17 +262,18 @@ bool verify_interest(ndn_interest_t *interest) {
     else if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
+    send_debug_message("Interest Verified");
     return true;
 }
 
 //ruiran
 void reply_ancmt() {
-
+    send_debug_message("Announcent Reply Sent");
 }
 
 //ruiran 
 void insert_pit(ndn_interest_t interest) {
-
+    send_debug_message("Packet Inserted Into PIT");
 }
 
 void *start_delay(void *arguments) {
@@ -410,6 +413,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     }
 
     last_interest = current_time;
+    send_debug_message("On Interest");
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -576,7 +580,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
 
-    send_debug_message();
+    send_debug_message("Node Start");
     
     ndn_lite_startup();
     //ndn_interest_t interest;
