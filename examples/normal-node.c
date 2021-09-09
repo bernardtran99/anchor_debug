@@ -525,7 +525,7 @@ void populate_incoming_fib() {
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
-/*
+
 //
 void reply_interest(ndn_data_t *data, int layer_num) {
 
@@ -553,7 +553,7 @@ void generate_data() {
     ndn_data_tlv_encode_ecdsa_sign(&encoder, &data_pkt, &name_prefix, &ecc_secp256r1_prv_key);
     ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 }
-
+/*
 void verify_data(ndn_data_t *data) {
     ndn_data_tlv_decode_ecdsa_verify(ndn_data_t* data, const uint8_t* block_value, uint32_t block_size, const ndn_ecc_pub_t* pub_key);
 }
