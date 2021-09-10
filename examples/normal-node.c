@@ -99,33 +99,16 @@ uint8_t secp256r1_pub_key_str[64] = {
 0x32, 0x27, 0xDC, 0x05, 0x77, 0xA7, 0xDC, 0xE0, 0xA2, 0x69, 0xC8, 0x8B, 0x4C, 0xBF, 0x25, 0xF2
 };
 
+//socket variables
+int sock = 0, valread;
+struct sockaddr_in serv_addr;
+char *debug_message;
+char buffer[1024] = {0};
+
+
 int send_debug_message(char *input) {
-    int sock = 0, valread;
-    struct sockaddr_in serv_addr;
-    char *hello = input;
-    char buffer[1024] = {0};
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
-   
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-       
-    // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "192.168.1.10", &serv_addr.sin_addr)<=0) 
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-   
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-    send(sock , hello , strlen(hello) , 0 );
+    debug_message = input;
+    send(sock , debug_message, strlen(debug_message) , 0 );
     //printf("Hello message sent\n");
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer);
@@ -579,6 +562,28 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
+
+    //socket connection
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+   
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    if(inet_pton(AF_INET, "192.168.1.10", &serv_addr.sin_addr)<=0) 
+    {
+        printf("\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+   
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
 
     send_debug_message("Node Start");
     
