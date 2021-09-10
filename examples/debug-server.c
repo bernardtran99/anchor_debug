@@ -23,7 +23,7 @@ int main(int argc , char *argv[])
          
     char buffer[1025];  //data buffer of 1K 
          
-    //set of socket descriptors 
+    //set of socket descriptors
     fd_set readfds;  
          
     //a message 
