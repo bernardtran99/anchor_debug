@@ -103,7 +103,7 @@ uint8_t secp256r1_pub_key_str[64] = {
 int sock = 0, valread;
 struct sockaddr_in serv_addr;
 char *debug_message;
-char buffer[1024] = {0}; 
+char buffer[1024] = {0};
 
 
 int send_debug_message(char *input) {
