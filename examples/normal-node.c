@@ -509,7 +509,7 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
-//
+/*
 void reply_interest(ndn_data_t *data, int layer_num) {
 
 }
