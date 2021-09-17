@@ -24,7 +24,7 @@ struct Node{
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
-    printf("%s\n", traverse->firstChild);
+    printf("%d\n", traverse->firstChild);
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
