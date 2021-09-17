@@ -63,7 +63,7 @@ void printTree(struct Node *input) {
 */
 
 struct Node *addNode(char *input) {
-    struct Node *node = (struct Node *)malloc(100);
+    struct Node *node = (struct Node *)malloc(sizeof(stuct Node));
     node->data = input;
     //printf("%s\n", node->data);
     node->firstChild = NULL;
@@ -73,7 +73,7 @@ struct Node *addNode(char *input) {
 //https://stackoverflow.com/questions/32048392/segmentation-fault-after-returning-a-pointer-to-a-struct
 
 void testTree() {
-    struct Node *root = (struct Node *)malloc(100);
+    struct Node *root = (struct Node *)malloc(sizeof(struct Node));
     root = addNode("root");
     //printf("%s\n", root->data);
     root->firstChild = addNode("192.168.1.10");
