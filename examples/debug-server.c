@@ -34,7 +34,7 @@ void printTree(struct Node *input) {
     {
         printf("%s", traverse->data);
         if(traverse->firstChild != NULL) {
-            printf("|\n|\n");
+            printf("\n|\n|\n");
             traverse = traverse->firstChild;
         }
         else if(traverse->nextSibling != NULL) {
@@ -42,7 +42,7 @@ void printTree(struct Node *input) {
             traverse = traverse->nextSibling;
         }
     }
-    printf("Done.\n");
+    printf("\nDone.\n");
 }
 
 struct Node *addNode(char *input) {
@@ -58,9 +58,9 @@ struct Node *addNode(char *input) {
 void testTree() {
     struct Node *root = (struct Node *)malloc(100);
     root = addNode("root");
-    printf("%s\n", root->data);
+    //printf("%s\n", root->data);
     root->firstChild = addNode("192.168.1.10");
-    printf("%s\n", root->firstChild->data);
+    //printf("%s\n", root->firstChild->data);
     root->firstChild->firstChild = addNode("192.168.1.11");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.12");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.13");
