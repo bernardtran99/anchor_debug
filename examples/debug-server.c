@@ -58,8 +58,9 @@ void testTree() {
     root->firstChild->firstChild = addNode("192.168.1.2");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
-    printf("here\n");
+    //debug print tree
     printTree(root);
+    printf("here\n");
 }
 
 int main(int argc , char *argv[])  
