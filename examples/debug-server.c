@@ -24,10 +24,10 @@ struct Node{
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
-    printf("here\n");
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
+    printf("here\n");
     traverse = traverse->firstChild;
     while(traverse->nextSibling != NULL && traverse->firstChild != NULL)
     {
