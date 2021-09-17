@@ -52,10 +52,10 @@ struct Node *addNode(char *input) {
 void testTree() {
     struct Node *root;
     char *string = "root";
-    printf("here\n");
     root->data = string;
     printf("here\n");
     root->firstChild = addNode("192.168.1.1");
+    printf("here\n");
     root->firstChild->firstChild = addNode("192.168.1.2");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
