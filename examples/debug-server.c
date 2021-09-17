@@ -48,6 +48,7 @@ void printTree(struct Node *input) {
 struct Node *addNode(char *input) {
     struct Node *node;
     node->data = input;
+    printf("%s\n", node->data);
     // node->firstChild = NULL;
     // node->nextSibling = NULL;
     return node;
