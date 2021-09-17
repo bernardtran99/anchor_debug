@@ -21,23 +21,23 @@ struct Node{
     struct Node *nextSibling;
 }
 
-void printTree(struct Node input) {
-    struct Node traverse; //root
+void printTree(struct Node *input) {
+    struct Node *traverse; //root
     traverse = input;
-    if(traverse.firstChild == NULL) {
+    if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
-    traverse = traverse.firstChild;
-    while(traverse.nextSibling != NULL && traverse.firstChild != NULL)
+    traverse = traverse->firstChild;
+    while(traverse->nextSibling != NULL && traverse->firstChild != NULL)
     {
-        printf("%d", traverse.data);
-        if(traverse.firstChild != NULL) {
+        printf("%d", traverse->data);
+        if(traverse->firstChild != NULL) {
             printf("|\n|\n");
-            traverse = traverse.firstChild;
+            traverse = traverse->firstChild;
         }
-        else if(traverse.nextSibling != NULL) {
+        else if(traverse->nextSibling != NULL) {
             printf("---");
-            traverse = traverse.nextSibling;
+            traverse = traverse->nextSibling;
         }
     }
     printf("Done.")
@@ -45,16 +45,16 @@ void printTree(struct Node input) {
 
 struct Node *addNode(char *input) {
     struct Node node;
-    node.data = input;
+    node->data = input;
     return node
 }
 
 void testTree() {
-    struct Node root;
-    root.firstChild = addNode("192.168.1.1");
-    root.firstChild->firstChild = addNode("192.168.1.2");
-    root.firstChild->firstChild->nextSibling = addNode("192.168.1.3");
-    root.firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
+    struct Node *root;
+    root->firstChild = addNode("192.168.1.1");
+    root->firstChild->firstChild = addNode("192.168.1.2");
+    root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
+    root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
     printTree(root);
 }
 
