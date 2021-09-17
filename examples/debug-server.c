@@ -48,15 +48,12 @@ void printTree(struct Node *input) {
 struct Node *addNode(char *input) {
     struct Node *node;
     node->data = input;
-    node->firstChild = NULL;
-    node->nextSibling = NULL;
     return node;
 }
 
 void testTree() {
     struct Node *root;
     root = addNode("root");
-    root->data = "root";
     printf("start\n");
     printf("%s\n", root->data);
     root->firstChild = addNode("192.168.1.1");
