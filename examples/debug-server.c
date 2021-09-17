@@ -30,7 +30,6 @@ void printTree(struct Node *input) {
     printTree(traverse->nextSibling);
     printTree(traverse->firstChild);
     printf("%s ", traverse->data);
-    free(traverse);
 }
 
 /*
