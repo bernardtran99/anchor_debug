@@ -40,13 +40,13 @@ void printTree(struct Node *input) {
             traverse = traverse->nextSibling;
         }
     }
-    printf("Done.")
+    printf("Done.");
 }
 
 struct Node *addNode(char *input) {
-    struct Node node;
+    struct Node *node;
     node->data = input;
-    return node
+    return node;
 }
 
 void testTree() {
