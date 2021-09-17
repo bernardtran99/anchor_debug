@@ -53,6 +53,7 @@ void testTree() {
     struct Node *root;
     printf("here\n");
     root->data = "root";
+    printf("here\n");
     root->firstChild = addNode("192.168.1.1");
     root->firstChild->firstChild = addNode("192.168.1.2");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
