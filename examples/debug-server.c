@@ -28,7 +28,7 @@ void printTree(struct Node *input) {
         return;
     }
     printTree(traverse->nextSibling);
-    print("\n");
+    printf("\n");
     printTree(traverse->firstChild);
     printf("%s ", traverse->data);
 }
