@@ -43,6 +43,7 @@ void printTree(struct Node *input) {
         }
     }
     printf("\nDone.\n");
+    free(traverse);
 }
 
 struct Node *addNode(char *input) {
