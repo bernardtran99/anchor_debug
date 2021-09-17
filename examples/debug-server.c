@@ -51,8 +51,9 @@ struct Node *addNode(char *input) {
 
 void testTree() {
     struct Node *root;
+    char *string = "root";
     printf("here\n");
-    root.data = "root";
+    root->data = string;
     printf("here\n");
     root->firstChild = addNode("192.168.1.1");
     root->firstChild->firstChild = addNode("192.168.1.2");
