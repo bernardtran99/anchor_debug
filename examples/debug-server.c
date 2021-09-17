@@ -24,11 +24,11 @@ struct Node{
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
-    printf("%s\n", traverse->data);
+    //printf("%s\n", traverse->data);
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
-    printf("here\n");
+    //printf("here\n");
     traverse = traverse->firstChild;
     while(traverse->nextSibling != NULL && traverse->firstChild != NULL)
     {
@@ -46,11 +46,11 @@ void printTree(struct Node *input) {
 }
 
 struct Node *addNode(char *input) {
-    struct Node *node = malloc(100);
+    struct Node *node = (struct Node *)malloc(100);
     node->data = input;
     //printf("%s\n", node->data);
-    // node->firstChild = NULL;
-    // node->nextSibling = NULL;
+    node->firstChild = NULL;
+    node->nextSibling = NULL;
     return node;
 }
 //https://stackoverflow.com/questions/32048392/segmentation-fault-after-returning-a-pointer-to-a-struct
@@ -64,7 +64,7 @@ void testTree() {
     root->firstChild->firstChild = addNode("192.168.1.11");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.12");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.13");
-    printf("TestTree Good\n");
+    //printf("TestTree Good\n");
     //debug print tree
     printTree(root);
     free(root);
