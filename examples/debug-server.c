@@ -24,6 +24,7 @@ struct Node{
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
+    printf("here\n");
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
@@ -53,14 +54,12 @@ void testTree() {
     struct Node *root;
     char *string = "root";
     root->data = string;
-    printf("here\n");
     root->firstChild = addNode("192.168.1.1");
     root->firstChild->firstChild = addNode("192.168.1.2");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
     //debug print tree
     printTree(root);
-    printf("here\n");
 }
 
 int main(int argc , char *argv[])  
