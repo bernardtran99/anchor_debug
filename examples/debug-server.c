@@ -3,7 +3,7 @@
 #include <stdlib.h> 
 #include <errno.h> 
 #include <unistd.h>
-#include <graphics.h>
+//#include <graphics.h>
 #include <arpa/inet.h> //linux only
 //#include <Winsock2.h> //windows only
 #include <sys/types.h> 
