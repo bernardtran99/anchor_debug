@@ -18,27 +18,25 @@
 struct Node{
     char *data;
     struct Node *firstChild;
-    firstChild = NULL;
     struct Node *nextSibling;
-    nextSibling = NULL;
 };
 
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
-    if(traverse->firstChild == NULL) {
+    if(traverse->firstChild->data == NULL) {
         printf("No Anchor Detected");
     }
     printf("here\n");
     traverse = traverse->firstChild;
-    while(traverse->nextSibling != NULL && traverse->firstChild != NULL)
+    while(traverse->nextSibling->data != NULL && traverse->firstChild->data != NULL)
     {
         printf("%d", traverse->data);
-        if(traverse->firstChild != NULL) {
+        if(traverse->firstChild->data != NULL) {
             printf("|\n|\n");
             traverse = traverse->firstChild;
         }
-        else if(traverse->nextSibling != NULL) {
+        else if(traverse->nextSibling->data != NULL) {
             printf("---");
             traverse = traverse->nextSibling;
         }
