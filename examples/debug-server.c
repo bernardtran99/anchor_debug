@@ -17,8 +17,8 @@
 
 struct Node{
     char *data;
-    struct Node *firstChild;
-    struct Node *nextSibling;
+    struct Node *firstChild = NULL;
+    struct Node *nextSibling = NULL;
 };
 
 void printTree(struct Node *input) {
