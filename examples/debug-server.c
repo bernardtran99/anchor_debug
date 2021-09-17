@@ -63,7 +63,7 @@ void printTree(struct Node *input) {
 */
 
 struct Node *addNode(char *input) {
-    struct Node *node = (struct Node *)malloc(sizeof(stuct Node));
+    struct Node *node = (struct Node *)malloc(sizeof(struct Node));
     node->data = input;
     //printf("%s\n", node->data);
     node->firstChild = NULL;
