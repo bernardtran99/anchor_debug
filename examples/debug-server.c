@@ -61,7 +61,7 @@ void testTree() {
 
 int main(int argc , char *argv[])  
 {
-    testTree;
+    testTree();
     /*
     struct Node root;
     int opt = TRUE;  
