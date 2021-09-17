@@ -33,15 +33,17 @@ void printTree(struct Node *input) {
     while(traverse->nextSibling != NULL || traverse->firstChild != NULL)
     {
         printf("%s", traverse->data);
-        if(traverse != NULL) {
+        if(traverse->firstChild != NULL) {
             printf("\n|\n|\n");
             traverse = traverse->firstChild;
         }
-        else if(traverse != NULL) {
+        else if(traverse->nextSibling != NULL) {
             printf("---");
             traverse = traverse->nextSibling;
         }
     }
+    //final print
+    printf("%s", traverse->data);
     printf("\nDone.\n");
     free(traverse);
 }
