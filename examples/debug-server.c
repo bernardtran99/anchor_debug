@@ -25,13 +25,12 @@ void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
     //printf("%s\n", traverse->data);
-    printf("%d\n",traverse->firstChild);
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
     }
     //printf("here\n");
     traverse = traverse->firstChild;
-    while(traverse->nextSibling != NULL && traverse->firstChild != NULL)
+    while(traverse->nextSibling != NULL || traverse->firstChild != NULL)
     {
         printf("%s", traverse->data);
         if(traverse->firstChild != NULL) {
