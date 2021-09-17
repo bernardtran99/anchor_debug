@@ -3,6 +3,7 @@
 #include <stdlib.h> 
 #include <errno.h> 
 #include <unistd.h>
+#include <graphics.h>
 #include <arpa/inet.h> //linux only
 //#include <Winsock2.h> //windows only
 #include <sys/types.h> 
@@ -12,10 +13,54 @@
      
 #define TRUE   1 
 #define FALSE  0 
-#define PORT 8888 
-     
+#define PORT 8888
+
+struct Node{
+    char *data;
+    struct Node *firstChild;
+    struct Node *nextSibling;
+}
+
+void printTree(struct Node input) {
+    struct Node traverse; //root
+    traverse = input;
+    if(traverse.firstChild == NULL) {
+        printf("No Anchor Detected");
+    }
+    traverse = traverse.firstChild;
+    while(traverse.nextSibling != NULL && traverse.firstChild != NULL)
+    {
+        printf("%d", traverse.data);
+        if(traverse.firstChild != NULL) {
+            printf("|\n|\n");
+            traverse = traverse.firstChild;
+        }
+        else if(traverse.nextSibling != NULL) {
+            printf("---");
+            traverse = traverse.nextSibling;
+        }
+    }
+    printf("Done.")
+}
+
+struct Node *addNode(char *input) {
+    struct Node node;
+    node.data = input;
+    return node
+}
+
+void testTree() {
+    struct Node root;
+    root.firstChild = addNode("192.168.1.1");
+    root.firstChild->firstChild = addNode("192.168.1.2");
+    root.firstChild->firstChild->nextSibling = addNode("192.168.1.3");
+    root.firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.4");
+    printTree(root);
+}
+
 int main(int argc , char *argv[])  
-{  
+{
+    struct Node root;
     int opt = TRUE;  
     int master_socket , addrlen , new_socket , client_socket[30] , max_clients = 30 , activity, i , valread , sd;  
     int max_sd;  
@@ -120,7 +165,8 @@ int main(int argc , char *argv[])
             }  
              
             //inform user of socket number - used in send and receive commands 
-            printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));  
+            printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+              
            
             //send new connection greeting message 
             if( send(new_socket, message, strlen(message), 0) != strlen(message) )  
@@ -170,13 +216,37 @@ int main(int argc , char *argv[])
                 else 
                 {  
                     //set the string terminating NULL byte on the end 
-                    //of the data read 
+                    //of the data read
+
+                    //here add recording information about incoming message that is not a new connection
+                    //so what type: ancmt send/ancmt receive/
+                    getpeername(sd , (struct sockaddr*)&address , \
+                        (socklen_t*)&addrlen);
+                    char *temp = inet_ntoa(address.sin_addr);
+                    struct Node *tempNode;
+                    tempNode.data = temp;
+                    if(buffer[valread] == "Is Anchor") {
+                        root.firstChild = tempNode;
+                    }
+                    else if(buffer[valread] == "Announcment Sent") {
+
+                    }
+                    else if(buffer[valread] == "On Interest") {
+                        if(root.firstChild->firstChild == NULL) {
+                            root.firstChild->firstChild = tempNode;
+                        }
+                        else{
+                            //most recent addition is the first child of anchor, so oldest is at end of traverse;
+                            tempNode->nextSibling = root.firstChild->firstChild->nextSibling;
+                            root.firstChild->firstChild = tempNode;
+                        }
+                    }
                     buffer[valread] = '\0';  
                     send(sd , buffer , strlen(buffer) , 0 );  
                 }  
             }  
         }  
-    }  
+    }
          
     return 0;  
 }
