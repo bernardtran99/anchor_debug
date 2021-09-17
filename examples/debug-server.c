@@ -19,7 +19,7 @@ struct Node{
     char *data;
     struct Node *firstChild;
     struct Node *nextSibling;
-}
+};
 
 void printTree(struct Node *input) {
     struct Node *traverse; //root
