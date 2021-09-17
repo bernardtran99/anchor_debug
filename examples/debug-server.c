@@ -21,6 +21,7 @@ struct Node{
     struct Node *nextSibling;
 };
 
+/*
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
@@ -28,12 +29,21 @@ void printTree(struct Node *input) {
         return;
     }
     printTree(traverse->nextSibling);
-    printf("\n"); 
+    printf("\n");
     printTree(traverse->firstChild);
     printf("%s ", traverse->data);
 }
 
-/*
+void printNextSibling(struct Node *input) {
+
+}
+
+void printFirstChild(struct Node *input) {
+
+}
+*/
+
+
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
@@ -60,7 +70,7 @@ void printTree(struct Node *input) {
     printf("\nDone.\n");
     free(traverse);
 }
-*/
+
 
 struct Node *addNode(char *input) {
     struct Node *node = (struct Node *)malloc(sizeof(struct Node));
@@ -81,6 +91,8 @@ void testTree() {
     root->firstChild->firstChild = addNode("192.168.1.11");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.12");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.13");
+    root->root->firstChild->firstChild->nextSibling->nextSibling->firstChild = addNode("192.168.1.14");
+    root->root->firstChild->firstChild->nextSibling->nextSibling->firstChild->nextSibling = addNode("192.168.1.15");
     //printf("TestTree Good\n");
     //debug print tree
     printTree(root);
