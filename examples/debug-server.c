@@ -17,7 +17,7 @@
 
 struct Node{
     char *data;
-    struct Node *firstChild;x
+    struct Node *firstChild;
     struct Node *nextSibling;
 };
 
@@ -47,13 +47,15 @@ void printTree(struct Node *input) {
 struct Node *addNode(char *input) {
     struct Node *node;
     node->data = input;
+    node->firstChild = NULL;
+    node->nextSibling = NULL;
     return node;
 }
 
 void testTree() {
     struct Node *root;
-    char *string = "root";
-    root->data = string;
+    root = addNode("root");
+    printf("here\n");
     root->firstChild = addNode("192.168.1.1");
     root->firstChild->firstChild = addNode("192.168.1.2");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.3");
