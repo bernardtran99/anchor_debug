@@ -91,8 +91,8 @@ void testTree() {
     root->firstChild->firstChild = addNode("192.168.1.11");
     root->firstChild->firstChild->nextSibling = addNode("192.168.1.12");
     root->firstChild->firstChild->nextSibling->nextSibling = addNode("192.168.1.13");
-    root->root->firstChild->firstChild->nextSibling->nextSibling->firstChild = addNode("192.168.1.14");
-    root->root->firstChild->firstChild->nextSibling->nextSibling->firstChild->nextSibling = addNode("192.168.1.15");
+    root->firstChild->firstChild->nextSibling->nextSibling->firstChild = addNode("192.168.1.14");
+    root->firstChild->firstChild->nextSibling->nextSibling->firstChild->nextSibling = addNode("192.168.1.15");
     //printf("TestTree Good\n");
     //debug print tree
     printTree(root);
