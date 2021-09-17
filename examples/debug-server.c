@@ -15,7 +15,7 @@
 #define FALSE  0 
 #define PORT 8888
 
-struct *Node{
+struct Node{
     char *data;
     struct Node *firstChild;
     struct Node *nextSibling;
@@ -47,7 +47,8 @@ void printTree(struct Node *input) {
 
 struct Node *addNode(char *input) {
     struct Node *node;
-    node->data = input;
+    strcpy(node->data, input);
+    //node->data = input;
     node->firstChild = NULL;
     node->nextSibling = NULL;
     return node;
@@ -55,6 +56,7 @@ struct Node *addNode(char *input) {
 
 void testTree() {
     struct Node *root;
+    printf("start\n");
     root = addNode("root");
     printf("%s\n", root->data);
     root->firstChild = addNode("192.168.1.1");
