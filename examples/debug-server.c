@@ -24,6 +24,19 @@ struct Node{
 void printTree(struct Node *input) {
     struct Node *traverse; //root
     traverse = input;
+    if(input == NULL) {
+        return;
+    }
+    printTree(traverse->nextSibling);
+    printTree(traverse->firstChild);
+    printf("%s ", traverse->data);
+    free(traverse);
+}
+
+/*
+void printTree(struct Node *input) {
+    struct Node *traverse; //root
+    traverse = input;
     //printf("%s\n", traverse->data);
     if(traverse->firstChild == NULL) {
         printf("No Anchor Detected");
@@ -47,6 +60,7 @@ void printTree(struct Node *input) {
     printf("\nDone.\n");
     free(traverse);
 }
+*/
 
 struct Node *addNode(char *input) {
     struct Node *node = (struct Node *)malloc(100);
