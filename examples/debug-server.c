@@ -104,6 +104,7 @@ int main(int argc , char *argv[])
     testTree();
     /*
     struct Node root;
+    root = addNode("root");
     int opt = TRUE;  
     int master_socket , addrlen , new_socket , client_socket[30] , max_clients = 30 , activity, i , valread , sd;  
     int max_sd;  
@@ -290,6 +291,7 @@ int main(int argc , char *argv[])
             }  
         }  
     }
+    free(root);
     */
          
     return 0;  
