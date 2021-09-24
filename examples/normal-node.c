@@ -494,7 +494,7 @@ void populate_incoming_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     sz_port1 = "5000";
-    sz_addr = "rpi3-btran";
+    sz_addr = "169.254.80.43";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
