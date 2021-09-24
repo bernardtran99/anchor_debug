@@ -31,6 +31,12 @@ extern "C" {
  * PIT entry.
  */
 typedef struct ndn_pit_entry {
+
+  //TODO: add prefix and timeslice into pit entry
+  //uint8_t prefix_name;
+  //format: /ancmt/layer_num/selector
+  //uint8_t timeslice;
+
   /** Interest Options.
    */
   interest_options_t options;

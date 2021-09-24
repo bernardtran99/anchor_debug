@@ -558,7 +558,104 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
 */
 
+bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
+    printf("\nVerifying Packet\n");
+    //check signature is correct from the public key is valid for all normal nodes
+    //check if timestamp is before the current time
+    int timestamp = data_pkt->signature.timestamp;
+    int current_time = ndn_time_now_ms();
+    //verify time slot
 
+    if((current_time - timestamp) < 0) {
+        return false;
+    }
+
+    else if(ndn_data_tlv_decode_ecdsa_verify(data_pkt, rawdata, data_size, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
+        return false;
+    }
+
+    send_debug_message("Data Verified");
+    return true;
+}
+
+void generate_data() {
+    //add key, timestamp, selector, vector
+    printf("Generate Data");
+    ndn_data_t data;
+    ndn_encoder_t encoder;
+    char *str = "/data/1,2/";
+    char *prefix = "/data/1";
+
+    //printf("%s \n", interest);
+
+    data.name = name_prefix;
+    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+    ndn_metainfo_init(&data.metainfo);
+    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
+}
+
+void reply_interest(ndn_data_t *data_pkt, int layer_num) {
+    
+}
+
+bool check_CS(ndn_data_t *data_pkt) {
+
+}
+
+void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
+    ndn_data_t *data_pkt;
+    ndn_data_t *vector;
+    char *data_content;
+    char *traverse;
+    int layer_num;
+    uint64_t *timestamp;//uint64_t
+    // contentFormat: /data/layerNum/content
+
+    if (ndn_data_tlv_decode_digest_verify(&data_pkt, rawdata, data_size)) {
+        printf("Decoding failed\n");
+    }
+
+    // if(verify_data(&data_pkt, rawdata, data_size) == false) {
+    //     return;
+    // }
+
+    data_content = data_pkt->content_value;//uint8
+    timestamp = data_pkt->signature->timestamp;
+
+    for(traverse = data_content; *traverse != '\0'; traverse++) {
+        if((traverse - '0') == 1 || (traverse - '0') == 2) {
+            layer_num = traverse - '0';
+        }
+    }
+    if(layer_num == 1) {
+        if(only_normal) {
+            reply_interest(data_pkt, 1);
+        }
+        else {
+            reply_interest(data_pkt, 1);
+            data_pkt = attaching_vector();
+            reply_interest(data_pkt, 2);
+        }
+    }
+    if(layer_num == 2) {
+        if(!check_CS(data_pkt)) {
+            printf("Check CS fail\n");
+        }
+        vector = update_vector();
+        if() {
+            send_update_vector();
+        }
+        else {
+            reply_interest(data_pkt, 2);
+        }
+    }
+ 
+    printf("It says: %s\n", data_pkt.content_value);
+    generate_data();
+}
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");

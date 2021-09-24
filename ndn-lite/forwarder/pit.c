@@ -108,6 +108,8 @@ ndn_pit_unregister_face(ndn_pit_t* self, ndn_table_id_t face_id){
   }
 }
 
+//add interest packet input into pit
+
 static ndn_table_id_t
 ndn_pit_add_new_entry(ndn_pit_t* pit , int nametree_id){
   ndn_table_id_t i;
@@ -134,6 +136,9 @@ ndn_pit_find_or_insert(ndn_pit_t* self, uint8_t* name, size_t length){
       return NULL;
     }
   }
+  //changed here
+  //self->slots[entry->pit_id]->prefix_name = name;
+  //entry
   return &self->slots[entry->pit_id];
 }
 
