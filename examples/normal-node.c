@@ -510,54 +510,6 @@ void populate_incoming_fib() {
 }
 
 /*
-void reply_interest(ndn_data_t *data, int layer_num) {
-
-}
-
-//send without ancmt 
-void generate_data() {
-    //check from layer 1 PIT to reply data packet
-    ndn_data_t data_pkt;
-    ndn_encoder_t encoder;
-    ndn_name_t *name_prefix;
-    char *str = "/data/1";
-
-    ndn_name_from_string(&name_prefix, &str, strlen(str));
-    data.name = name_prefix;
-    str = "Layer 1 Data Packet";
-    ndn_time_ms_t timestamp = ndn_time_now_ms();
-    uint8_t *data_content = (uint8_t)str + (uint8_t)timestamp;
-
-    ndn_data_set_content(&data_pkt, (uint8_t*)data_content, sizeof(data_content));
-    ndn_metainfo_init(&data_pkt.metainfo);
-    ndn_metainfo_set_content_type(&data_pkt.metainfo, NDN_CONTENT_TYPE_BLOB);
-
-    encoder_init(&encoder, buf, 4096);
-    ndn_data_tlv_encode_ecdsa_sign(&encoder, &data_pkt, &name_prefix, &ecc_secp256r1_prv_key);
-    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
-}
-/*
-void verify_data(ndn_data_t *data) {
-    ndn_data_tlv_decode_ecdsa_verify(ndn_data_t* data, const uint8_t* block_value, uint32_t block_size, const ndn_ecc_pub_t* pub_key);
-}
-
-void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
-    ndn_data_t *data_pkt;
-
-    if(verify_data(&data_pkt) == false) {
-        return;
-    }
-
-    //printf("On data\n");
-    if (ndn_data_tlv_decode_digest_verify(&data_pkt, rawdata, data_size)) {
-        printf("Decoding failed.\n");
-    }
-
-    printf("It says: %s\n", data_pkt.content_value);
-}
-
-*/
-
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
     printf("\nVerifying Packet\n");
     //check signature is correct from the public key is valid for all normal nodes
@@ -656,6 +608,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("It says: %s\n", data_pkt.content_value);
     generate_data();
 }
+*/
 
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
