@@ -350,6 +350,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
+    prefix = &interest_pkt.name.components[0].value[0];
+    prefix = trimwhitespace(prefix);
 
     // char prefix_convert[10];
     // int j = sprintf(prefix_convert, "%s", prefix);
