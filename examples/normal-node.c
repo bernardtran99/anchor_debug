@@ -14,7 +14,6 @@
 #include <arpa/inet.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
-#include "adaptation/udp-face.h"
 #include "ndn-lite/encode/name.h"
 #include "ndn-lite/encode/data.h"
 #include "ndn-lite/encode/interest.h"
@@ -170,7 +169,7 @@ void flood(ndn_interest_t interest) {
     }
 
     printf("Flooded Interest!\n");
-    send_debug_message("Flooded Interest");
+    //send_debug_message("Flooded Interest");
 }
 
 
@@ -228,7 +227,7 @@ void send_ancmt() {
     flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
-    send_debug_message("Announcment Sent");
+    //send_debug_message("Announcment Sent");
 }
 
 bool verify_interest(ndn_interest_t *interest) {
@@ -245,19 +244,19 @@ bool verify_interest(ndn_interest_t *interest) {
     else if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
-    send_debug_message("Interest Verified");
+    //send_debug_message("Interest Verified");
     return true;
 }
 
 //ruiran
 void reply_ancmt() {
-    send_debug_message("Announcent Reply Sent");
+    //send_debug_message("Announcent Reply Sent");
     //look at find 
 }
 
 //ruiran 
 void insert_pit(ndn_interest_t *interest) {
-    send_debug_message("Packet Inserted Into PIT");
+    //send_debug_message("Packet Inserted Into PIT");
     /*
     router = ndn_forwarder_get();
     layer1_pit = router->pit;
@@ -404,7 +403,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     }
 
     last_interest = current_time;
-    send_debug_message("On Interest");
+    //send_debug_message("On Interest");
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -475,11 +474,8 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
-    /*
     //Node2-Anchor
     sz_port1 = "5000";
     sz_addr = "155.246.215.24";
@@ -534,7 +530,7 @@ void populate_incoming_fib() {
     
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
-    */
+
 }
 
 /*
@@ -645,6 +641,7 @@ void select_anchor() {
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
 
+    /*
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -666,8 +663,8 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-
-    send_debug_message("Node Start");
+    */
+    //send_debug_message("Node Start");
     
     ndn_lite_startup();
     //ndn_interest_t interest;
@@ -685,7 +682,7 @@ int main(int argc, char *argv[]) {
 
     //is_anchor = true;
     if(is_anchor == true) {
-        send_debug_message("Is Anchor");
+        //send_debug_message("Is Anchor");
     }
     running = true;
     while (running) {
