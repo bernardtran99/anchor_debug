@@ -3,4 +3,4 @@
 FILE = "/build/CMakeFiles/normal-node.dir"
 
 BEGIN { print "Test" }
-END { print " - DONE -" }
+exit;
