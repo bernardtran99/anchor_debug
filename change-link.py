@@ -1,5 +1,5 @@
 import fileinput
-file = "/build/CMakeFiles/normal-node.dir/link.txt"
+file = "~/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
 match_string = ".o  "
 insert_string = "-pthread "
 with open(file, 'r+') as fd:
