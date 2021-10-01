@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <netdb.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -10,9 +9,9 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
+#include <netdb.h>
 #include <sys/socket.h>
-#include <arpa/inet.h> //linux only
-//#include <Winsock2.h> //windows only
+#include <arpa/inet.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -118,12 +117,21 @@ int send_debug_message(char *input) {
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
     printf("\nFlooding\n");
+
+    char *prefix = &interest.name.components[0].value[0];
+    printf("Prefix Old: %s\n", prefix);
+
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
-    ndn_name_t *prefix_name = &interest.name;
-    //printf("%s\n", prefix_name);
-    char *prefix = &interest.name.components[0].value[0];
-    printf("Prefix: %s\n", prefix);
+
+    ndn_name_t prefix_name;
+    char *ancmt_string = "/ancmt/1";
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    interest.name = prefix_name;
+
+    prefix = &interest.name.components[0].value[0];
+    printf("Prefix New: %s\n", prefix);
+    
     
     //gets the forwarder intiailized in the main message
     //router_const = ndn_forwarder_get();
@@ -162,6 +170,29 @@ void flood(ndn_interest_t interest) {
         // }
         //router->fib = layer1_fib;
 
+        ndn_udp_face_t *face;
+        
+        //myip, my outgoing port, their incoming ip, their incoming port
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
+
+        //pi1->pi2: 192.168.1.10
+        sz_port1 = "3000";
+        sz_addr = "155.246.202.24";
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
@@ -170,7 +201,7 @@ void flood(ndn_interest_t interest) {
     }
 
     printf("Flooded Interest!\n");
-    send_debug_message("Flooded Interest");
+    //send_debug_message("Flooded Interest");
 }
 
 
@@ -228,7 +259,7 @@ void send_ancmt() {
     flood(ancmt);
     ancmt_sent = true;
     printf("Announcement sent.\n");
-    send_debug_message("Announcment Sent");
+    //send_debug_message("Announcment Sent");
 }
 
 bool verify_interest(ndn_interest_t *interest) {
@@ -245,19 +276,19 @@ bool verify_interest(ndn_interest_t *interest) {
     else if(ndn_signed_interest_ecdsa_verify(interest, ecc_secp256r1_pub_key) != NDN_SUCCESS) {
         return false;
     }
-    send_debug_message("Interest Verified");
+    //send_debug_message("Interest Verified");
     return true;
 }
 
 //ruiran
 void reply_ancmt() {
-    send_debug_message("Announcent Reply Sent");
+    //send_debug_message("Announcent Reply Sent");
     //look at find 
 }
 
 //ruiran 
 void insert_pit(ndn_interest_t *interest) {
-    send_debug_message("Packet Inserted Into PIT");
+    //send_debug_message("Packet Inserted Into PIT");
     /*
     router = ndn_forwarder_get();
     layer1_pit = router->pit;
@@ -404,7 +435,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     }
 
     last_interest = current_time;
-    send_debug_message("On Interest");
+    //send_debug_message("On Interest");
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -423,7 +454,6 @@ void populate_outgoing_fib() {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
     //myip, my outgoing port, their incoming ip, their incoming port
-    
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
@@ -433,7 +463,7 @@ void populate_outgoing_fib() {
 
     //pi1->pi2: 192.168.1.10
     sz_port1 = "3000";
-    sz_addr = "rpi2-btran";
+    sz_addr = "155.246.202.24";
     sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -530,6 +560,7 @@ void populate_incoming_fib() {
     
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+
 }
 
 /*
@@ -640,6 +671,7 @@ void select_anchor() {
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
 
+    /*
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -650,7 +682,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    if(inet_pton(AF_INET, "192.168.1.10", &serv_addr.sin_addr)<=0) 
+    if(inet_pton(AF_INET, "155.246.44.28", &serv_addr.sin_addr)<=0) 
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -661,8 +693,8 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-
-    send_debug_message("Node Start");
+    */
+    //send_debug_message("Node Start");
     
     ndn_lite_startup();
     //ndn_interest_t interest;
@@ -674,12 +706,13 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+    populate_outgoing_fib();
 
     //signature init
 
     //is_anchor = true;
     if(is_anchor == true) {
-        send_debug_message("Is Anchor");
+        //send_debug_message("Is Anchor");
     }
     running = true;
     while (running) {
