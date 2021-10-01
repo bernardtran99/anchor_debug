@@ -458,6 +458,7 @@ void populate_outgoing_fib() {
     //router_fib = router.fib;
 }
 
+/*
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string = "/ancmt/1";
@@ -541,6 +542,7 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
 }
+*/
 
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
