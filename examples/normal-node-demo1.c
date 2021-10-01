@@ -458,7 +458,7 @@ void populate_outgoing_fib() {
     //router_fib = router.fib;
 }
 
-/*
+
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string = "/ancmt/1";
@@ -542,7 +542,7 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
 }
-*/
+
 
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
@@ -685,9 +685,9 @@ int main(int argc, char *argv[]) {
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    //populate_incoming_fib();
+    populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_outgoing_fib();
+    //populate_outgoing_fib();
 
     //signature init
 
