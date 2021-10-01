@@ -413,7 +413,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
-/*
 void populate_outgoing_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
     printf("\nOutgoing FIB populated\n");
@@ -423,7 +422,6 @@ void populate_outgoing_fib() {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
     //myip, my outgoing port, their incoming ip, their incoming port
-    
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
@@ -448,7 +446,7 @@ void populate_outgoing_fib() {
     //router = ndn_forwarder_get();
     //router_fib = router.fib;
 }
-*/
+
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string = "/ancmt/1";
