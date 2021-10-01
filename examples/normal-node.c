@@ -445,21 +445,7 @@ void populate_outgoing_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    //pi2->pi3: 192.168.1.11
-    sz_port1 = "3000";
-    sz_addr = "rpi3-btran";
-    sz_port2 = "5000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-    router = ndn_forwarder_get();
+    //router = ndn_forwarder_get();
     //router_fib = router.fib;
 }
 
@@ -477,8 +463,9 @@ void populate_incoming_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    //Node1-Anchor
     sz_port1 = "5000";
-    sz_addr = "rpi1-btran";
+    sz_addr = "155.246.44.28";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -489,8 +476,9 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
+    //Node2-Anchor
     sz_port1 = "5000";
-    sz_addr = "rpi2-btran";
+    sz_addr = "155.246.215.24";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -501,8 +489,35 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
+    //Node3-Anchor
     sz_port1 = "5000";
-    sz_addr = "rpi3-btran";
+    sz_addr = "155.246.202.24";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    //Node4-Anchor
+    sz_port1 = "5000";
+    sz_addr = "155.246.216.21";
+    sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    //Node5-Anchor
+    sz_port1 = "5000";
+    sz_addr = "155.246.203.26";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -659,6 +674,7 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+    //populate_outgoing_fib();
 
     //signature init
 
