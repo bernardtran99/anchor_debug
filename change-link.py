@@ -9,8 +9,8 @@ print(os.getcwd())
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents[0])
-    if match_string in content[0]:
-        contents.insert(content[0], insert_string)
+    if match_string in contents[0]:
+        contents.insert(contents[0], insert_string)
     print(contents[0])
     # fd.seek(0)
     # fd.writelines(contents)
