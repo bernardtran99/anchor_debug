@@ -117,12 +117,21 @@ int send_debug_message(char *input) {
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest) {
     printf("\nFlooding\n");
+
+    char *prefix = &interest.name.components[0].value[0];
+    printf("Prefix Old: %s\n", prefix);
+
     //multithread: while in time delay period keep accepting other announcements
     //ndn_udp_face_t face;
-    ndn_name_t *prefix_name = &interest.name;
-    //printf("%s\n", prefix_name);
-    char *prefix = &interest.name.components[0].value[0];
-    printf("Prefix: %s\n", prefix);
+
+    ndn_name_t prefix_name;
+    char *ancmt_string = "/ancmt/1";
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    interest.name = prefix_name;
+
+    prefix = &interest.name.components[0].value[0];
+    printf("Prefix New: %s\n", prefix);
+    
     
     //gets the forwarder intiailized in the main message
     //router_const = ndn_forwarder_get();
