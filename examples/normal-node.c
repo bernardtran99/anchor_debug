@@ -171,9 +171,6 @@ void flood(ndn_interest_t interest) {
         //router->fib = layer1_fib;
 
         ndn_udp_face_t *face;
-        ndn_name_t prefix_name;
-        char *ancmt_string = "/ancmt/1";
-        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
         
         //myip, my outgoing port, their incoming ip, their incoming port
         in_port_t port1, port2;
