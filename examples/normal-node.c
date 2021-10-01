@@ -165,7 +165,7 @@ void flood(ndn_interest_t interest) {
         // }
         //router->fib = layer1_fib;
 
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        //ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
