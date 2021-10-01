@@ -8,7 +8,7 @@ print(os.getcwd())
 
 with open(file, 'r+') as fd:
     contents = fd.readlines()
-    print(contents[0])
+    print(contents)
     string = contents[0].split()
     string.insert(8, "-pthread")
     string = ' '.join(string)
