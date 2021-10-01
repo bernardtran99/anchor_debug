@@ -459,7 +459,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
-/*
+
 void populate_outgoing_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
     printf("\nOutgoing FIB populated\n");
@@ -468,7 +468,8 @@ void populate_outgoing_fib() {
     ndn_udp_face_t *face;
     ndn_interest_t interest;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt/1";
+    char *ancmt_string = "/ancmt/1/1";
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
     //myip, my outgoing port, their incoming ip, their incoming port
     in_port_t port1, port2;
@@ -477,6 +478,21 @@ void populate_outgoing_fib() {
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
+
+    //Node2-Anchor
+    sz_port1 = "3000";
+    sz_addr = "155.246.215.24";
+    sz_port2 = "5000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     //Node3-Anchor
     sz_port1 = "3000";
@@ -491,8 +507,8 @@ void populate_outgoing_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
     ndn_interest_from_name(&interest, &prefix_name);
     ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -500,7 +516,7 @@ void populate_outgoing_fib() {
     //router = ndn_forwarder_get();
     //router_fib = router.fib;
 }
-*/
+
 
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
@@ -741,7 +757,8 @@ int main(int argc, char *argv[]) {
         //uncomment here to test send anct
         if(is_anchor && !ancmt_sent) {
             //printf("send anct called\n");
-            send_ancmt();
+            //send_ancmt();
+            populate_outgoing_fib();
         }
         //packet is ancmt
         
