@@ -420,6 +420,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 void populate_outgoing_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
     printf("\nOutgoing FIB populated\n");
+    ndn_interest_t interest;
     ndn_udp_face_t *face;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1";
@@ -447,6 +448,7 @@ void populate_outgoing_fib() {
 
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    ndn_interest_from_name(&interest, &prefix_name);
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
     //router = ndn_forwarder_get();
