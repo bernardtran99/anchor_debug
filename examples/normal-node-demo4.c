@@ -343,10 +343,13 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     char *prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
-    // char prefix_convert[10];
-    // int j = sprintf(prefix_convert, "%s", prefix);
-    // char *prefix_check = "ancmt";
-    printf("PREFIX: %s\n", prefix);
+    printf("PREFIX: /%s/", prefix);
+    prefix = &interest_pkt.name.components[1].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("%s/", prefix);
+    prefix = &interest_pkt.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("%s\n", prefix);
     // printf("PREFIX_CONVERT: `%s`\n", prefix_convert);
     // printf("PREFIX_CHECK: `%s`\n", prefix_check);
     // printf("PREFIX(int): %d\n", prefix);
@@ -529,7 +532,7 @@ void populate_incoming_fib() {
     ancmt_string = "/ancmt/1/2";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
-    
+
     ancmt_string = "/ancmt/1/3";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
