@@ -7,7 +7,7 @@ set(LIST_EXAMPLES
 #  "tutorial-app-sub"
 #  "app-template"
 #  "ndn-lite-sd-peer"
-#  "udp-basic-producer"
+  "udp-basic-producer"
   "udp-basic-consumer"
 #  "udp-group-producer"
 #  "udp-group-consumer"
