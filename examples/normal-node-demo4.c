@@ -532,6 +532,7 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
+    /*
     //Node4-Anchor
     sz_port1 = "5000";
     sz_addr = "155.246.216.21";
@@ -544,6 +545,7 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    */
 
     //Node5-Anchor
     sz_port1 = "5000";

@@ -493,6 +493,7 @@ void populate_incoming_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    /*
     //Node1-Anchor
     sz_port1 = "5000";
     sz_addr = "155.246.44.28";
@@ -505,6 +506,7 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    */
 
     //Node2-Anchor
     sz_port1 = "5000";
@@ -710,7 +712,7 @@ int main(int argc, char *argv[]) {
 
     //signature init
 
-    //is_anchor = true;
+    is_anchor = true;
     if(is_anchor == true) {
         //send_debug_message("Is Anchor");
     }
