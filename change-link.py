@@ -9,8 +9,8 @@ print(os.getcwd())
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents[0])
-    for index, line in enumerate(contents):
-        if match_string in line and insert_string not in contents[index + 1]:
+    for index in enumerate(contents):
+        if match_string in 0 and insert_string not in contents[index + 1]:
             contents.insert(index + 1, insert_string)
             break
     fd.seek(0)
