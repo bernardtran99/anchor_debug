@@ -307,9 +307,10 @@ void *start_delay(void *arguments) {
     printf("Delay Complete\n");
     //then when finished, flood
     if(did_flood[args->struct_selector] == true) {
-        printf("Already flooded\n");
+        printf("Already flooded due to max interface\n");
     }
     else {
+        printf("Max interfaces not reached\n");
         flood(args->interest);
         did_flood[args->struct_selector] = true;
         reply_ancmt();
