@@ -1,6 +1,0 @@
-#!/usr/bin/awk -f 
-
-FILE = "/build/CMakeFiles/normal-node.dir"
-
-BEGIN { print "Test" }
-exit;
