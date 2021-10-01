@@ -193,7 +193,7 @@ void flood(ndn_interest_t interest) {
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
         ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        //ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
