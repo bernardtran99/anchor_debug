@@ -1,4 +1,6 @@
 import fileinput
+import os
+
 file = "~/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
 match_string = ".o  "
 insert_string = "-pthread "
