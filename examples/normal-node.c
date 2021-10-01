@@ -115,18 +115,18 @@ int send_debug_message(char *input) {
 }
 
 //may have to use interest as a pointer
-void flood(ndn_interest_t interest) {
+void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
+    ndn_interest_t interest;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt/1";
-    char *prefix = &interest.name.components[0].value[0];
-
-    printf("Prefix Old: %s\n", prefix);
-    
+    char *ancmt_string = "/ancmt/1/1";
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    interest.name = prefix_name;
-    prefix = &interest.name.components[0].value[0];
-    printf("Prefix New: %s\n", prefix);
+    
+    //char *prefix = &interest.name.components[0].value[0];
+    //printf("Prefix Old: %s\n", prefix);
+    
+    //prefix = &interest.name.components[0].value[0];
+    //printf("Prefix New: %s\n", prefix);
     
     //gets the forwarder intiailized in the main message
     //router_const = ndn_forwarder_get();
@@ -165,7 +165,49 @@ void flood(ndn_interest_t interest) {
         // }
         //router->fib = layer1_fib;
 
-        //ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        uint8_t *selector_ptr = selector;
+        ndn_udp_face_t *face;
+        
+        //myip, my outgoing port, their incoming ip, their incoming port
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
+
+        //Node2-Anchor
+        sz_port1 = "3000";
+        sz_addr = "155.246.215.24";
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+        //Node3-Anchor
+        sz_port1 = "3000";
+        sz_addr = "155.246.202.24";
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+        ndn_interest_from_name(&interest, &prefix_name);
+        ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
@@ -460,7 +502,7 @@ void populate_outgoing_fib() {
 
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
-    char *ancmt_string = "/ancmt/1";
+    char *ancmt_string = "/ancmt/1/CHANGE";
 
     ndn_name_t name_prefix;
     ndn_udp_face_t *face;
@@ -685,7 +727,7 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_outgoing_fib();
+    //populate_outgoing_fib();
 
     //signature init
 
