@@ -1,5 +1,6 @@
-#!/usr/bin/awk -f 
+#!/bin/awk -f 
 
 FILE = "/build/CMakeFiles/normal-node.dir"
 
-echo "Adding '-pthread' to link.txt"
+BEGIN { print "Test" }
+END { print " - DONE -" }
