@@ -461,9 +461,9 @@ void populate_outgoing_fib() {
 
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
-    char *ancmt_string = "/ancmt/1";
+    //char *ancmt_string = "/ancmt/1";
 
-    ndn_name_t name_prefix;
+    //ndn_name_t name_prefix;
     ndn_udp_face_t *face;
 
     in_port_t port1, port2;
@@ -512,8 +512,8 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+    //ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
+    //ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
 }
 
@@ -660,7 +660,13 @@ int main(int argc, char *argv[]) {
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
+
+    char *ancmt_string = "/ancmt/1";
+    ndn_name_t name_prefix;
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
+    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+    
     populate_outgoing_fib();
 
     //signature init
