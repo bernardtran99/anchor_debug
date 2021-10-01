@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <netdb.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -10,6 +9,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
+#include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <ndn-lite.h>
@@ -170,6 +170,32 @@ void flood(ndn_interest_t interest) {
         // }
         //router->fib = layer1_fib;
 
+        ndn_udp_face_t *face;
+        ndn_name_t prefix_name;
+        char *ancmt_string = "/ancmt/1";
+        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        
+        //myip, my outgoing port, their incoming ip, their incoming port
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
+
+        //pi1->pi2: 192.168.1.10
+        sz_port1 = "3000";
+        sz_addr = "155.246.202.24";
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
@@ -659,7 +685,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    if(inet_pton(AF_INET, "192.168.1.10", &serv_addr.sin_addr)<=0) 
+    if(inet_pton(AF_INET, "155.246.44.28", &serv_addr.sin_addr)<=0) 
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
