@@ -10,7 +10,7 @@ with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
     string = contents[0].split()
-    string.insert(8, "-pthread")
+    string.insert(8, " -pthread")
     string = ' '.join(string)
     print(string)
     # fd.seek(0)
