@@ -2,10 +2,11 @@ import fileinput
 file = "~/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
 match_string = ".o  "
 insert_string = "-pthread "
+print(os.getcwd())
+"""
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents[0])
-    """
     if match_string in contents[-1]:  # Handle last line to prevent IndexError
         contents.append(insert_string)
     else:
@@ -15,4 +16,4 @@ with open(file, 'r+') as fd:
                 break
     fd.seek(0)
     fd.writelines(contents)
-    """
+"""
