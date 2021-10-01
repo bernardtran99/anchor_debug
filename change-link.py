@@ -1,9 +1,11 @@
 import fileinput
-file = ""
-match_string = ""
+file = "/build/CMakeFiles/normal-node.dir"
+match_string = ".o  "
 insert_string = "-pthread "
 with open(file, 'r+') as fd:
     contents = fd.readlines()
+    print(contents[0])
+    """
     if match_string in contents[-1]:  # Handle last line to prevent IndexError
         contents.append(insert_string)
     else:
@@ -13,3 +15,4 @@ with open(file, 'r+') as fd:
                 break
     fd.seek(0)
     fd.writelines(contents)
+    """
