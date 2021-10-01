@@ -759,6 +759,7 @@ int main(int argc, char *argv[]) {
             //printf("send anct called\n");
             //send_ancmt();
             populate_outgoing_fib();
+            ancmt_sent = true;
         }
         //packet is ancmt
         
