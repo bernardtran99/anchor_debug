@@ -9,8 +9,9 @@ print(os.getcwd())
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents[0])
-    if match_string in contents[0]:
-        contents.insert(contents[0], insert_string)
-    print(contents[0])
+    string = contents[0].split()
+    string.insert(8, "  -pthread ")
+    string = ' '.join(string)
+    print(string)
     # fd.seek(0)
     # fd.writelines(contents)
