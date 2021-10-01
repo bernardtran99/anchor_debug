@@ -1,18 +1,77 @@
 import fileinput
 import os
 
-file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
-match_string = ".o  "
-insert_string = "-pthread "
-print(os.getcwd())
+insert_string = " -pthread"
+# print(os.getcwd())
 
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
     string = contents[0].split()
-    string.insert(8, " -pthread")
+    string.insert(8, insert_string)
     string = ' '.join(string)
     print(string)
     fd.seek(0)
     fd.writelines(string)
     print("Written to normal-node.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo1.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo1.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo2.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo2.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo3.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo3.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo4.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo4.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo5.dir")
