@@ -4,7 +4,7 @@ import os
 insert_string = " -pthread"
 # print(os.getcwd())
 
-file = "anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -16,7 +16,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node.dir")
 
-file = "anchor_debug/build/CMakeFiles/normal-node-demo1.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node-demo1.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -28,7 +28,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo1.dir")
 
-file = "anchor_debug/build/CMakeFiles/normal-node-demo2.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node-demo2.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -40,7 +40,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo2.dir")
 
-file = "anchor_debug/build/CMakeFiles/normal-node-demo3.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node-demo3.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -52,7 +52,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo3.dir")
 
-file = "anchor_debug/build/CMakeFiles/normal-node-demo4.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node-demo4.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -64,7 +64,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo4.dir")
 
-file = "anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+file = "/home/debug/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
