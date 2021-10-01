@@ -13,5 +13,6 @@ with open(file, 'r+') as fd:
     string.insert(8, " -pthread")
     string = ' '.join(string)
     print(string)
-    # fd.seek(0)
-    # fd.writelines(contents)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node.dir")
