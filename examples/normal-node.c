@@ -431,7 +431,7 @@ void populate_outgoing_fib() {
 
     //pi1->pi2: 192.168.1.10
     sz_port1 = "3000";
-    sz_addr = "rpi2-btran";
+    sz_addr = "155.246.202.24";
     sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -674,7 +674,7 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    //populate_outgoing_fib();
+    populate_outgoing_fib();
 
     //signature init
 
