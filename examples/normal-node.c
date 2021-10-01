@@ -11,10 +11,10 @@
 #include <stdbool.h>
 #include <setjmp.h>
 #include <sys/socket.h>
-#include <arpa/inet.h> //linux only
-//#include <Winsock2.h> //windows only
+#include <arpa/inet.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
+#include "adaptation/udp-face.h"
 #include "ndn-lite/encode/name.h"
 #include "ndn-lite/encode/data.h"
 #include "ndn-lite/encode/interest.h"
@@ -414,6 +414,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
+/*
 void populate_outgoing_fib() {
     // TODO: make a real populate fib where each node is detected and added into fib
     printf("\nOutgoing FIB populated\n");
@@ -448,7 +449,7 @@ void populate_outgoing_fib() {
     //router = ndn_forwarder_get();
     //router_fib = router.fib;
 }
-
+*/
 void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string = "/ancmt/1";
@@ -474,7 +475,9 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
     /*
     //Node2-Anchor
@@ -528,9 +531,10 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    */
+    
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+    */
 }
 
 /*
