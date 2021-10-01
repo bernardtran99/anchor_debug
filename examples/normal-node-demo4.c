@@ -71,7 +71,7 @@ bool stored_selectors[10];
 bool delay_start[10];
 //clock time is in nano seconds, divide by 10^6 for actual time
 int delay = 3000000;
-int max_interfaces = 8;
+int max_interfaces = 2;
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
 bool did_flood[10];
@@ -432,6 +432,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             }
             else {
                 flood(interest_pkt);
+                printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
                 reply_ancmt();
                 pthread_exit(NULL);

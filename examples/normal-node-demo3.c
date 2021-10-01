@@ -432,6 +432,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             }
             else {
                 flood(interest_pkt);
+                printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
                 reply_ancmt();
                 pthread_exit(NULL);
