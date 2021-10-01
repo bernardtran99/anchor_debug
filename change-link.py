@@ -9,6 +9,7 @@ print(os.getcwd())
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents[0])
+    print(enumerate(contents))
 #     if match_string in contents[-1]:  # Handle last line to prevent IndexError
 #         contents.append(insert_string)
 #     else:
