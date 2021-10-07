@@ -75,3 +75,63 @@ with open(file, 'r+') as fd:
     fd.seek(0)
     fd.writelines(string)
     print("Written to normal-node-demo5.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo6.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo7.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo8.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo9.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo5.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo10.dir")

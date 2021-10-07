@@ -780,31 +780,3 @@ int main(int argc, char *argv[]) {
     }
     //ndn_face_destroy(&face->intf);
 }
-
-//test main method
-/*
-int main() {
-    ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt";
-    
-
-    ndn_lite_startup();
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    
-    ndn_key_storage_get_empty_ecc_key(&ecc_secp256r1_pub_key, &ecc_secp256r1_prv_key);
-    ndn_ecc_make_key(ecc_secp256r1_pub_key, ecc_secp256r1_prv_key, NDN_ECDSA_CURVE_SECP256R1, 890);
-    ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
-    storage = ndn_key_storage_get_instance();
-
-    ndn_interest_t lol;
-    ndn_interest_from_name(&lol, &prefix_name);
-    //is_anchor = true;
-    flood(lol);
-
-    running = true;
-    while (running) {
-        ndn_forwarder_process();
-        usleep(10000);
-    }
-}
-*/

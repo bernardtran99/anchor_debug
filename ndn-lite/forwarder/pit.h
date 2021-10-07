@@ -11,6 +11,8 @@
 #ifndef FORWARDER_PIT_H_
 #define FORWARDER_PIT_H_
 #include "../encode/forwarder-helper.h"
+#include "../encode/interest.h"
+#include "../encode/name.h"
 #include "../util/bit-operations.h"
 #include "face.h"
 #include "name-tree.h"
@@ -34,11 +36,9 @@ typedef struct ndn_pit_entry {
 
   //TODO: add prefix and timeslice into pit entry
   //format: /ancmt/layer_num/selector
-  //ndn_interest_t interest_pkt;
-
-  //uint8_t prefix_name;
-  
-  //uint8_t timeslice;
+  ndn_interest_t interest_pkt;
+  ndn_name_t prefix_name;
+  uint8_t timeslice;
 
   /** Interest Options.
    */
