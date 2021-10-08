@@ -122,10 +122,12 @@ def readIn():
                             nodeDict[node_ip].add(strings[i + 1])
                         else:
                             nodeDict[node_ip] = set([strings[i+1]])
+
     #time.sleep(0.003)
 
 readIn()
-print(nodeDict)
+for i in nodeDict:
+    print(i)
 
 # node()
 
