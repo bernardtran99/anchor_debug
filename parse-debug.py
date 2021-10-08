@@ -104,7 +104,7 @@ def readIn():
             if "Is Anchor" in line:
                 strings = line.split()
                 node_ip = strings[3]
-                nodeDict[node_ip].add("anchor")
+                nodeDict[node_ip] = set(["anchor"])
 
             elif "On Interest" in line:
                 strings = line.split()
@@ -113,7 +113,10 @@ def readIn():
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n
                         strings[i + 1].removesuffix("On")
-                        nodeDict[node_ip].add(strings[i + 1])
+                        if node_ip in nodeDict:
+                            nodeDict[node_ip].add(strings[i + 1])
+                        else:
+                            nodeDict[node_ip] = set([strings[i+1]])
     #time.sleep(0.003)
 
 readIn()
