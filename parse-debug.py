@@ -7,10 +7,8 @@ from IPython import display
 
 inputFile = "/home/debug/Documents/anchor_debug/build/debug-output.txt"
 outputFile = "/home/debug/Documents/anchor_debug/build/parsed-debug.txt"
-onInterest = ""
-nodeStart = ""
-isAnchor = ""
 
+#ip lookup dictionary
 ipDict = {
   "1": "155.246.44.142",
   "2": "155.246.215.101",
@@ -21,8 +19,11 @@ ipDict = {
   "7": "155.246.202.111",
   "8": "155.246.212.111",
   "9": "155.246.213.83",
-  "10": "155.246.210.98",
+  "10": "155.246.210.98"
 }
+
+#empty dict
+nodeDict = {}
 
 G=nx.MultiDiGraph()
 G.add_node(1,pos=(2,6))
@@ -93,7 +94,30 @@ def node():
         #display.display(plt.gcf()) 
         plt.show()
         time.sleep(1)
-node()
+
+def readIn():
+    #while True:
+    fd = open(inputFile, 'r+')
+    for line in fd:
+        if "Is Anchor" in line:
+            strings = line.split()
+            nodeIP = line[3]
+            nodeDict[nodeIP].add("anchor")
+        elif "On Interest" in line
+            strings = line.split()
+            nodeIP = line[3]
+            for i in strings
+                if strings[i] == "Interest:"
+                    #strings[i+1] = 80n
+                    strings[i + 1].removesuffix("On")
+                    nodeDict[nodeIP].add(strings[i + 1])
+    fd.close()
+    #time.sleep(0.003)
+
+readIn()
+print(nodeDict)
+
+#node()
 
 # while True:
 #     fd = open(inputFile, 'r+')
