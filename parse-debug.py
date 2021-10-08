@@ -12,7 +12,7 @@ outputFile = "/home/debug/Documents/anchor_debug/build/parsed-debug.txt"
 #ip lookup dictionary
 ipDict = {
   "155.246.44.142" : 1,
-  "155.246.215.101" : 2, 
+  "155.246.215.101" : 2,
   "155.246.202.145" : 3,
   "155.246.216.113" : 4,
   "155.246.203.173" : 5,
@@ -57,10 +57,33 @@ def readIn():
                         else:
                             nodeDict[node_num] = [string_value]
 
-def generate_nodes() :
+def generate_nodes():
     G=nx.MultiDiGraph()
+    G.add_node(1,pos=(2,6))
+    G.add_node(2,pos=(4,10))
+    G.add_node(3,pos=(4,2))
+    G.add_node(4,pos=(6,6))
+    G.add_node(5,pos=(8,10))
+    G.add_node(6,pos=(8,2))
+    G.add_node(7,pos=(10,6))
+    G.add_node(8,pos=(12,10))
+    G.add_node(9,pos=(12,2))
+    G.add_node(10,pos=(14,6))
+    pos=nx.get_node_attributes(G,'pos')
 
+    node_sizes = [500]*10
+    node_colors = ['green']*10
 
+    input_links = []
+
+    for keys in nodeDict:
+        for values in nodeDict[keys]:
+            if isinstance(values, int):
+                input_links.append((values,keys))
+    
+    print(input_links)
+
+#add_edges_from() takes in a list of tuples
 def node():
     G=nx.MultiDiGraph()
     G.add_node(1,pos=(2,6))
@@ -134,7 +157,7 @@ def node():
 
 readIn()
 print(nodeDict)
-pprint.pprint(nodeDict)
+generate_nodes()
 
 # while True:
 #     fd = open(inputFile, 'r+')
