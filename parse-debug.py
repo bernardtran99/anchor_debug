@@ -9,8 +9,8 @@ isAnchor = ""
 with open(inputFile, 'r+') as fd:
     for line in fd:
         print(line)
-        if "Node Start" in line
+        if "Node Start" in line:
             strings = line.split()
-            type(strings)
+            print(type(strings))
             print(strings)
         
