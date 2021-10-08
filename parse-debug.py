@@ -101,16 +101,18 @@ def readIn():
     for line in fd:
         if "Is Anchor" in line:
             strings = line.split()
-            nodeIP = line[3]
-            nodeDict[nodeIP].add("anchor")
-        if "On Interest" in line
+            node_ip = strings[3]
+            nodeDict[node_ip].add("anchor")
+
+        elif "On Interest" in line:
             strings = line.split()
-            nodeIP = line[3]
-            for i in strings
-                if strings[i] == "Interest:"
+            node_ip = strings[3]
+            for i in strings:
+                if strings[i] == "Interest:":
                     #strings[i+1] = 80n
                     strings[i + 1].removesuffix("On")
-                    nodeDict[nodeIP].add(strings[i + 1])
+                    nodeDict[node_ip].add(strings[i + 1])
+
     fd.close()
     #time.sleep(0.003)
 
