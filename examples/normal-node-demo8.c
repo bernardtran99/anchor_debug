@@ -285,13 +285,13 @@ void reply_ancmt() {
     //look at find 
 }
 
-void insert_pit(ndn_interest_t interest) {
-    //send_debug_message("Packet Inserted Into PIT");
-    router = ndn_forwarder_get();
-    layer1_pit = router->pit;
-    uint8_t* name;
-    ndn_pit_find_or_insert(layer1_pit, interest, &interest.name.components.value, &interest.name.components_size);
-}
+// void insert_pit(ndn_interest_t interest) {
+//     //send_debug_message("Packet Inserted Into PIT");
+//     router = ndn_forwarder_get();
+//     layer1_pit = router->pit;
+//     uint8_t* name;
+//     ndn_pit_find_or_insert(layer1_pit, interest, &interest.name.components.value, &interest.name.components_size);
+// }
 
 void *start_delay(void *arguments) {
     printf("\nDelay started\n");
