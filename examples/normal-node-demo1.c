@@ -511,6 +511,7 @@ void populate_outgoing_fib() {
     ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
+    printf("Ancmt sent\n");
     //router = ndn_forwarder_get();
     //router_fib = router.fib;
 }
