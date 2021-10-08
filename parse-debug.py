@@ -187,6 +187,7 @@ print(nodeDict)
 generate_layer_2()
 #generate_static_nodes()
 
+#for synchrony over time 
 # while True:
 #     fd = open(inputFile, 'r+')
 #     for line in fd:
@@ -203,4 +204,11 @@ generate_layer_2()
 #             del strings[5]
 #             #print(type(strings))
 #             print(strings)
+
+#2 versions
+#one with real time simulations
+#one where we generate a new picture whenever the structure of the topology changes\
+#counter for sleep cycle for 2nd version
+#change ip for debug server when vm closes
+
         

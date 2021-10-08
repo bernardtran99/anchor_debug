@@ -216,6 +216,7 @@ void flood(ndn_interest_t interest_pkt) {
     }
 
     printf("Flooded Interest!\n");
+    send_debug_message("Flooded Interest");
 }
 
 
