@@ -804,7 +804,7 @@ int main(int argc, char *argv[]) {
     //TODO: make this a function later
     char *temp_message = "Node Start: ";
     char *temp_num;
-    itoa(temp_num, node_num);
+    itoa(temp_num, node_num, 10);
     strcat(temp_message, temp_num);
     send_debug_message(temp_message);
     
