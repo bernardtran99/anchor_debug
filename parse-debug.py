@@ -80,8 +80,12 @@ def generate_nodes():
         for values in nodeDict[keys]:
             if isinstance(values, int):
                 input_links.append((values,keys))
-    
     print(input_links)
+    G.add_edges_from(input_links)
+    plt.clf()
+    plt.title('Time {}s'.format(epoch))
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show(block=False)
 
 #add_edges_from() takes in a list of tuples
 def node():
