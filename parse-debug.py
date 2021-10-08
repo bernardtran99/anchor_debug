@@ -108,7 +108,7 @@ def readIn():
                             #this will only add the first node every time
                             nodeDict[node_num] = [string_value]
                             #generate_dynamic_nodes(string_value, node_num)
-                            input_dynamic_links.append(node_num, string_value)
+                            input_dynamic_links.append((node_num, string_value))
 
 #add_edges_from() takes in a list of tuples
 def node():
