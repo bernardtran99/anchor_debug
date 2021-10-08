@@ -55,9 +55,9 @@ def readIn():
                         else:
                             nodeDict[node_num] = set([strings[i+1]])
 
-def generate_nodes() {
+def generate_nodes() :
     G=nx.MultiDiGraph()
-}
+
 
 def node():
     G=nx.MultiDiGraph()
