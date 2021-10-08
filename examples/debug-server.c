@@ -100,6 +100,8 @@ void testTree() {
 
 int main(int argc , char *argv[])  
 {
+    FILE *fp;
+    fp = fopen("debug-output.txt", "w+");
     //testTree();
     //init tree with root
     struct Node *root = (struct Node *)malloc(sizeof(struct Node));
@@ -270,6 +272,7 @@ int main(int argc , char *argv[])
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
                     printf("IP ADDRESS: %s -> ", temp);
+                    fprintf(fp, "IP ADDRESS: %s -> ", temp);
 
                     /*
                     struct Node *tempNode;
@@ -294,6 +297,7 @@ int main(int argc , char *argv[])
                     buffer[valread] = '\0';
                     char* debug_message = buffer;
                     printf("MESSAGE: %s\n", debug_message);
+                    fprintf(fp, "MESSAGE: %s\n", debug_message);
                     //send(sd , buffer , strlen(buffer) , 0 );  
                 }  
             }  
