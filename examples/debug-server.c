@@ -298,8 +298,8 @@ int main(int argc , char *argv[])
                     */
                     buffer[valread] = '\0';
                     char* debug_message = buffer;
-                    printf("MESSAGE: %s \n", debug_message);
-                    fprintf(fp, "MESSAGE: %s \n", debug_message);
+                    printf("MESSAGE: %s\n", debug_message);
+                    fprintf(fp, "MESSAGE: %s\n", debug_message);
                     //send(sd , buffer , strlen(buffer) , 0 );
                     fclose(fp);
                 }  

@@ -91,6 +91,8 @@ def node():
         display.display(plt.gcf()) 
         time.sleep(1)
 
+node()
+
 # while True:
 #     fd = open(inputFile, 'r+')
 #     for line in fd:
