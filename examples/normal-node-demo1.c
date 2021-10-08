@@ -804,7 +804,6 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-
     char temp_message[80];
     char temp_num[10];
     strcat(temp_message, "Node Start: ");
@@ -830,7 +829,6 @@ int main(int argc, char *argv[]) {
     if(is_anchor == true) {
         send_debug_message("Is Anchor");
     }
-    printf("here");
     running = true;
     while (running) {
         //uncomment here to test send anct
