@@ -141,7 +141,8 @@ void flood(ndn_interest_t interest_pkt) {
         //Flood without accounting for time delay or max number of interfaces
         //Get all closest interfaces and forward to them
         printf("Forwarding Announcement (Anchor)\n");
-        //insert fib information here
+        
+        //myip, my outgoing port, their incoming ip, their incoming port
         in_port_t port1, port2;
         in_addr_t server_ip;
         char *sz_port1, *sz_port2, *sz_addr;
@@ -151,7 +152,7 @@ void flood(ndn_interest_t interest_pkt) {
 
         //Node2-Anchor
         sz_port1 = "3000";
-        sz_addr = "155.246.215.24";
+        sz_addr = "155.246.215.101";
         sz_port2 = "5000";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -161,11 +162,12 @@ void flood(ndn_interest_t interest_pkt) {
         ul_port = strtoul(sz_port2, NULL, 10);
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
         ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
         //Node3-Anchor
         sz_port1 = "3000";
-        sz_addr = "155.246.202.24";
+        sz_addr = "155.246.202.145";
         sz_port2 = "5000";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -175,6 +177,7 @@ void flood(ndn_interest_t interest_pkt) {
         ul_port = strtoul(sz_port2, NULL, 10);
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
         ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
         ndn_interest_from_name(&interest, &prefix_name);
