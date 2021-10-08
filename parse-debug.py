@@ -9,6 +9,6 @@ isAnchor = ""
 with open(inputFile, 'r+') as fd:
     for line in fd:
         print(line)
-        strings = line.strip()
+        strings = line.split()
         print(strings)
         
