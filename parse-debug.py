@@ -50,13 +50,14 @@ def readIn():
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n 
                         strings[i + 1] = remove_suffix(strings[i + 1], "On")
+                        string_value = int(strings[i + 1])
                         if node_num in nodeDict:
-                            if strings[i+1] in nodeDict[node_num]:
+                            if string_value in nodeDict[node_num]:
 
                             else:
-                                nodeDict[node_num].append(strings[i+1])
+                                nodeDict[node_num].append(string_value)
                         else:
-                            nodeDict[node_num] = [strings[i+1]]
+                            nodeDict[node_num] = [string_value]
 
 def generate_nodes() :
     G=nx.MultiDiGraph()
