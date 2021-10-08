@@ -96,11 +96,11 @@ def readIn():
                         if node_num in nodeDict:
                             if string_value not in nodeDict[node_num]:
                                 nodeDict[node_num].append(string_value)
-                                generate_dynamic_nodes(node_num, string_value)
+                                generate_dynamic_nodes(string_value, node_num)
                         else:
                             #this will only add the first node every time
                             nodeDict[node_num] = [string_value]
-                            generate_dynamic_nodes(node_num, string_value)
+                            generate_dynamic_nodes(string_value, node_nume)
 
 #add_edges_from() takes in a list of tuples
 def node():
