@@ -31,6 +31,34 @@ def remove_suffix(input_string, suffix):
         return input_string[:-len(suffix)]
     return input_string
 
+def readIn():
+    #while True:
+    with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
+
+        for line in fd:
+            if "Is Anchor" in line:
+                strings = line.split()
+                node_ip = strings[2]
+                node_num = ipDict[node_ip]
+                nodeDict[node_num] = set(["anchor"])
+
+            elif "On Interest" in line:
+                strings = line.split()
+                node_ip = strings[2]
+                node_num = ipDict[node_ip]
+                for i in range(len(strings)):
+                    if strings[i] == "Interest:":
+                        #strings[i+1] = 80n 
+                        strings[i + 1] = remove_suffix(strings[i + 1], "On")
+                        if node_num in nodeDict:
+                            nodeDict[node_num].add(strings[i + 1])
+                        else:
+                            nodeDict[node_num] = set([strings[i+1]])
+
+def generate_nodes() {
+    G=nx.MultiDiGraph()
+}
+
 def node():
     G=nx.MultiDiGraph()
     G.add_node(1,pos=(2,6))
@@ -100,33 +128,11 @@ def node():
         plt.pause(0.02)
         time.sleep(1)
 
-def readIn():
-    #while True:
-    with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
-
-        for line in fd:
-            if "Is Anchor" in line:
-                strings = line.split()
-                node_ip = strings[2]
-                nodeDict[node_ip] = set(["anchor"])
-
-            elif "On Interest" in line:
-                strings = line.split()
-                node_ip = strings[2]
-                for i in range(len(strings)):
-                    if strings[i] == "Interest:":
-                        #strings[i+1] = 80n 
-                        strings[i + 1] = remove_suffix(strings[i + 1], "On")
-                        if node_ip in nodeDict:
-                            nodeDict[node_ip].add(strings[i + 1])
-                        else:
-                            nodeDict[node_ip] = set([strings[i+1]])
-
     #time.sleep(0.003)
 
-node()
-# readIn()
-# pprint.pprint(nodeDict)
+readIn()
+print(nodeDict)
+pprint.pprint(nodeDict)
 
 # while True:
 #     fd = open(inputFile, 'r+')
