@@ -66,7 +66,7 @@ def generate_static_nodes():
 
 def generate_dynamic_nodes(source, destination):
     input_dynamic_links.append((source, destination))
-    G.add_edges_from(input_links)
+    G.add_edges_from(input_dynamic_links)
     plt.clf()
     plt.title("Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
@@ -96,9 +96,11 @@ def readIn():
                         if node_num in nodeDict:
                             if string_value not in nodeDict[node_num]:
                                 nodeDict[node_num].append(string_value)
+                                generate_dynamic_nodes(node_num, string_value)
                         else:
+                            #this will only add the first node every time
                             nodeDict[node_num] = [string_value]
-                        generate_dynamic_nodes(node_num, string_value)
+                            generate_dynamic_nodes(node_num, string_value)
 
 #add_edges_from() takes in a list of tuples
 def node():
