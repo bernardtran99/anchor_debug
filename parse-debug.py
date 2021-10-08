@@ -98,7 +98,7 @@ def node():
 
 def readIn():
     #while True:
-    with open(inputFile, 'r+') as fd:
+    with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
 
         for line in fd:
             if "Is Anchor" in line:
