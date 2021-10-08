@@ -142,7 +142,7 @@ ndn_pit_find_or_insert(ndn_pit_t* self, uint8_t* name, size_t length){
 }
 
 //updated ndn_pit_find_or_insert
-
+/*
 ndn_pit_entry_t*
 ndn_pit_find_or_insert(ndn_pit_t* self, ndn_interest_t interest, uint8_t* name, size_t length){
   nametree_entry_t* entry = ndn_nametree_find_or_insert(self->nametree, name, length);
@@ -160,6 +160,7 @@ ndn_pit_find_or_insert(ndn_pit_t* self, ndn_interest_t interest, uint8_t* name, 
   }
   return &self->slots[entry->pit_id];
 }
+*/
 
 
 ndn_pit_entry_t*
