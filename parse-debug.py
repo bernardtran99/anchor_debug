@@ -163,7 +163,7 @@ def node():
 
 readIn()
 print(nodeDict)
-generate_nodes()
+generate_static_nodes()
 
 # while True:
 #     fd = open(inputFile, 'r+')
