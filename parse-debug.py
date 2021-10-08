@@ -57,7 +57,7 @@ def readIn():
                         else:
                             nodeDict[node_num] = [string_value]
 
-def generate_nodes():
+def generate_static_nodes():
     G=nx.MultiDiGraph()
     G.add_node(1,pos=(2,6))
     G.add_node(2,pos=(4,10))
@@ -82,6 +82,8 @@ def generate_nodes():
                 input_links.append((values,keys))
     print(input_links)
     G.add_edges_from(input_links)
+    node_sizes[0]= 1200
+    node_colors[0] = 'red'
     plt.clf()
     plt.title("Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
