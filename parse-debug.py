@@ -97,23 +97,22 @@ def node():
 
 def readIn():
     #while True:
-    fd = open(inputFile, 'r+')
-    for line in fd:
-        if "Is Anchor" in line:
-            strings = line.split()
-            node_ip = strings[3]
-            nodeDict[node_ip].add("anchor")
+    with open(inputFile, 'r+') as fd:
 
-        elif "On Interest" in line:
-            strings = line.split()
-            node_ip = strings[3]
-            for i in strings:
-                if strings[i] == "Interest:":
-                    #strings[i+1] = 80n
-                    strings[i + 1].removesuffix("On")
-                    nodeDict[node_ip].add(strings[i + 1])
+        for line in fd:
+            if "Is Anchor" in line:
+                strings = line.split()
+                node_ip = strings[3]
+                nodeDict[node_ip].add("anchor")
 
-    fd.close()
+            elif "On Interest" in line:
+                strings = line.split()
+                node_ip = strings[3]
+                for i in strings:
+                    if strings[i] == "Interest:":
+                        #strings[i+1] = 80n
+                        strings[i + 1].removesuffix("On")
+                        nodeDict[node_ip].add(strings[i + 1])
     #time.sleep(0.003)
 
 readIn()
