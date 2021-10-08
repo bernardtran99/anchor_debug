@@ -103,7 +103,7 @@ def readIn():
             strings = line.split()
             nodeIP = line[3]
             nodeDict[nodeIP].add("anchor")
-        elif "On Interest" in line
+        if "On Interest" in line
             strings = line.split()
             nodeIP = line[3]
             for i in strings
