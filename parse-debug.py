@@ -116,10 +116,10 @@ def readIn():
                         nodeDict[node_ip].add(strings[i + 1])
     #time.sleep(0.003)
 
-# readIn()
-# print(nodeDict)
+readIn()
+print(nodeDict)
 
-node()
+# node()
 
 # while True:
 #     fd = open(inputFile, 'r+')
