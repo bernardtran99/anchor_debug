@@ -154,7 +154,7 @@ int main(int argc , char *argv[])
     printf("Listener on port %d \n", PORT);  
          
     //try to specify maximum of 3 pending connections for the master socket 
-    if (listen(master_socket, 30) < 0)  
+    if (listen(master_socket, 31) < 0)  
     {  
         perror("listen");  
         exit(EXIT_FAILURE);  
@@ -213,12 +213,14 @@ int main(int argc , char *argv[])
               
            
             //send new connection greeting message 
+            /*
             if( send(new_socket, message, strlen(message), 0) != strlen(message) )  
             {  
                 perror("send");  
             }  
                  
             puts("Welcome message sent successfully");  
+            */
                  
             //add new socket to array of sockets 
             for (i = 0; i < max_clients; i++)  
