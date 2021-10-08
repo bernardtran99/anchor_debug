@@ -117,7 +117,7 @@ def readIn():
                 for i in range(len(strings)):
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n 
-                        strings[i + 1].removesuffix("On")
+                        strings[i + 1] = removesuffix(strings[i + 1], "On")
                         if node_ip in nodeDict:
                             nodeDict[node_ip].add(strings[i + 1])
                         else:
