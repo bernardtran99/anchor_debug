@@ -92,7 +92,8 @@ def node():
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')        
         #display.clear_output(wait=True)
         #display.display(plt.gcf()) 
-        plt.show()
+        plt.show(block=False)
+        plt.pause(0.02)
         time.sleep(1)
 
 def readIn():
@@ -115,10 +116,10 @@ def readIn():
                         nodeDict[node_ip].add(strings[i + 1])
     #time.sleep(0.003)
 
-readIn()
-print(nodeDict)
+# readIn()
+# print(nodeDict)
 
-#node()
+node()
 
 # while True:
 #     fd = open(inputFile, 'r+')
