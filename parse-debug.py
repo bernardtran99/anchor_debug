@@ -85,7 +85,7 @@ def generate_nodes():
     plt.clf()
     plt.title("Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    plt.show(block=False)
+    plt.show()
 
 #add_edges_from() takes in a list of tuples
 def node():
