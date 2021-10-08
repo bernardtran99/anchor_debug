@@ -87,8 +87,9 @@ def node():
         plt.clf()
         plt.title('Time {}s'.format(epoch))
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')        
-        display.clear_output(wait=True)
-        display.display(plt.gcf()) 
+        #display.clear_output(wait=True)
+        #display.display(plt.gcf()) 
+        pit.imshow()
         time.sleep(1)
 
 node()
