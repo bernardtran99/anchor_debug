@@ -776,7 +776,7 @@ int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
 
-    /*
+    
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -787,7 +787,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    if(inet_pton(AF_INET, "155.246.182.116", &serv_addr.sin_addr)<=0) 
+    if(inet_pton(AF_INET, "155.246.182.36", &serv_addr.sin_addr)<=0) 
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -798,8 +798,8 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-    */
-    //send_debug_message("Node Start");
+    
+    send_debug_message("Node Start");
     
     ndn_lite_startup();
     //ndn_interest_t interest;

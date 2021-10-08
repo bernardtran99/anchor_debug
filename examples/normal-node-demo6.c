@@ -686,7 +686,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    if(inet_pton(AF_INET, "155.246.182.116", &serv_addr.sin_addr)<=0) 
+    if(inet_pton(AF_INET, "155.246.183.36", &serv_addr.sin_addr)<=0) 
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;

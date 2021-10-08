@@ -5,10 +5,9 @@
 #include <unistd.h>
 //#include <graphics.h>
 #include <arpa/inet.h> //linux only
-//#include <Winsock2.h> //windows only
 #include <sys/types.h> 
 #include <sys/socket.h> 
-#include <netinet/in.h> 
+#include <netinet/in.h>
 #include <sys/time.h>
      
 #define TRUE   1 
@@ -101,10 +100,11 @@ void testTree() {
 
 int main(int argc , char *argv[])  
 {
-    testTree();
-    /*
-    struct Node root;
+    //testTree();
+    //init tree with root
+    struct Node *root = (struct Node *)malloc(sizeof(struct Node));
     root = addNode("root");
+
     int opt = TRUE;  
     int master_socket , addrlen , new_socket , client_socket[30] , max_clients = 30 , activity, i , valread , sd;  
     int max_sd;  
@@ -267,6 +267,9 @@ int main(int argc , char *argv[])
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
+                    printf("IP ADDRESS: %s -> ", temp);
+
+                    /*
                     struct Node *tempNode;
                     tempNode.data = temp;
                     if(buffer[valread] == "Is Anchor") {
@@ -285,14 +288,16 @@ int main(int argc , char *argv[])
                             root.firstChild->firstChild = tempNode;
                         }
                     }
-                    buffer[valread] = '\0';  
-                    send(sd , buffer , strlen(buffer) , 0 );  
+                    */
+                    buffer[valread] = '\0';
+                    char* debug_message = buffer;
+                    printf("MESSAGE: %s\n", debug_message);
+                    //send(sd , buffer , strlen(buffer) , 0 );  
                 }  
             }  
         }  
     }
     free(root);
-    */
          
-    return 0;  
+    return 0;
 }
