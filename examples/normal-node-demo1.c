@@ -781,7 +781,6 @@ void select_anchor() {
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
-
     
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
