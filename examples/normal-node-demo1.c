@@ -808,7 +808,7 @@ int main(int argc, char *argv[]) {
     strcat(temp_message, "Node Start: ");
     sprintf(temp_num, "%d", node_num);
     strcat(temp_message, temp_num);
-    send_debug_message(temp_message);
+    //send_debug_message(temp_message);
     
     ndn_lite_startup();
     //ndn_interest_t interest;
