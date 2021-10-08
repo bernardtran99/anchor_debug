@@ -41,7 +41,8 @@ node_sizes = [500]*10
 node_colors = ['green']*10
 
 def node():
-    plt.iot()
+    fig  = plt.figure()
+    ax = fig.add_subplot(1,1,1)
     for epoch in range(1, 18):
         plt.clf()
         if epoch == 2:
@@ -85,12 +86,12 @@ def node():
             node_colors[0] = 'red'
              
                   
-        plt.clf()
-        plt.title('Time {}s'.format(epoch))
+        #plt.clf()
+        #plt.title('Time {}s'.format(epoch))
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')        
         #display.clear_output(wait=True)
         #display.display(plt.gcf()) 
-        plt.draw()
+        plt.show()
         time.sleep(1)
 
 node()
