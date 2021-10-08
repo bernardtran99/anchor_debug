@@ -93,7 +93,7 @@ def node():
         #display.display(plt.gcf()) 
         plt.show()
         time.sleep(1)
-        plt.close()
+        plt.close('all')
 node()
 
 # while True:
