@@ -351,7 +351,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     char *prefix = &interest_pkt.name.components[0].value[0];
-    prefix = trimwhitespace(prefix);
+    //prefix = trimwhitespace(prefix);
     printf("PREFIX[0]: %s\n", prefix);
     printf("PREFIX[0]: %d\n", prefix);
     prefix = &interest_pkt.name.components[1].value[0];
