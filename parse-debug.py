@@ -26,30 +26,28 @@ ipDict = {
 #empty dict
 nodeDict = {}
 
-G=nx.MultiDiGraph()
-G.add_node(1,pos=(2,6))
-G.add_node(2,pos=(4,10))
-G.add_node(3,pos=(4,2))
-G.add_node(4,pos=(6,6))
-G.add_node(5,pos=(8,10))
-G.add_node(6,pos=(8,2))
-G.add_node(7,pos=(10,6))
-G.add_node(8,pos=(12,10))
-G.add_node(9,pos=(12,2))
-G.add_node(10,pos=(14,6))
-pos=nx.get_node_attributes(G,'pos')
-
-node_sizes = [500]*10
-node_colors = ['green']*10
-
 def remove_suffix(input_string, suffix):
     if suffix and input_string.endswith(suffix):
         return input_string[:-len(suffix)]
     return input_string
 
 def node():
-    #fig  = plt.figure()
-    #ax = fig.add_subplot(1,1,1)
+    G=nx.MultiDiGraph()
+    G.add_node(1,pos=(2,6))
+    G.add_node(2,pos=(4,10))
+    G.add_node(3,pos=(4,2))
+    G.add_node(4,pos=(6,6))
+    G.add_node(5,pos=(8,10))
+    G.add_node(6,pos=(8,2))
+    G.add_node(7,pos=(10,6))
+    G.add_node(8,pos=(12,10))
+    G.add_node(9,pos=(12,2))
+    G.add_node(10,pos=(14,6))
+    pos=nx.get_node_attributes(G,'pos')
+
+    node_sizes = [500]*10
+    node_colors = ['green']*10
+
     for epoch in range(1, 18):
         plt.clf()
         if epoch == 2:
@@ -126,10 +124,9 @@ def readIn():
 
     #time.sleep(0.003)
 
-readIn()
-pprint.pprint(nodeDict)
-
-# node()
+node()
+# readIn()
+# pprint.pprint(nodeDict)
 
 # while True:
 #     fd = open(inputFile, 'r+')
