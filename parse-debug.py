@@ -11,6 +11,7 @@ with open(inputFile, 'r+') as fd:
         print(line)
         if "Node Start" in line:
             strings = line.split()
-            print(type(strings))
+            del strings[5]
+            #print(type(strings))
             print(strings)
         
