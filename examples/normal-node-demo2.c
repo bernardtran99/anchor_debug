@@ -702,6 +702,7 @@ int main(int argc, char *argv[]) {
     }
     running = true;
     while (running) {
+        printf("running");
         //uncomment here to test send anct
         if(is_anchor && !ancmt_sent) {
             //printf("send anct called\n");
