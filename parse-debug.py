@@ -52,9 +52,7 @@ def readIn():
                         strings[i + 1] = remove_suffix(strings[i + 1], "On")
                         string_value = int(strings[i + 1])
                         if node_num in nodeDict:
-                            if string_value in nodeDict[node_num]:
-
-                            else:
+                            if string_value not in nodeDict[node_num]:
                                 nodeDict[node_num].append(string_value)
                         else:
                             nodeDict[node_num] = [string_value]
