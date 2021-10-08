@@ -104,6 +104,7 @@ struct sockaddr_in serv_addr;
 char *debug_message;
 char buffer[1024] = {0};
 
+int node_num = 1;
 
 int send_debug_message(char *input) {
     debug_message = input;
@@ -216,7 +217,7 @@ void flood(ndn_interest_t interest_pkt) {
     }
 
     printf("Flooded Interest!\n");
-    //send_debug_message("Flooded Interest");
+    send_debug_message("Flooded Interest: ");
 }
 
 
@@ -449,7 +450,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     }
 
     last_interest = current_time;
-    //send_debug_message("On Interest");
+    prefix = &interest_pkt.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    send_debug_message("On Interest: %s", prefix);
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -798,8 +801,7 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-    
-    send_debug_message("Node Start");
+    send_debug_message("Node Start: %s", node_num);
     
     ndn_lite_startup();
     //ndn_interest_t interest;
@@ -817,7 +819,7 @@ int main(int argc, char *argv[]) {
 
     is_anchor = true;
     if(is_anchor == true) {
-        //send_debug_message("Is Anchor");
+        send_debug_message("Is Anchor");
     }
     running = true;
     while (running) {
