@@ -520,7 +520,7 @@ void populate_incoming_fib() {
     //NOTE: for recieving an incoming interest packet change the prefix string to the nodes that you want to recieve from
     //also to send a interest packet, change the outgoing interest packet prefix
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
-    char *ancmt_string = "/ancmt/1/CHANGE";
+    char *ancmt_string = "/ancmt/1/0";
 
     ndn_name_t name_prefix;
     ndn_udp_face_t *face;
