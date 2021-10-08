@@ -108,12 +108,12 @@ def readIn():
         for line in fd:
             if "Is Anchor" in line:
                 strings = line.split()
-                node_ip = strings[3]
+                node_ip = strings[2]
                 nodeDict[node_ip] = set(["anchor"])
 
             elif "On Interest" in line:
                 strings = line.split()
-                node_ip = strings[3]
+                node_ip = strings[2]
                 for i in range(len(strings)):
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n 
