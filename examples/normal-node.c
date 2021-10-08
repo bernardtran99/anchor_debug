@@ -361,6 +361,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("%s\n", prefix);
     prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
+    prefix = "ancmt";
 
     // for (int i = 0; i < interest_pkt.name.components_size; i++) {
     //     printf("/");
