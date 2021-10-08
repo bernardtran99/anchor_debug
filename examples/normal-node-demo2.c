@@ -353,15 +353,19 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
     printf("PREFIX: /%s/", prefix);
+    printf("PREFIX: /%d/", prefix);
     prefix = &interest_pkt.name.components[1].value[0];
     prefix = trimwhitespace(prefix);
     printf("%s/", prefix);
+    printf("%d/", prefix);
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
+    printf("%d\n", prefix);
     prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
     printf("PREFIX[0]: %s\n", prefix);
+    printf("PREFIX[0]: %d\n", prefix);
 
     // for (int i = 0; i < interest_pkt.name.components_size; i++) {
     //     printf("/");
