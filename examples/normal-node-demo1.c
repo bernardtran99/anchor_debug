@@ -805,8 +805,11 @@ int main(int argc, char *argv[]) {
     }
     char *temp_message = "Node Start: ";
     char *temp_num;
+    printf("here\n");
     sprintf(temp_num, "%d", node_num);
+    printf("here\n");
     strcat(temp_message, temp_num);
+    printf("here\n");
     send_debug_message(temp_message);
     
     ndn_lite_startup();
