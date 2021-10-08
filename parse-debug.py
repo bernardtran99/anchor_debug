@@ -3,6 +3,7 @@ import time
 import os
 import networkx as nx
 import matplotlib.pyplot as plt
+import pprint
 from IPython import display
 
 inputFile = "/home/debug/Documents/anchor_debug/build/debug-output.txt"
@@ -126,8 +127,7 @@ def readIn():
     #time.sleep(0.003)
 
 readIn()
-for i in nodeDict:
-    print(i)
+pprint.pprint(nodeDict)
 
 # node()
 
