@@ -110,8 +110,8 @@ int send_debug_message(char *input) {
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
     //printf("Hello message sent\n");
-    valread = read( sock , buffer, 1024);
-    printf("%s\n",buffer);
+    //valread = read( sock , buffer, 1024);
+    //printf("%s\n",buffer);
     return 0;
 }
 

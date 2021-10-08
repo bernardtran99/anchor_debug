@@ -110,8 +110,8 @@ int send_debug_message(char *input) {
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
     //printf("Hello message sent\n");
-    valread = read( sock , buffer, 1024);
-    printf("%s\n",buffer);
+    //valread = read( sock , buffer, 1024);
+    //printf("%s\n",buffer);
     return 0;
 }
 
@@ -804,6 +804,7 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
+
     char temp_message[80];
     char temp_num[10];
     strcat(temp_message, "Node Start: ");
