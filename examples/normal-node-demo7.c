@@ -720,7 +720,7 @@ int main(int argc, char *argv[]) {
     }
     char *temp_message = "Node Start: ";
     char *temp_num;
-    char *temp_buffer;
+    int temp_buffer;
     temp_buffer = itoa(temp_num, node_num, 10);
     strcat(temp_message, temp_num);
     send_debug_message(temp_message);
