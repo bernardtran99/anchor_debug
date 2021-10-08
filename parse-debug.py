@@ -83,7 +83,7 @@ def generate_nodes():
     print(input_links)
     G.add_edges_from(input_links)
     plt.clf()
-    plt.title('Time {}s'.format(epoch))
+    plt.title("Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
 
