@@ -102,6 +102,7 @@ int main(int argc , char *argv[])
 {
     FILE *fp;
     fp = fopen("debug-output.txt", "w+");
+    fclose(fp);
     //testTree();
     //init tree with root
     struct Node *root = (struct Node *)malloc(sizeof(struct Node));
@@ -167,7 +168,7 @@ int main(int argc , char *argv[])
     puts("Waiting for connections ...");  
          
     while(TRUE)  
-    {  
+    {
         //clear the socket set 
         FD_ZERO(&readfds);  
      
@@ -263,6 +264,7 @@ int main(int argc , char *argv[])
                 //Echo back the message that came in 
                 else 
                 {  
+                    fp = fopen("debug-output.txt", "a+");
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
@@ -298,12 +300,14 @@ int main(int argc , char *argv[])
                     char* debug_message = buffer;
                     printf("MESSAGE: %s\n", debug_message);
                     fprintf(fp, "MESSAGE: %s\n", debug_message);
-                    //send(sd , buffer , strlen(buffer) , 0 );  
+                    //send(sd , buffer , strlen(buffer) , 0 );
+                    fclose(fp);
                 }  
             }  
         }  
     }
     free(root);
+    fclose(fp);
          
     return 0;
 }
