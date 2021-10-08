@@ -25,11 +25,53 @@ ipDict = {
 
 #empty dict
 nodeDict = {}
+input_dynamic_links = []
+
+G=nx.MultiDiGraph()
+G.add_node(1,pos=(2,6))
+G.add_node(2,pos=(4,10))
+G.add_node(3,pos=(4,2))
+G.add_node(4,pos=(6,6))
+G.add_node(5,pos=(8,10))
+G.add_node(6,pos=(8,2))
+G.add_node(7,pos=(10,6))
+G.add_node(8,pos=(12,10))
+G.add_node(9,pos=(12,2))
+G.add_node(10,pos=(14,6))
+pos=nx.get_node_attributes(G,'pos')
+node_sizes = [500]*10
+node_colors = ['green']*10
+node_sizes[0] = 1200
+node_colors[0] = 'red'
 
 def remove_suffix(input_string, suffix):
     if suffix and input_string.endswith(suffix):
         return input_string[:-len(suffix)]
     return input_string
+
+def generate_static_nodes():
+    input_links = []
+
+    for keys in nodeDict:
+        for values in nodeDict[keys]:
+            if isinstance(values, int):
+                input_links.append((values,keys))
+    print(input_links)
+
+    G.add_edges_from(input_links)
+    plt.clf()
+    plt.title("Demo")
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show()
+
+def generate_dynamic_nodes(source, destination):
+    input_dynamic_links.append((source, destination))
+    G.add_edges_from(input_links)
+    plt.clf()
+    plt.title("Demo")
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show()
+    time.sleep(5)
 
 def readIn():
     #while True:
@@ -56,38 +98,7 @@ def readIn():
                                 nodeDict[node_num].append(string_value)
                         else:
                             nodeDict[node_num] = [string_value]
-
-def generate_static_nodes():
-    G=nx.MultiDiGraph()
-    G.add_node(1,pos=(2,6))
-    G.add_node(2,pos=(4,10))
-    G.add_node(3,pos=(4,2))
-    G.add_node(4,pos=(6,6))
-    G.add_node(5,pos=(8,10))
-    G.add_node(6,pos=(8,2))
-    G.add_node(7,pos=(10,6))
-    G.add_node(8,pos=(12,10))
-    G.add_node(9,pos=(12,2))
-    G.add_node(10,pos=(14,6))
-    pos=nx.get_node_attributes(G,'pos')
-
-    node_sizes = [500]*10
-    node_colors = ['green']*10
-
-    input_links = []
-
-    for keys in nodeDict:
-        for values in nodeDict[keys]:
-            if isinstance(values, int):
-                input_links.append((values,keys))
-    print(input_links)
-    G.add_edges_from(input_links)
-    node_sizes[0]= 1200
-    node_colors[0] = 'red'
-    plt.clf()
-    plt.title("Demo")
-    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    plt.show()
+                        generate_dynamic_nodes(node_num, string_value)
 
 #add_edges_from() takes in a list of tuples
 def node():
@@ -163,7 +174,7 @@ def node():
 
 readIn()
 print(nodeDict)
-generate_static_nodes()
+#generate_static_nodes()
 
 # while True:
 #     fd = open(inputFile, 'r+')
