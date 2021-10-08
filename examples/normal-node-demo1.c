@@ -829,6 +829,7 @@ int main(int argc, char *argv[]) {
     if(is_anchor == true) {
         send_debug_message("Is Anchor");
     }
+    printf("here");
     running = true;
     while (running) {
         //uncomment here to test send anct
