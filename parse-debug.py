@@ -41,6 +41,11 @@ pos=nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
 
+def remove_suffix(input_string, suffix):
+    if suffix and input_string.endswith(suffix):
+        return input_string[:-len(suffix)]
+    return input_string
+
 def node():
     #fig  = plt.figure()
     #ax = fig.add_subplot(1,1,1)
