@@ -465,7 +465,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     last_interest = current_time;
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
-    send_debug_message("On Interest: %s", prefix);
+    char *temp_message = "On Interest: ";
+    strcat(temp_message, prefix);
+    send_debug_message(temp_message);
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -713,7 +715,11 @@ int main(int argc, char *argv[]) {
         printf("\nConnection Failed \n");
         return -1;
     }
-    send_debug_message("Node Start: %s", node_num);
+    char *temp_message = "Node Start: ";
+    char *temp_num;
+    itoa(temp_num, node_num);
+    strcat(temp_message, temp_num);
+    send_debug_message(temp_message);
     
     ndn_lite_startup();
     //ndn_interest_t interest;
