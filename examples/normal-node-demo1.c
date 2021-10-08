@@ -804,7 +804,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     char *temp_message = "Node Start: ";
-    char temp_num[10];
+    char temp_num[];
     printf("here\n");
     sprintf(temp_num, "%d", node_num);
     printf("here\n");
