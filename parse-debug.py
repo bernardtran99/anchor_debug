@@ -109,7 +109,7 @@ def readIn():
             elif "On Interest" in line:
                 strings = line.split()
                 node_ip = strings[3]
-                for i in range(strings):
+                for i in range(len(strings)):
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n 
                         strings[i + 1].removesuffix("On")
