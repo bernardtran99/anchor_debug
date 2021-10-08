@@ -117,6 +117,9 @@ int send_debug_message(char *input) {
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
+    uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    uint8_t *selector_ptr = selector;
+    ndn_udp_face_t *face;
     ndn_interest_t interest;
     ndn_name_t prefix_name;
     char *ancmt_string = "/ancmt/1/1";
@@ -139,37 +142,6 @@ void flood(ndn_interest_t interest_pkt) {
         //Get all closest interfaces and forward to them
         printf("Forwarding Announcement (Anchor)\n");
         //insert fib information here
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
-
-        // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
-        //     //printf("looking at interfaces in fib")
-        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
-        // }
-    }
-
-    else {
-        //Normal node flooding announcement (layer 1)
-        //Flood while using time delay and accounting for interfaces
-        //check pit for incoming interest, then send out interest for each not in pit
-        //layer1_fib = router->fib;
-        printf("Forwarding Announceent (Non-Anchor)\n");
-        //printf("PIT Entires: %d\n", sizeof(router->pit->slots));
-        // for(int i = 0; i < router->pit->capacity; i++) {
-        //     printf("Iterate number: %d\n", i);
-        //     ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
-        //     nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
-        //     printf("Here\n");
-        //     ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
-        //     //TODO: Segmentation Fault Here
-        //     ndn_fib_unregister_face(router->fib, temp_fib_id);
-        // }
-        //router->fib = layer1_fib;
-
-        uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        uint8_t *selector_ptr = selector;
-        ndn_udp_face_t *face;
-        
-        //myip, my outgoing port, their incoming ip, their incoming port
         in_port_t port1, port2;
         in_addr_t server_ip;
         char *sz_port1, *sz_port2, *sz_addr;
@@ -208,6 +180,32 @@ void flood(ndn_interest_t interest_pkt) {
         ndn_interest_from_name(&interest, &prefix_name);
         ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+
+        // for(int i = 0; i < ndn_forwarder_get().fib.capacity; i ++) {
+        //     //printf("looking at interfaces in fib")
+        //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
+        // }
+    }
+
+    else {
+        //Normal node flooding announcement (layer 1)
+        //Flood while using time delay and accounting for interfaces
+        //check pit for incoming interest, then send out interest for each not in pit
+        //layer1_fib = router->fib;
+        printf("Forwarding Announcement (Non-Anchor)\n");
+        //printf("PIT Entires: %d\n", sizeof(router->pit->slots));
+        // for(int i = 0; i < router->pit->capacity; i++) {
+        //     printf("Iterate number: %d\n", i);
+        //     ndn_table_id_t temp_pit_id = router->pit->slots[i].nametree_id;
+        //     nametree_entry_t *temp_nametree_entry = ndn_nametree_at(router->nametree, temp_pit_id);
+        //     printf("Here\n");
+        //     ndn_table_id_t temp_fib_id = temp_nametree_entry->fib_id;
+        //     //TODO: Segmentation Fault Here
+        //     ndn_fib_unregister_face(router->fib, temp_fib_id);
+        // }
+        //router->fib = layer1_fib;
+        
+        //myip, my outgoing port, their incoming ip, their incoming port
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
@@ -823,7 +821,8 @@ int main(int argc, char *argv[]) {
         //uncomment here to test send anct
         if(is_anchor && !ancmt_sent) {
             //printf("send anct called\n");
-            populate_outgoing_fib();
+            ndn_interest_t interest_pkt;
+            flood(interest_pkt);
             ancmt_sent = true;
         }
         //packet is ancmt

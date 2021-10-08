@@ -152,7 +152,7 @@ void flood(ndn_interest_t interest_pkt) {
         //Flood while using time delay and accounting for interfaces
         //check pit for incoming interest, then send out interest for each not in pit
         //layer1_fib = router->fib;
-        printf("Forwarding Announceent (Non-Anchor)\n");
+        printf("Forwarding Announcement (Non-Anchor)\n");
         //printf("PIT Entires: %d\n", sizeof(router->pit->slots));
         // for(int i = 0; i < router->pit->capacity; i++) {
         //     printf("Iterate number: %d\n", i);

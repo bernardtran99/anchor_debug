@@ -162,7 +162,6 @@ ndn_pit_find_or_insert(ndn_pit_t* self, ndn_interest_t interest, uint8_t* name, 
 }
 */
 
-
 ndn_pit_entry_t*
 ndn_pit_find(ndn_pit_t* self, uint8_t* prefix, size_t length)
 {
