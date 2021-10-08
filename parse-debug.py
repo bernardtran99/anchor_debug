@@ -73,6 +73,13 @@ def generate_dynamic_nodes(source, destination):
     plt.show()
     time.sleep(5)
 
+def generate_layer_2():
+    G.add_edges_from(input_dynamic_links)
+    plt.clf()
+    plt.title("Layer 2")
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show()
+
 def readIn():
     #while True:
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
@@ -96,11 +103,12 @@ def readIn():
                         if node_num in nodeDict:
                             if string_value not in nodeDict[node_num]:
                                 nodeDict[node_num].append(string_value)
-                                generate_dynamic_nodes(string_value, node_num)
+                                #generate_dynamic_nodes(string_value, node_num)
                         else:
                             #this will only add the first node every time
                             nodeDict[node_num] = [string_value]
-                            generate_dynamic_nodes(string_value, node_num)
+                            #generate_dynamic_nodes(string_value, node_num)
+                            input_dynamic_links.append(node_num, string_value)
 
 #add_edges_from() takes in a list of tuples
 def node():
@@ -176,6 +184,7 @@ def node():
 
 readIn()
 print(nodeDict)
+generate_layer_2()
 #generate_static_nodes()
 
 # while True:
