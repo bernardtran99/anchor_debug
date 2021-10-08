@@ -40,7 +40,7 @@ def readIn():
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
-                nodeDict[node_num] = set(["anchor"])
+                nodeDict[node_num] = ["anchor"]
 
             elif "On Interest" in line:
                 strings = line.split()
@@ -51,9 +51,12 @@ def readIn():
                         #strings[i+1] = 80n 
                         strings[i + 1] = remove_suffix(strings[i + 1], "On")
                         if node_num in nodeDict:
-                            nodeDict[node_num].add(strings[i + 1])
+                            if strings[i+1] in nodeDict[node_num]:
+
+                            else:
+                                nodeDict[node_num].append(strings[i+1])
                         else:
-                            nodeDict[node_num] = set([strings[i+1]])
+                            nodeDict[node_num] = [strings[i+1]]
 
 def generate_nodes() :
     G=nx.MultiDiGraph()
