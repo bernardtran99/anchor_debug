@@ -59,7 +59,7 @@ def generate_nodes(pair_nodes):
     plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
-    plt.pause(1)
+    plt.pause(0.1)
     time.sleep(1)  
 
 def readIn():
