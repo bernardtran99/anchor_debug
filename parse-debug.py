@@ -32,8 +32,8 @@ input_dynamic_links = []
 
 input_ancmt_list = []
 input_layer2_list = []
-prev_ancmt_list = []
-prev_layer2_list = []
+prev_ancmt_list = [(1,1)]
+prev_layer2_list = [(1,1)]
 combined_list = []
 
 pic_num = 1
