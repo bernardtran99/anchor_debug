@@ -118,7 +118,7 @@ def generate_layer_2():
 while True:
     current_time += 0.003
     print(current_time)
-    if current_time > 1:
+    if current_time > 0.05:
         break
     readIn()
     generate_continuous_nodes(current_time)
