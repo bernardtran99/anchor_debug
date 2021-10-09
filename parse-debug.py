@@ -52,7 +52,7 @@ node_sizes = [500]*10
 node_colors = ['green']*10
 
 #this is for real time video
-def generate_continuous_nodes(time):
+def generate_continuous_nodes():
     combined_list = input_ancmt_list + input_layer2_list
     G.add_edges_from(combined_list)
     plt.clf()
@@ -90,7 +90,7 @@ def readIn():
 
 while True:
     readIn()
-    generate_continuous_nodes(current_time)
+    generate_continuous_nodes()
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
     time.sleep(0.001)
