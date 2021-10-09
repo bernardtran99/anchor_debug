@@ -269,11 +269,30 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
+                    char buffer[26];
+                    int millisec;
+                    struct tm* tm_info;
+                    struct timeval tv;
+
+                    gettimeofday(&tv, NULL);
+
+                    millisec = lrint(tv.tv_usec/1000.0);
+                    if (millisec>=1000) {
+                        millisec -=1000;
+                        tv.tv_sec++;
+                    }
+
+                    tm_info = localtime(&tv.tv_sec);
+
+                    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
+                    printf("%s.%03d\n", buffer, millisec);
+
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
+                    //print timestamp here
                     printf("IP ADDRESS: %s -> ", temp);
                     fprintf(fp, "IP ADDRESS: %s -> ", temp);
 
