@@ -39,9 +39,6 @@ combined_list = []
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
-            if "Is Anchor" in line:
-                node_sizes[0] = 1000
-                node_colors[0] = 'red'
             if "On Interest" or "Flooded Interest" in line:
                 strings = line.split()
                 node_ip = strings[2]
@@ -80,6 +77,7 @@ node_sizes = [500]*10
 node_colors = ['green']*10
 node_sizes[0] = 1000
 node_colors[0] = 'red'
+
 G.add_edges_from(input_layer2_list)
 plt.clf()
 plt.title("Layer 2 Tree")
