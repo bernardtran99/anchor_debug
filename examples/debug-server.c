@@ -272,15 +272,23 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
-                    time_t timer;
                     char time_buffer[26];
+                    int millisec;
                     struct tm* tm_info;
+                    struct timeval tv;
 
-                    timer = time(NULL);
-                    tm_info = localtime(&timer);
+                    gettimeofday(&tv, NULL);
 
-                    strftime(time_buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
-                    puts(time_buffer);
+                    millisec = tv.tv_usec/1000.0; // Round to nearest millisec
+                    if (millisec>=1000) { // Allow for rounding up to nearest second
+                        millisec -=1000;
+                        tv.tv_sec++;
+                    }
+
+                    tm_info = localtime(&tv.tv_sec);
+
+                    strftime(time_buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
+                    printf("%s.%03d", time_buffer, millisec);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
