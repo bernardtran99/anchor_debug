@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <math.h>
+#include <fenv.h>
      
 #define TRUE   1 
 #define FALSE  0 
@@ -271,7 +272,7 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
-                    char buffer[26];
+                    char time_buffer[26];
                     int millisec;
                     struct tm* tm_info;
                     struct timeval tv;
@@ -286,8 +287,8 @@ int main(int argc , char *argv[])
 
                     tm_info = localtime(&tv.tv_sec);
 
-                    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
-                    printf("%s.%03d\n", buffer, millisec);
+                    strftime(time_buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
+                    printf("%s.%03d\n", time_buffer, millisec);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
