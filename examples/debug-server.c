@@ -272,16 +272,15 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
-                    timeval curTime;
-                    gettimeofday(&curTime, NULL);
-                    int milli = curTime.tv_usec / 1000;
+                    time_t timer;
+                    char time_buffer[26];
+                    struct tm* tm_info;
 
-                    char buffer [80];
-                    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
+                    timer = time(NULL);
+                    tm_info = localtime(&timer);
 
-                    char currentTime[84] = "";
-                    sprintf(currentTime, "%s:%03d", buffer, milli);
-                    printf("%s ", currentTime);
+                    strftime(time_buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+                    puts(buffer);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
