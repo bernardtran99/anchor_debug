@@ -69,7 +69,7 @@ def generate_continuous_nodes(time):
         pic_flag = 1
         plt.savefig("topology-{}.png".format(pic_num))
     plt.show(block=False)
-    plt.pause(0.01)
+    plt.pause(0.001)
 
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
