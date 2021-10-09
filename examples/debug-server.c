@@ -280,7 +280,7 @@ int main(int argc , char *argv[])
 
                     gettimeofday(&tv, NULL);
 
-                    millisec = lrint(tv.tv_usec/1000.0);
+                    millisec = round(tv.tv_usec/1000.0);
                     if (millisec>=1000) {
                         millisec -=1000;
                         tv.tv_sec++;
