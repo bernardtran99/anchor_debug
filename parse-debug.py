@@ -23,6 +23,9 @@ ipDict = {
   "155.246.210.98" : 10
 }
 
+#dictionary of nodes that have flooded
+firstInterest = {}
+
 #empty dict
 nodeDict = {}
 input_dynamic_links = []
@@ -124,34 +127,53 @@ def generate_node_interrupt(time):
 
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
-
         for line in fd:
-            # if "Is Anchor" in line:
-            #     strings = line.split()
-            #     node_ip = strings[2]
-            #     node_num = ipDict[node_ip]
-            #     nodeDict[node_num] = ["anchor"]
-
             if "On Interest" or "Flooded Interest" in line:
                 strings = line.split()
-                #ip number
                 node_ip = strings[2]
+                node_num = ipDict[node_ip]
                 for i in range(len(strings)):
-                    if strings[i] == "Interest:":
-                        #strings[i+1] = 80n 
-                        strings[i + 1] = remove_suffix(strings[i + 1], "On")
-                        # also account for remove suffix flooded
-                        string_value = int(strings[i + 1])
-                        if node_num in nodeDict:
-                            if string_value not in nodeDict[node_num]:
-                                nodeDict[node_num].append(string_value)
-                                #generate_dynamic_nodes(string_value, node_num)
-                        else:
-                            #this will only add the first node every time
-                            nodeDict[node_num] = [string_value]
-                            #generate_dynamic_nodes(string_value, node_num)
-                            input_dynamic_links.append((node_num, string_value))
-                    elif strings[i] == "Flooded":
+                    if strings[i] = "Interest:":
+                        string_value = strings[i+1]
+                        if node_num not in firstInterest:
+                            firstInterest[node_num] = string_value
+                        if (string_value, node_num) not in input_ancmt_list:
+                            input_ancmt_list.append((string_value, node_num))
+                    if strings[i] = "Flooded":
+                        if node_num != 1:
+                            if (node_num, firstInterest[node_num]) not in input_layer2_list:
+                                input_layer2_list.append((node_num, firstInterest[node_num]) 
+
+# def readIn():
+#     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
+
+#         for line in fd:
+#             # if "Is Anchor" in line:
+#             #     strings = line.split()
+#             #     node_ip = strings[2]
+#             #     node_num = ipDict[node_ip]
+#             #     nodeDict[node_num] = ["anchor"]
+
+#             if "On Interest" or "Flooded Interest" in line:
+#                 strings = line.split()
+#                 #ip number
+#                 node_ip = strings[2]
+#                 for i in range(len(strings)):
+#                     if strings[i] == "Interest:":
+#                         #strings[i+1] = 80n 
+#                         strings[i + 1] = remove_suffix(strings[i + 1], "On")
+#                         # also account for remove suffix flooded
+#                         string_value = int(strings[i + 1])
+#                         if node_num in nodeDict:
+#                             if string_value not in nodeDict[node_num]:
+#                                 nodeDict[node_num].append(string_value)
+#                                 #generate_dynamic_nodes(string_value, node_num)
+#                         else:
+#                             #this will only add the first node every time
+#                             nodeDict[node_num] = [string_value]
+#                             #generate_dynamic_nodes(string_value, node_num)
+#                             input_dynamic_links.append((node_num, string_value))
+#                     elif strings[i] == "Flooded":
 
 #add_edges_from() takes in a list of tuples
 def node():
@@ -229,17 +251,17 @@ def node():
 # print(nodeDict)
 # generate_layer_2()
 
-current_time += 0.003
 readIn()
-generate_continuous_nodes(current_time)
-time.sleep(0.002)
+print(input_ancmt_list)
+print(input_layer2_list)
 
-while True:
-    current_time += 0.003
-    readIn()
-    generate_continuous_nodes(current_time)
-    time.sleep(0.002)
+# while True:
+#     current_time += 0.003
+#     readIn()
+#     generate_continuous_nodes(current_time)
+#     time.sleep(0.002)
 
+#--------------------------------
 #generate_static_nodes()
 
 #for synchrony over time 
