@@ -32,8 +32,8 @@ input_dynamic_links = []
 
 input_ancmt_list = []
 input_layer2_list = []
-prev_ancmt_list = [(1,1)]
-prev_layer2_list = [(1,1)]
+prev_ancmt_list = []
+prev_layer2_list = []
 combined_list = []
 
 pic_num = 1
@@ -59,6 +59,8 @@ node_colors[0] = 'red'
 
 #this is for real time video
 def generate_continuous_nodes(time):
+    prev_ancmt_list = prev_ancmt_list
+    prev_layer2_list = prev_layer2_list
     combined_list = input_ancmt_list + input_layer2_list
     G.add_edges_from(combined_list)
     plt.clf()
