@@ -221,9 +221,40 @@ int main(int argc , char *argv[])
                 exit(EXIT_FAILURE);  
             }  
              
-            //inform user of socket number - used in send and receive commands 
+            //inform user of socket number - used in send and receive commands
+            char *node_num;
+            if(strcmp( inet_ntoa(address.sin_addr), "155.246.44.142") == 0) {
+                node_num = "Node 1";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.215.101") == 0) {
+                node_num = "Node 2";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.202.145") == 0) {
+                node_num = "Node 3";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.216.113") == 0) {
+                node_num = "Node 4";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.203.173") == 0) {
+                node_num = "Node 5";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.216.33") == 0) {
+                node_num = "Node 6";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.202.111") == 0) {
+                node_num = "Node 7";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.212.111") == 0) {
+                node_num = "Node 8";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.213.83") == 0) {
+                node_num = "Node 9";
+            }
+            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.210.98") == 0) {
+                node_num = "Node 10";
+            }
             printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
-              
+
            
             //send new connection greeting message 
             /*
@@ -296,8 +327,39 @@ int main(int argc , char *argv[])
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
-                    //print timestamp here
-                    printf("IP ADDRESS: %s -> ", temp);
+                    char *node_num;
+                    if(strcmp(temp, "155.246.44.142") == 0) {
+                        node_num = "Node 1";
+                    }
+                    else if(strcmp(temp, "155.246.215.101") == 0) {
+                        node_num = "Node 2";
+                    }
+                    else if(strcmp(temp, "155.246.202.145") == 0) {
+                        node_num = "Node 3";
+                    }
+                    else if(strcmp(temp, "155.246.216.113") == 0) {
+                        node_num = "Node 4";
+                    }
+                    else if(strcmp(temp, "155.246.203.173") == 0) {
+                        node_num = "Node 5";
+                    }
+                    else if(strcmp(temp, "155.246.216.33") == 0) {
+                        node_num = "Node 6";
+                    }
+                    else if(strcmp(temp, "155.246.202.111") == 0) {
+                        node_num = "Node 7";
+                    }
+                    else if(strcmp(temp, "155.246.212.111") == 0) {
+                        node_num = "Node 8";
+                    }
+                    else if(strcmp(temp, "155.246.213.83") == 0) {
+                        node_num = "Node 9";
+                    }
+                    else if(strcmp(temp, "155.246.210.98") == 0) {
+                        node_num = "Node 10";
+                    }
+                    printf("%s: -> ", node_num);
+                    //printf("IP ADDRESS: %s -> ", temp);
                     fprintf(fp, "IP ADDRESS: %s -> ", temp);
 
                     /*
