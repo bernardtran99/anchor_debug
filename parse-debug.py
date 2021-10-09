@@ -89,7 +89,7 @@ def readIn():
                     if strings[i] == "Flooded":
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
-                                input_layer2_list.append((node_num, firstInterest[node_num]) 
+                                input_layer2_list.append((node_num, firstInterest[node_num]))
 
 readIn()
 print(input_ancmt_list)
