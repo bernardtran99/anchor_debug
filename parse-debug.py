@@ -96,6 +96,13 @@ def readIn():
 # print(input_layer2_list)
 # generate_continuous_nodes(0)
 
+def generate_layer_2():
+    G.add_edges_from(input_layer2_list)
+    plt.clf()
+    plt.title("Layer 2 Tree")
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show()
+
 while True:
     current_time += 0.003
     readIn()
@@ -105,4 +112,9 @@ while True:
     pic_flag = 0
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
+    val = input()
+    if val == 1:
+        break
+
+generate_layer_2()
     #time.sleep(0.002)
