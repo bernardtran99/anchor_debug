@@ -100,7 +100,7 @@ def generate_continuous_nodes(time):
     plt.clf()
     plt.title('Time = {} s'.format(time))
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list
+    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list:
         plt.savefig("topology-{}.png".format(pic_num))
         pic_num += 1
     plt.show(block=False)
