@@ -55,7 +55,7 @@ G.add_node(10,pos=(14,6))
 pos = nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
-node_sizes[0] = 1200
+node_sizes[0] = 1000
 node_colors[0] = 'red'
 
 #this is for real time video
