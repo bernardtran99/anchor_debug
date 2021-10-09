@@ -63,7 +63,7 @@ def generate_continuous_nodes(time):
     combined_list = input_ancmt_list + input_layer2_list
     G.add_edges_from(combined_list)
     plt.clf()
-    plt.title('Time = {} s'.format(time))
+    plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list:
         pic_flag = 1
