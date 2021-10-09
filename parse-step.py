@@ -82,10 +82,10 @@ def readIn():
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
                                 generate_nodes((node_num, firstInterest[node_num]))
 
+readIn()
+
 plt.clf()
 plt.title("Anchor Demo")
 nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
 plt.show(block=False)
-plt.pause(1) 
-
-readIn()
+plt.pause(200) 
