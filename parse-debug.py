@@ -40,6 +40,7 @@ pic_num = 0
 pic_flag = 0
 
 current_time = 0
+timer = 0
 
 G = nx.MultiDiGraph()
 G.add_node(1,pos=(2,6))
@@ -55,6 +56,15 @@ G.add_node(10,pos=(14,6))
 pos = nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
+
+t_start = time.time()
+clock = 0
+
+def timer():
+    global t_start
+    clock = int(time.time()-t_start)
+    print(str(int(time.time() - t_start)))
+    print(clock)
 
 #this is for real time video
 def generate_continuous_nodes(time):
@@ -104,7 +114,8 @@ def generate_layer_2():
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show()
 
-while True:
+
+while clock < 60:
     current_time += 0.003
     readIn()
     generate_continuous_nodes(current_time)
@@ -113,9 +124,7 @@ while True:
     pic_flag = 0
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
-    val = input()
-    if val == "1":
-        break
+    timer()
 
 generate_layer_2()
     #time.sleep(0.002)
