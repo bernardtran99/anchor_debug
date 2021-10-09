@@ -123,7 +123,13 @@ int main(int argc , char *argv[])
     fd_set readfds;  
          
     //a message 
-    char *message = "Now Connected To Debug Server";  
+    char *message = "Now Connected To Debug Server";
+
+    //time variables
+    char time_buffer[26];
+    int millisec;
+    struct tm* tm_info;
+    struct timeval tv;
      
     //initialise all client_socket[] to 0 so not checked 
     for (i = 0; i < max_clients; i++)  
@@ -271,11 +277,6 @@ int main(int argc , char *argv[])
                     fp = fopen("debug-output.txt", "a+");
                     //set the string terminating NULL byte on the end 
                     //of the data read
-
-                    char time_buffer[26];
-                    int millisec;
-                    struct tm* tm_info;
-                    struct timeval tv;
 
                     gettimeofday(&tv, NULL);
 
