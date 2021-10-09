@@ -108,22 +108,22 @@ def generate_continuous_nodes(time):
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
 
-def generate_node_interrupt(time):
-    #if list has changed from last time, then generate new image and save
-    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list
-        combined_list = input_ancmt_list + input_layer2_list
-        G.add_edges_from(combined_list)
-        plt.clf()
-        plt.title('Time = {} s'.format(time))
-        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        #fig = plt.figure()
-        #fig.savefig("topology.png")
-        plt.savefig("topology-{}.png".format(pic_num))
-        pic_num += 1
-        plt.show(block=False)
-        plt.pause(0.01)
-    prev_ancmt_list = input_ancmt_list
-    prev_layer2_list = input_layer2_list
+# def generate_node_interrupt(time):
+#     #if list has changed from last time, then generate new image and save
+#     if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list
+#         combined_list = input_ancmt_list + input_layer2_list
+#         G.add_edges_from(combined_list)
+#         plt.clf()
+#         plt.title('Time = {} s'.format(time))
+#         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+#         #fig = plt.figure()
+#         #fig.savefig("topology.png")
+#         plt.savefig("topology-{}.png".format(pic_num))
+#         pic_num += 1
+#         plt.show(block=False)
+#         plt.pause(0.01)
+#     prev_ancmt_list = input_ancmt_list
+#     prev_layer2_list = input_layer2_list
 
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
