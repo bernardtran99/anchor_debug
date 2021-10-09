@@ -36,7 +36,7 @@ prev_ancmt_list = []
 prev_layer2_list = []
 combined_list = []
 
-pic_num = 1
+pic_num = 0
 
 current_time = 0
 
@@ -65,8 +65,8 @@ def generate_continuous_nodes(time):
     plt.title('Time = {} s'.format(time))
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list:
-        plt.savefig("topology-{}.png".format(pic_num))
         pic_num += 1
+        plt.savefig("topology-{}.png".format(pic_num))
     plt.show(block=False)
     plt.pause(0.01)
 
