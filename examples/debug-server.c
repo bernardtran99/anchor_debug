@@ -253,7 +253,7 @@ int main(int argc , char *argv[])
             else if(strcmp( inet_ntoa(address.sin_addr), "155.246.210.98") == 0) {
                 node_num = "Node 10";
             }
-            printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+            printf("New connection , socket fd is %d , ip is : %s , port : %d (%s)\n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port), node_num);
 
            
             //send new connection greeting message 
