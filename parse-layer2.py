@@ -36,31 +36,6 @@ prev_ancmt_list = []
 prev_layer2_list = []
 combined_list = []
 
-G = nx.MultiDiGraph()
-G.add_node(1,pos=(2,6))
-G.add_node(2,pos=(4,10))
-G.add_node(3,pos=(4,2))
-G.add_node(4,pos=(6,6))
-G.add_node(5,pos=(8,10))
-G.add_node(6,pos=(8,2))
-G.add_node(7,pos=(10,6))
-G.add_node(8,pos=(12,10))
-G.add_node(9,pos=(12,2))
-G.add_node(10,pos=(14,6))
-pos = nx.get_node_attributes(G,'pos')
-node_sizes = [500]*10
-node_colors = ['green']*10
-
-#this is for real time video
-def generate_continuous_nodes(time):
-    combined_list = input_ancmt_list + input_layer2_list
-    G.add_edges_from(combined_list)
-    plt.clf()
-    plt.title("Anchor Demo")
-    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    plt.show(block=False)
-    plt.pause(0.002)
-
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
@@ -87,10 +62,26 @@ def readIn():
 # print(input_ancmt_list)
 # print(input_layer2_list)
 # generate_continuous_nodes(0)
+readIn()
 
-while True:
-    readIn()
-    generate_continuous_nodes(current_time)
-    prev_ancmt_list = input_ancmt_list
-    prev_layer2_list = input_layer2_list
-    time.sleep(0.001)
+G = nx.MultiDiGraph()
+G.add_node(1,pos=(2,6))
+G.add_node(2,pos=(4,10))
+G.add_node(3,pos=(4,2))
+G.add_node(4,pos=(6,6))
+G.add_node(5,pos=(8,10))
+G.add_node(6,pos=(8,2))
+G.add_node(7,pos=(10,6))
+G.add_node(8,pos=(12,10))
+G.add_node(9,pos=(12,2))
+G.add_node(10,pos=(14,6))
+pos = nx.get_node_attributes(G,'pos')
+node_sizes = [500]*10
+node_colors = ['green']*10
+node_sizes[0] = 1000
+node_colors[0] = 'red'
+G.add_edges_from(input_layer2_list)
+plt.clf()
+plt.title("Layer 2 Tree")
+nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+plt.show()
