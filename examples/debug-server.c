@@ -280,7 +280,7 @@ int main(int argc , char *argv[])
                     tm_info = localtime(&timer);
 
                     strftime(time_buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
-                    puts(buffer);
+                    puts(time_buffer);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
