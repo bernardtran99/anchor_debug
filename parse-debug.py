@@ -59,8 +59,6 @@ node_colors[0] = 'red'
 
 #this is for real time video
 def generate_continuous_nodes(time):
-    prev_ancmt_list = prev_ancmt_list
-    prev_layer2_list = prev_layer2_list
     combined_list = input_ancmt_list + input_layer2_list
     G.add_edges_from(combined_list)
     plt.clf()
@@ -71,8 +69,6 @@ def generate_continuous_nodes(time):
         pic_num += 1
     plt.show(block=False)
     plt.pause(0.01)
-    prev_ancmt_list = input_ancmt_list
-    prev_layer2_list = input_layer2_list
 
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
@@ -102,4 +98,6 @@ generate_continuous_nodes(0)
 #     current_time += 0.003
 #     readIn()
 #     generate_continuous_nodes(current_time)
+#     prev_ancmt_list = input_ancmt_list
+#     prev_layer2_list = input_layer2_list
 #     time.sleep(0.002)
