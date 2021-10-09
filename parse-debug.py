@@ -91,12 +91,12 @@ def readIn():
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
 
-readIn()
-print(input_ancmt_list)
-print(input_layer2_list)
+# readIn()
+# print(input_ancmt_list)
+# print(input_layer2_list)
 
-# while True:
-#     current_time += 0.003
-#     readIn()
-#     generate_continuous_nodes(current_time)
-#     time.sleep(0.002)
+while True:
+    current_time += 0.003
+    readIn()
+    generate_continuous_nodes(current_time)
+    time.sleep(0.002)
