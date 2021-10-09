@@ -112,8 +112,8 @@ def generate_layer_2():
     plt.clf()
     plt.title("Layer 2 Tree")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    plt.show()
-
+    plt.show(block=False)
+    plt.pause(30)
 
 while clock < 60:
     current_time += 0.003
