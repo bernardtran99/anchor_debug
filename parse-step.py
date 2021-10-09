@@ -59,8 +59,8 @@ def generate_nodes():
     plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
-    plt.pause(3)
-    time.sleep(3)   
+    plt.pause(1)
+    time.sleep(1)   
 
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
@@ -75,13 +75,14 @@ def readIn():
                         if node_num not in firstInterest:
                             firstInterest[node_num] = string_value
                         if (string_value, node_num) not in input_ancmt_list:
+                            input_ancmt_list.append((string_value, node_num))
                             combined_list.append((string_value, node_num))
-                            generate_nodes()
                     if strings[i] == "Flooded":
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
+                                input_layer2_list.append((node_num, firstInterest[node_num]))
                                 combined_list.append((node_num, firstInterest[node_num]))
-                generate_nodes()
-                combined_list = []
+                    generate_nodes()
+                    combined_list = []
 
 readIn()
