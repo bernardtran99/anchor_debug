@@ -55,8 +55,6 @@ G.add_node(10,pos=(14,6))
 pos = nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
-node_sizes[0] = 1000
-node_colors[0] = 'red'
 
 #this is for real time video
 def generate_continuous_nodes(time):
@@ -74,6 +72,9 @@ def generate_continuous_nodes(time):
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
+            if "Is Anchor" in line:
+                node_sizes[0] = 1000
+                node_colors[0] = 'red'
             if "On Interest" or "Flooded Interest" in line:
                 strings = line.split()
                 node_ip = strings[2]
