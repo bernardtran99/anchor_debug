@@ -97,6 +97,7 @@ def readIn():
 # generate_continuous_nodes(0)
 
 def generate_layer_2():
+    print("Now displaying layer 2")
     G.add_edges_from(input_layer2_list)
     plt.clf()
     plt.title("Layer 2 Tree")
@@ -113,7 +114,7 @@ while True:
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
     val = input()
-    if val == 1:
+    if val == "1":
         break
 
 generate_layer_2()
