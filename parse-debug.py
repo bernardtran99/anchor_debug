@@ -133,13 +133,13 @@ def readIn():
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
                 for i in range(len(strings)):
-                    if strings[i] = "Interest:":
+                    if strings[i] == "Interest:":
                         string_value = strings[i+1]
                         if node_num not in firstInterest:
                             firstInterest[node_num] = string_value
                         if (string_value, node_num) not in input_ancmt_list:
                             input_ancmt_list.append((string_value, node_num))
-                    if strings[i] = "Flooded":
+                    if strings[i] == "Flooded":
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]) 
