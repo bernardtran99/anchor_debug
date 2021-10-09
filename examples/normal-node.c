@@ -360,6 +360,16 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
+
+    //TODO: make this a function later
+    //strcat requires an array of dedicated size
+    prefix = &interest_pkt.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    char temp_message[80];
+    strcat(temp_message, "On Interest: ");
+    strcat(temp_message, prefix);
+    send_debug_message(temp_message);
+
     prefix = &interest_pkt.name.components[0].value[0];
     prefix = trimwhitespace(prefix);
     prefix = "ancmt";
@@ -449,15 +459,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
     }
 
-    //TODO: make this a function later
     last_interest = current_time;
-    prefix = &interest_pkt.name.components[2].value[0];
-    prefix = trimwhitespace(prefix);
-    //strcat requires an array of dedicated size
-    char temp_message[80];
-    strcat(temp_message, "On Interest: ");
-    strcat(temp_message, prefix);
-    send_debug_message(temp_message);
     printf("END OF ON_INTEREST\n");
     
     return NDN_FWD_STRATEGY_SUPPRESS;
