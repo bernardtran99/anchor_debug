@@ -124,7 +124,7 @@ int main(int argc , char *argv[])
          
     //a message 
     char *message = "Now Connected To Debug Server";
-    
+
     //initialise all client_socket[] to 0 so not checked 
     for (i = 0; i < max_clients; i++)  
     {  
@@ -281,7 +281,7 @@ int main(int argc , char *argv[])
 
                     char currentTime[84] = "";
                     sprintf(currentTime, "%s:%03d", buffer, milli);
-                    printf("current time: %s \n", currentTime);
+                    printf("%s ", currentTime);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
