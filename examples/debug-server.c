@@ -125,6 +125,12 @@ int main(int argc , char *argv[])
     //a message 
     char *message = "Now Connected To Debug Server";
 
+    //time variables
+    char time_buffer[26];
+    int millisec;
+    struct tm* tm_info;
+    struct timeval tv;
+
     //initialise all client_socket[] to 0 so not checked 
     for (i = 0; i < max_clients; i++)  
     {  
@@ -272,11 +278,6 @@ int main(int argc , char *argv[])
                     //set the string terminating NULL byte on the end 
                     //of the data read
 
-                    char time_buffer[26];
-                    int millisec;
-                    struct tm* tm_info;
-                    struct timeval tv;
-
                     gettimeofday(&tv, NULL);
 
                     millisec = tv.tv_usec/1000.0; // Round to nearest millisec
@@ -288,7 +289,7 @@ int main(int argc , char *argv[])
                     tm_info = localtime(&tv.tv_sec);
 
                     strftime(time_buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
-                    printf("%s.%03d", time_buffer, millisec);
+                    printf("%s.%03d ", time_buffer, millisec);
 
                     //here add recording information about incoming message that is not a new connection
                     //so what type: ancmt send/ancmt receive/
