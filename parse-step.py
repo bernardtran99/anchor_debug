@@ -80,6 +80,12 @@ def readIn():
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
-                                generate_nodes((node_num, firstInterest[node_num]))       
+                                generate_nodes((node_num, firstInterest[node_num]))
+
+plt.clf()
+plt.title("Anchor Demo")
+nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+plt.show(block=False)
+plt.pause(1) 
 
 readIn()
