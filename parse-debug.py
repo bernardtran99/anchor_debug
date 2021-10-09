@@ -90,18 +90,18 @@ def readIn():
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
 
-readIn()
-print(input_ancmt_list)
-print(input_layer2_list)
-generate_continuous_nodes(0)
+# readIn()
+# print(input_ancmt_list)
+# print(input_layer2_list)
+# generate_continuous_nodes(0)
 
-# while True:
-#     current_time += 0.003
-#     readIn()
-#     generate_continuous_nodes(current_time)
-#     if pic_flag == 1:
-#         pic_num += 1
-#     pic_flag = 0
-#     prev_ancmt_list = input_ancmt_list
-#     prev_layer2_list = input_layer2_list
-#     time.sleep(0.002)
+while True:
+    current_time += 0.003
+    readIn()
+    generate_continuous_nodes(current_time)
+    if pic_flag == 1:
+        pic_num += 1
+    pic_flag = 0
+    prev_ancmt_list = input_ancmt_list
+    prev_layer2_list = input_layer2_list
+    time.sleep(0.002)
