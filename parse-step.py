@@ -54,10 +54,9 @@ node_sizes[0] = 1000
 node_colors[0] = 'red'
 
 def generate_nodes():
-    combined_list = []
     G.add_edges_from(combined_list)
     plt.clf()
-    plt.title("Layer 2 Tree")
+    plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
     plt.pause(3)
@@ -83,5 +82,6 @@ def readIn():
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 combined_list.append((node_num, firstInterest[node_num]))
                 generate_nodes()
+                combined_list = []
 
 readIn()
