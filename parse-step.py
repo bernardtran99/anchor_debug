@@ -53,8 +53,8 @@ node_colors = ['green']*10
 node_sizes[0] = 1000
 node_colors[0] = 'red'
 
-def generate_nodes():
-    G.add_edges_from(combined_list)
+def generate_nodes(pair_nodes):
+    G.add_edges_from([pair_nodes])
     plt.clf()
     plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
@@ -66,8 +66,6 @@ def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
             if "On Interest" or "Flooded Interest" in line:
-                generate_nodes()
-                combined_list = []
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
@@ -78,11 +76,11 @@ def readIn():
                             firstInterest[node_num] = string_value
                         if (string_value, node_num) not in input_ancmt_list:
                             input_ancmt_list.append((string_value, node_num))
-                            combined_list.append((string_value, node_num))
+                            generate_nodes((string_value, node_num))
                     if strings[i] == "Flooded":
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
-                                combined_list.append((node_num, firstInterest[node_num]))       
+                                generate_nodes((node_num, firstInterest[node_num]))       
 
 readIn()
