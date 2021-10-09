@@ -113,7 +113,8 @@ int main(int argc , char *argv[])
     int max_sd;  
     struct sockaddr_in address;  
          
-    char buffer[1025];  //data buffer of 1K 
+    char buffer[1025];  //data buffer of 1K
+    //separate buffer words
          
     //set of socket descriptors
     fd_set readfds;  
@@ -298,6 +299,7 @@ int main(int argc , char *argv[])
                     */
                     buffer[valread] = '\0';
                     char* debug_message = buffer;
+                    printf("VALREAD: %d\n", valread)
                     printf("MESSAGE: %s\n", debug_message);
                     fprintf(fp, "MESSAGE: %s\n", debug_message);
                     //send(sd , buffer , strlen(buffer) , 0 );
