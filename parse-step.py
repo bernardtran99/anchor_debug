@@ -66,6 +66,8 @@ def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
             if "On Interest" or "Flooded Interest" in line:
+                generate_nodes()
+                combined_list = []
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
@@ -81,8 +83,6 @@ def readIn():
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
-                                combined_list.append((node_num, firstInterest[node_num]))
-                    generate_nodes()
-                    combined_list = []
+                                combined_list.append((node_num, firstInterest[node_num]))       
 
 readIn()
