@@ -459,7 +459,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
-    
+
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
 

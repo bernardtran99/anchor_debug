@@ -345,6 +345,7 @@ char *trimwhitespace(char *str) {
     return str;
 }
 
+//is this threaded
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
