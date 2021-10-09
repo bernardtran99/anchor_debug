@@ -346,6 +346,7 @@ char *trimwhitespace(char *str) {
 }
 
 //is this threaded
+//non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
@@ -369,6 +370,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char temp_message[80];
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
+    strcat(temp_message, " ");
     send_debug_message(temp_message);
 
     prefix = &interest_pkt.name.components[0].value[0];
@@ -433,6 +435,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
+        //call insert pit here as well for first case scenario
         // if(interface_num[parameters] >= max_interfaces) {
         //    flood(interest_pkt);
         //    did_flood[parameters] = true;
@@ -451,6 +454,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 printf("Already flooded\n");
             }
             else {
+                //should call insert pit here and the start delay function
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;

@@ -27,6 +27,14 @@ ipDict = {
 nodeDict = {}
 input_dynamic_links = []
 
+input_ancmt_list = []
+input_layer2_list = []
+prev_ancmt_list = []
+prev_layer2_list = []
+combined_list = []
+
+pic_num = 1
+
 G=nx.MultiDiGraph()
 G.add_node(1,pos=(2,6))
 G.add_node(2,pos=(4,10))
@@ -43,6 +51,8 @@ node_sizes = [500]*10
 node_colors = ['green']*10
 node_sizes[0] = 1200
 node_colors[0] = 'red'
+
+current_time = 0
 
 def remove_suffix(input_string, suffix):
     if suffix and input_string.endswith(suffix):
@@ -80,25 +90,57 @@ def generate_layer_2():
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show()
 
+#this is for real time video
+def generate_continuous_nodes(time):
+    combined_list = input_ancmt_list + input_layer2_list
+    G.add_edges_from(combined_list)
+    plt.clf()
+    plt.title('Time = {} s'.format(time))
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list
+        plt.savefig("topology-{}.png".format(pic_num))
+        pic_num += 1
+    plt.show(block=False)
+    plt.pause(0.01)
+    prev_ancmt_list = input_ancmt_list
+    prev_layer2_list = input_layer2_list
+
+def generate_node_interrupt(time):
+    #if list has changed from last time, then generate new image and save
+    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list
+        combined_list = input_ancmt_list + input_layer2_list
+        G.add_edges_from(combined_list)
+        plt.clf()
+        plt.title('Time = {} s'.format(time))
+        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        #fig = plt.figure()
+        #fig.savefig("topology.png")
+        plt.savefig("topology-{}.png".format(pic_num))
+        pic_num += 1
+        plt.show(block=False)
+        plt.pause(0.01)
+    prev_ancmt_list = input_ancmt_list
+    prev_layer2_list = input_layer2_list
+
 def readIn():
-    #while True:
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
 
         for line in fd:
-            if "Is Anchor" in line:
-                strings = line.split()
-                node_ip = strings[2]
-                node_num = ipDict[node_ip]
-                nodeDict[node_num] = ["anchor"]
+            # if "Is Anchor" in line:
+            #     strings = line.split()
+            #     node_ip = strings[2]
+            #     node_num = ipDict[node_ip]
+            #     nodeDict[node_num] = ["anchor"]
 
-            elif "On Interest" in line:
+            if "On Interest" or "Flooded Interest" in line:
                 strings = line.split()
+                #ip number
                 node_ip = strings[2]
-                node_num = ipDict[node_ip]
                 for i in range(len(strings)):
                     if strings[i] == "Interest:":
                         #strings[i+1] = 80n 
                         strings[i + 1] = remove_suffix(strings[i + 1], "On")
+                        # also account for remove suffix flooded
                         string_value = int(strings[i + 1])
                         if node_num in nodeDict:
                             if string_value not in nodeDict[node_num]:
@@ -109,6 +151,7 @@ def readIn():
                             nodeDict[node_num] = [string_value]
                             #generate_dynamic_nodes(string_value, node_num)
                             input_dynamic_links.append((node_num, string_value))
+                    elif strings[i] == "Flooded":
 
 #add_edges_from() takes in a list of tuples
 def node():
@@ -182,9 +225,21 @@ def node():
 
     #time.sleep(0.003)
 
+# readIn()
+# print(nodeDict)
+# generate_layer_2()
+
+current_time += 0.003
 readIn()
-print(nodeDict)
-generate_layer_2()
+generate_continuous_nodes(current_time)
+time.sleep(0.002)
+
+while True:
+    current_time += 0.003
+    readIn()
+    generate_continuous_nodes(current_time)
+    time.sleep(0.002)
+
 #generate_static_nodes()
 
 #for synchrony over time 

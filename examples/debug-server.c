@@ -299,7 +299,7 @@ int main(int argc , char *argv[])
                     */
                     buffer[valread] = '\0';
                     char* debug_message = buffer;
-                    printf("VALREAD: %d\n", valread);
+                    //printf("VALREAD: %d\n", valread);
                     printf("MESSAGE: %s\n", debug_message);
                     fprintf(fp, "MESSAGE: %s\n", debug_message);
                     //send(sd , buffer , strlen(buffer) , 0 );

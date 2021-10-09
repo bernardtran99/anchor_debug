@@ -366,6 +366,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char temp_message[80];
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
+    strcat(temp_message, " ");
     send_debug_message(temp_message);
 
     prefix = &interest_pkt.name.components[0].value[0];
