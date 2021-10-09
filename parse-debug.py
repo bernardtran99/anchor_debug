@@ -73,9 +73,9 @@ def generate_continuous_nodes(time):
     plt.clf()
     plt.title("Anchor Demo")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-    if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list:
-        pic_flag = 1
-        plt.savefig("topology-{}.png".format(pic_num))
+    # if input_ancmt_list != prev_ancmt_list or input_layer2_list != prev_layer2_list:
+    #     pic_flag = 1
+    #     plt.savefig("topology-{}.png".format(pic_num))
     plt.show(block=False)
     plt.pause(0.00000000001)
 
@@ -108,15 +108,18 @@ def readIn():
 
 def generate_layer_2():
     print("Now displaying layer 2")
-    G.add_edges_from(input_layer2_list)
+    G.remove_edges_from(input_ancmt_list)
     plt.clf()
     plt.title("Layer 2 Tree")
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
     plt.pause(30)
 
-while clock < 60:
+while True:
     current_time += 0.003
+    print(current_time)
+    if current_time > 1:
+        break
     readIn()
     generate_continuous_nodes(current_time)
     if pic_flag == 1:
@@ -124,7 +127,5 @@ while clock < 60:
     pic_flag = 0
     prev_ancmt_list = input_ancmt_list
     prev_layer2_list = input_layer2_list
-    timer()
 
 generate_layer_2()
-    #time.sleep(0.002)
