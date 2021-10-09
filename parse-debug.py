@@ -38,28 +38,27 @@ combined_list = []
 
 pic_num = 1
 
-
-
 current_time = 0
+
+G = nx.MultiDiGraph()
+G.add_node(1,pos=(2,6))
+G.add_node(2,pos=(4,10))
+G.add_node(3,pos=(4,2))
+G.add_node(4,pos=(6,6))
+G.add_node(5,pos=(8,10))
+G.add_node(6,pos=(8,2))
+G.add_node(7,pos=(10,6))
+G.add_node(8,pos=(12,10))
+G.add_node(9,pos=(12,2))
+G.add_node(10,pos=(14,6))
+pos = nx.get_node_attributes(G,'pos')
+node_sizes = [500]*10
+node_colors = ['green']*10
+node_sizes[0] = 1200
+node_colors[0] = 'red'
 
 #this is for real time video
 def generate_continuous_nodes(time):
-    G = nx.MultiDiGraph()
-    G.add_node(1,pos=(2,6))
-    G.add_node(2,pos=(4,10))
-    G.add_node(3,pos=(4,2))
-    G.add_node(4,pos=(6,6))
-    G.add_node(5,pos=(8,10))
-    G.add_node(6,pos=(8,2))
-    G.add_node(7,pos=(10,6))
-    G.add_node(8,pos=(12,10))
-    G.add_node(9,pos=(12,2))
-    G.add_node(10,pos=(14,6))
-    pos = nx.get_node_attributes(G,'pos')
-    node_sizes = [500]*10
-    node_colors = ['green']*10
-    node_sizes[0] = 1200
-    node_colors[0] = 'red'
     combined_list = input_ancmt_list + input_layer2_list
     G.add_edges_from(combined_list)
     plt.clf()
@@ -82,7 +81,7 @@ def readIn():
                 node_num = ipDict[node_ip]
                 for i in range(len(strings)):
                     if strings[i] == "Interest:":
-                        string_value = strings[i+1]
+                        string_value = int(strings[i+1])
                         if node_num not in firstInterest:
                             firstInterest[node_num] = string_value
                         if (string_value, node_num) not in input_ancmt_list:
