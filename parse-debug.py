@@ -114,10 +114,11 @@ def generate_layer_2():
     nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
     plt.show(block=False)
     plt.pause(1)
+    time.sleep(30)
 
 while True:
     current_time += 0.003
-    print(current_time)
+    print(current_time) 
     if current_time > 0.05:
         break
     readIn()
