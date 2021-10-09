@@ -9,6 +9,8 @@
 #include <sys/socket.h> 
 #include <netinet/in.h>
 #include <sys/time.h>
+#include <time.h>
+#include <math.h>
      
 #define TRUE   1 
 #define FALSE  0 
