@@ -330,28 +330,29 @@ void generate_data() {
     //sends data anchor direction (layer1)
     //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
     printf("Generate Data\n");
+
     ndn_data_t data;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
-    ndn_name_t prefix_name;
 
+    ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-    
+
     //Node1-Anchor
-    printf("here");
-    sz_port1 = "3000";
+    sz_port1 = "4000";
     sz_addr = NODE1;
-    sz_port2 = "5000";
+    sz_port2 = "6000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -359,19 +360,14 @@ void generate_data() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    printf("here");
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    printf("here");
+    
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    printf("here");
-    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-    printf("here");
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 

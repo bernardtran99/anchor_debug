@@ -425,7 +425,6 @@ void generate_data() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
@@ -433,7 +432,6 @@ void generate_data() {
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 
     send_debug_message("Data Sent");
 }
