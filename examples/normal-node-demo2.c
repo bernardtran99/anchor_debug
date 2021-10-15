@@ -29,6 +29,7 @@
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
 #include "ndn-lite/util/uniform-time.h"
+#include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
 #define NODE1 "155.246.44.142"
@@ -330,6 +331,7 @@ void generate_data() {
 
     ndn_data_t data;
     ndn_udp_face_t *face;
+    ndn_face_intf_t *face_intf = malloc(sizeof(ndn_face_intf_t));
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
@@ -359,13 +361,15 @@ void generate_data() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     
+    face->intf = face_intf;
+    
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+    ndn_face_send(face_intf, encoder.output_value, encoder.offset);
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 

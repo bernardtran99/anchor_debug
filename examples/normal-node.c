@@ -29,6 +29,7 @@
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
 #include "ndn-lite/util/uniform-time.h"
+#include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
 #define NODE1 "155.246.44.142"
