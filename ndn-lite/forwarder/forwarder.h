@@ -68,6 +68,12 @@ typedef struct ndn_forwarder {
   uint8_t memory[NDN_FORWARDER_DEFAULT_SIZE];
 } ndn_forwarder_t;
 
+
+//user added data structure to hold an on-data callback function
+typedef struct callback_holder {
+  ndn_on_data_func on_data_func;
+} callback_holder_t;
+
 /**@defgroup NDNFwd Forwarder
  * @brief A lite forwarder.
  */
@@ -82,6 +88,9 @@ typedef struct ndn_forwarder {
  */
 void
 ndn_forwarder_init(void);
+
+//user added fucntion (btran)
+void callback_insert(ndn_on_data_func on_data_input);
 
 /** Returns the forwarder as a pointer
  */

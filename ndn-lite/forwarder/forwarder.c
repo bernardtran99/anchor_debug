@@ -29,6 +29,8 @@ uint8_t encoding_buf[2048];
 
 static ndn_forwarder_t forwarder;
 
+static callback_holder_t holder;
+
 // face_id is optional
 static int
 fwd_on_incoming_interest(uint8_t* interest,
@@ -82,6 +84,10 @@ ndn_forwarder_init(void)
   ndn_pit_init(ptr, NDN_PIT_MAX_SIZE, forwarder.nametree);
   forwarder.pit = (ndn_pit_t*)ptr;
   ptr += NDN_PIT_RESERVE_SIZE(NDN_PIT_MAX_SIZE);
+}
+
+void callback_insert(ndn_on_data_func on_data_input) {
+  holder.on_data_func = on_data_input;
 }
 
 // const ndn_forwarder_t*
@@ -312,20 +318,6 @@ ndn_forwarder_put_data(uint8_t* data, size_t length)
   return fwd_data_pipeline(data, length, name, name_len, NDN_INVALID_ID);
 }
 
-void on_data(const uint8_t* rawdata, uint32_t data_size) {
-  printf("On data\n");
-
-  ndn_data_t data;
-  char *prefix = &data.name.components[0].value[0];
-  
-  if (ndn_data_tlv_decode_digest_verify(&data, rawdata, data_size)) {
-      printf("Decoding failed.\n");
-  }
-
-  printf("DATA PREFIX: %s\n", prefix);
-  printf("It says: %s\n", data.content_value);
-}
-
 //this function will always call on data if dat ais received from interface no matter the prefix
 //only need to define udp face
 int
@@ -356,7 +348,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
     ret = tlv_data_get_name(packet, length, &name, &name_len);
     //make sure to include normal node.h in here
     //when inside this statement call this inside normal node
-    on_data(packet, length);
+    holder.on_data_func(packet, length, NULL);
     if (ret != NDN_SUCCESS)
       return ret;
     return NDN_SUCCESS;

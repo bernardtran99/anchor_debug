@@ -867,8 +867,8 @@ void populate_incoming_data_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 }
 
-/*
-void on_data(const uint8_t* rawdata, uint32_t data_size) {
+
+void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
     ndn_data_t data;
@@ -881,7 +881,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size) {
     printf("DATA PREFIX: %s\n", prefix);
     printf("It says: %s\n", data.content_value);
 }
-*/
+
 
 
 
@@ -1017,6 +1017,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     populate_incoming_fib();
     populate_incoming_data_fib();
+    callback_insert(on_data);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 
