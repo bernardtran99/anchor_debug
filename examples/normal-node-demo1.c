@@ -736,7 +736,7 @@ void populate_incoming_data_fib() {
 }
 
 
-void on_data(const uint8_t* rawdata, uint32_t data_size) {
+void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
     ndn_data_t data;
