@@ -367,6 +367,8 @@ void generate_data() {
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_forwarder_put_data(encoder.output_value, encoder.offset);
+
+    send_debug_message("Data Sent");
 }
 
 //is this threaded
