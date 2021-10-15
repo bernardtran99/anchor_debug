@@ -334,12 +334,12 @@ void generate_data() {
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
-
+    printf("here");
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
+    printf("here");
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
