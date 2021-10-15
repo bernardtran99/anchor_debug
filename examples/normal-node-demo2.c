@@ -338,7 +338,7 @@ void generate_data() {
 
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char *prefix_string = "/ancmt/1/1";
+    char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     in_port_t port1, port2;
@@ -369,7 +369,9 @@ void generate_data() {
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    printf("here");
     ndn_face_send(face_intf, encoder.output_value, encoder.offset);
+    printf("here");
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 
