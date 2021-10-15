@@ -20,7 +20,14 @@
 #include "../encode/interest.h"
 #include "callback-funcs.h"
 #include "../util/msg-queue.h"
-#include "../../examples/normal-node.h"
+
+//added includes
+#include "../encode/data.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define NDN_FORWARDER_RESERVE_SIZE(nametree_size, facetab_size, fib_size, pit_size) \
   (NDN_NAMETREE_RESERVE_SIZE(nametree_size) + \
