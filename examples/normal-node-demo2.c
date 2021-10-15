@@ -116,6 +116,8 @@ struct sockaddr_in serv_addr;
 char *debug_message;
 char buffer[1024] = {0};
 
+ndn_udp_face_t *double_face;
+
 int send_debug_message(char *input) {
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
@@ -334,7 +336,7 @@ void generate_data() {
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
     ndn_name_t prefix_name;
-    
+
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
@@ -344,11 +346,11 @@ void generate_data() {
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-
+    
     //Node1-Anchor
-    sz_port1 = "4000";
+    sz_port1 = "3000";
     sz_addr = NODE1;
-    sz_port2 = "6000";
+    sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -356,6 +358,7 @@ void generate_data() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
+    printf("here");
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     printf("here");
@@ -531,7 +534,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    double_face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node3-Anchor
     sz_port1 = "5000";

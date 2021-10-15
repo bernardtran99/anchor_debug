@@ -622,7 +622,7 @@ void populate_incoming_data_fib() {
 
     //Node3-Anchor
     sz_port1 = "6000";
-    sz_addr = NODE2;
+    sz_addr = NODE3;
     sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
