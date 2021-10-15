@@ -473,7 +473,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
         interface_num[parameters]++;
 
-        prefix = &interest_pkt.name.components[2].value[];
+        prefix = &interest_pkt.name.components[2].value[0];
         prefix = trimwhitespace(prefix);
 
         if(strcmp(prefix, "2") == 0) {
