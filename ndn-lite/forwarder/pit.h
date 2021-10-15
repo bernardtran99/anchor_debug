@@ -29,20 +29,19 @@ extern "C" {
  * @{
  */
 
+//TODO: add prefix and timeslice into pit entry
+//NOTE: adding these fields into pit entry makes the forwarder not work
+//format: /ancmt/layer_num/selector
+/*
+ndn_interest_t interest_pkt;
+ndn_name_t prefix_name;
+uint8_t timeslice;
+*/
+
 /**
  * PIT entry.
  */
 typedef struct ndn_pit_entry {
-
-  //TODO: add prefix and timeslice into pit entry
-  //NOTE: adding these fields into pit entry makes the forwarder not work
-  //format: /ancmt/layer_num/selector
-  /*
-  ndn_interest_t interest_pkt;
-  ndn_name_t prefix_name;
-  uint8_t timeslice;
-  */
-
   /** Interest Options.
    */
   interest_options_t options;

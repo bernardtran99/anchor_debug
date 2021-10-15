@@ -31,6 +31,16 @@
 #include "ndn-lite/util/uniform-time.h"
 
 #define PORT 8888
+#define NODE1 "155.246.1.1"
+#define NODE2 "155.246.1.1"
+#define NODE3 "155.246.1.1"
+#define NODE4 "155.246.1.1"
+#define NODE5 "155.246.1.1"
+#define NODE6 "155.246.1.1"
+#define NODE7 "155.246.1.1"
+#define NODE8 "155.246.1.1"
+#define NODE9 "155.246.1.1"
+#define NODE10 "155.246.1.1"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -681,6 +691,7 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
+//interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
     printf("\nVerifying Packet\n");
