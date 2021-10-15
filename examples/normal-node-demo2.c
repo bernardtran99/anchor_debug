@@ -362,7 +362,7 @@ void generate_data() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
-    
+    printf("here");
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
     ndn_metainfo_init(&data.metainfo);
