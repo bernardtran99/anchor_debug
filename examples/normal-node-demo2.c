@@ -347,6 +347,7 @@ void generate_data() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    printf("here");
     //Node1-Anchor
     sz_port1 = "5000";
     sz_addr = NODE1;
