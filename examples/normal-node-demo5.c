@@ -29,6 +29,7 @@
 #include "ndn-lite/forwarder/fib.h"
 #include "ndn-lite/forwarder/forwarder.h"
 #include "ndn-lite/util/uniform-time.h"
+#include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
 #define NODE1 "155.246.44.142"
@@ -115,6 +116,8 @@ struct sockaddr_in serv_addr;
 char *debug_message;
 char buffer[1024] = {0};
 
+ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
+
 int send_debug_message(char *input) {
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
@@ -130,7 +133,8 @@ void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt/1/1";
+    //DEMO: CHANGE
+    char *ancmt_string = "/ancmt/1/5";
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -167,38 +171,6 @@ void flood(ndn_interest_t interest_pkt) {
         //     //printf("looking at interfaces in fib")
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
-
-        //Node2-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE2;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        //Node3-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE3;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        ndn_interest_from_name(&interest, &prefix_name);
-        ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
     }
 
     else {
@@ -219,9 +191,10 @@ void flood(ndn_interest_t interest_pkt) {
         // }
         //router->fib = layer1_fib;        
 
+        //DEMO: CHANGE
         //Node2-Anchor
         sz_port1 = "3000";
-        sz_addr = NODE2;
+        sz_addr = NODE7;
         sz_port2 = "5000";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -235,7 +208,7 @@ void flood(ndn_interest_t interest_pkt) {
 
         //Node3-Anchor
         sz_port1 = "3000";
-        sz_addr = NODE3;
+        sz_addr = NODE8;
         sz_port2 = "5000";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -386,6 +359,31 @@ char *trimwhitespace(char *str) {
     return str;
 }
 
+void generate_data() {
+    //sends data anchor direction (layer1)
+    //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
+    printf("Generate Data\n");
+    ndn_data_t data;
+    ndn_encoder_t encoder;
+    char *str = "This is Layer 1 Data Packet";
+    uint8_t buf[4096];
+
+    ndn_name_t prefix_name;
+    //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
+    char *prefix_string = "/l1data/1/8";
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
+    data.name = prefix_name;
+    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+    ndn_metainfo_init(&data.metainfo);
+    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
+
+    send_debug_message("Data Sent");
+}
+
 //is this threaded
 //non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
@@ -403,6 +401,47 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
+
+    if(strcmp(prefix, "1")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face1;
+    }
+    else if(strcmp(prefix, "2")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face2;
+    }
+    else if(strcmp(prefix, "3")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face3;
+    }
+    else if(strcmp(prefix, "4")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face4;
+    }
+    else if(strcmp(prefix, "5")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face5;
+    }
+    else if(strcmp(prefix, "6")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face6;
+    }
+    else if(strcmp(prefix, "7")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face7;
+    }
+    else if(strcmp(prefix, "8")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face8;
+    }
+    else if(strcmp(prefix, "9")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face9;
+    }
+    else if(strcmp(prefix, "10")) {
+        printf("On Data Interface: %s", prefix);
+        data_face = face10;
+    }
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
@@ -448,21 +487,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //     return NDN_UNSUPPORTED_FORMAT;
     // }
     //printf("Packet Verified!\n");
-    
-    //insert_pit(interest_pkt);
-
-    // if(strcmp(prefix, "ancmt") == 0) {
-    //     printf("Prefix good\n");
-    // }
-    // if(strcmp(prefix, prefix_check) == 0) {
-    //     printf("Prefix good(var)\n");
-    // }
-    // if(stored_selectors[parameters] == false) {
-    //     printf("Selector false\n");
-    // }
-    // if(stored_selectors[parameters] == true) {
-    //     printf("Selector true\n");
-    // }
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
@@ -476,6 +500,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
+
+        //insert_pit(interest_pkt);
         //call insert pit here as well for first case scenario
         // if(interface_num[parameters] >= max_interfaces) {
         //    flood(interest_pkt);
@@ -507,7 +533,16 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
-    
+
+    //DEMO: CHANGE
+    //this is for producer generate data fter 6 second delay
+    /*
+    clock_t timer = clock();
+    printf("Delay Time: %d seconds\n", 6);
+    while (clock() < (timer + 6000000)) {
+    }
+    */
+
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
 
@@ -530,6 +565,10 @@ void populate_incoming_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    
+    //DEMO: CHANGE
+    //remove youre own incoming interface
+    //change NODE(NUM) and face(num)
     //Node1-Anchor
     sz_port1 = "5000";
     sz_addr = NODE1;
@@ -541,7 +580,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face1 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node2-Anchor
     sz_port1 = "5000";
@@ -554,7 +593,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face2 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node3-Anchor
     sz_port1 = "5000";
@@ -567,7 +606,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face3 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node4-Anchor
     sz_port1 = "5000";
@@ -580,20 +619,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node5-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE5;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face4 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node6-Anchor
     sz_port1 = "5000";
@@ -606,7 +632,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face6 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node7-Anchor
     sz_port1 = "5000";
@@ -619,7 +645,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face7 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node8-Anchor
     sz_port1 = "5000";
@@ -632,7 +658,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face8 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node9-Anchor
     sz_port1 = "5000";
@@ -645,7 +671,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face9 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node10-Anchor
     sz_port1 = "5000";
@@ -658,162 +684,21 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    
-    ancmt_string = "/ancmt/1/1";
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+    face10 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
+    //DEMO: CHANGE
     ancmt_string = "/ancmt/1/2";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+
+    ancmt_string = "/ancmt/1/4";
+    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
+    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
-void populate_incoming_data_fib() {
-    printf("\nIncoming Data FIB populated\n");
-
-    ndn_udp_face_t *face;
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
-
-    //Node1-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE1;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node2-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE2;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node3-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE3;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node4-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE4;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node5-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE5;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node6-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE6;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node7-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE7;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node8-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE8;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node9-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE9;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node10-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE10;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-}
-
-/*
-void on_data(const uint8_t* rawdata, uint32_t data_size) {
+void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
+    send_debug_message("On Data");
 
     ndn_data_t data;
     char *prefix = &data.name.components[0].value[0];
@@ -824,53 +709,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size) {
 
     printf("DATA PREFIX: %s\n", prefix);
     printf("It says: %s\n", data.content_value);
-}
-*/
 
-void generate_data() {
-    //sends data anchor direction (layer1)
-    //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
-    printf("Generate Data\n");
+    clock_t timer = clock();
+    printf("Delay Time: %d seconds\n", 1);
+    while (clock() < (timer + 1000000)) {
+    }
 
-    ndn_data_t data;
-    ndn_udp_face_t *face;
-    ndn_encoder_t encoder;
-    char *str = "This is Layer 1 Data Packet";
-    uint8_t buf[4096];
-
-    ndn_name_t prefix_name;
-    //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char *prefix_string = "/l1data/1/2";
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
-
-    //Node1-Anchor
-    sz_port1 = "4000";
-    sz_addr = NODE1;
-    sz_port2 = "6000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-    
-    data.name = prefix_name;
-    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-    ndn_metainfo_init(&data.metainfo);
-    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-    encoder_init(&encoder, buf, 4096);
-    ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
+    generate_data();
 }
 
 //interest is saved in pit until put-Data is called
@@ -964,7 +809,8 @@ int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
 
-    int node_num = 0;
+    //DEMO: CHANGE
+    int node_num = 5;
 
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -1001,13 +847,15 @@ int main(int argc, char *argv[]) {
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
+    //DEMO: CHANGE
     populate_incoming_fib();
-    populate_incoming_data_fib();
+    callback_insert(on_data);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 
     //signature init
 
+    //DEMO: CHANGE
     //is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor");
