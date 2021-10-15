@@ -336,7 +336,7 @@ void generate_data() {
 
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char *prefix_string = "/l1data/1/2";
+    char *prefix_string = "/ancmt/1/1";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     in_port_t port1, port2;
@@ -347,9 +347,9 @@ void generate_data() {
     struct in_addr ** paddrs;
 
     //Node1-Anchor
-    sz_port1 = "4000";
+    sz_port1 = "3000";
     sz_addr = NODE1;
-    sz_port2 = "6000";
+    sz_port2 = "5000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
