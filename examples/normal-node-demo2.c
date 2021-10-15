@@ -331,7 +331,8 @@ void generate_data() {
 
     ndn_data_t data;
     ndn_udp_face_t *face;
-    ndn_face_intf_t *face_intf = malloc(100);
+
+    ndn_face_intf_t *face_intf;
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
@@ -360,8 +361,7 @@ void generate_data() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    
-    face_intf = &face->intf;
+
     
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
@@ -370,7 +370,7 @@ void generate_data() {
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     printf("here");
-    ndn_face_send(face_intf, encoder.output_value, encoder.offset);
+    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
     printf("here");
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
