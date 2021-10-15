@@ -130,7 +130,7 @@ void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
-    char *ancmt_string = "/ancmt/1/1";
+    char *ancmt_string = "/ancmt/1/2";
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -219,7 +219,7 @@ void flood(ndn_interest_t interest_pkt) {
         // }
         //router->fib = layer1_fib;
 
-        
+
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
@@ -502,7 +502,7 @@ void populate_incoming_fib() {
 
     //Node1-Anchor
     sz_port1 = "5000";
-    sz_addr = NODE1;
+    sz_addr = "155.246.44.142";
     sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;

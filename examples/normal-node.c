@@ -168,7 +168,7 @@ void flood(ndn_interest_t interest_pkt) {
         //     //printf("looking at interfaces in fib")
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
-        
+
         //DEMO: CHANGE
         //Node2-Anchor
         sz_port1 = "3000";
@@ -1006,6 +1006,7 @@ int main(int argc, char *argv[]) {
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
+    //DEMO: CHANGE
     populate_incoming_fib();
     populate_incoming_data_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
