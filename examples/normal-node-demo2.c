@@ -350,9 +350,9 @@ void generate_data() {
     struct in_addr ** paddrs;
 
     //Node1-Anchor
-    sz_port1 = "4000";
+    sz_port1 = "5000";
     sz_addr = NODE1;
-    sz_port2 = "6000";
+    sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
