@@ -328,7 +328,7 @@ void generate_data() {
     //sends data anchor direction (layer1)
     //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
     printf("Generate Data\n");
-
+    printf("Generate Data\n");
     ndn_data_t data;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
@@ -349,9 +349,9 @@ void generate_data() {
 
     printf("here");
     //Node1-Anchor
-    sz_port1 = "5000";
+    sz_port1 = "6000";
     sz_addr = NODE1;
-    sz_port2 = "3000";
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -499,10 +499,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
 
-    clock_t start_time = clock();
-    printf("Data Delay Time: %d seconds\n", 6000000/1000000);
-    while (clock() < start_time + 6000000) {
-    }
     generate_data();
     
     return NDN_FWD_STRATEGY_SUPPRESS;
