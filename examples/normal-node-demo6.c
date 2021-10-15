@@ -403,47 +403,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
 
-    if(strcmp(prefix, "1") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face1;
-    }
-    else if(strcmp(prefix, "2") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face2;
-    }
-    else if(strcmp(prefix, "3") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face3;
-    }
-    else if(strcmp(prefix, "4") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face4;
-    }
-    else if(strcmp(prefix, "5") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face5;
-    }
-    else if(strcmp(prefix, "6") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face6;
-    }
-    else if(strcmp(prefix, "7") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face7;
-    }
-    else if(strcmp(prefix, "8") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face8;
-    }
-    else if(strcmp(prefix, "9") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face9;
-    }
-    else if(strcmp(prefix, "10") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face10;
-    }
-
     //TODO: make this a function later
     //strcat requires an array of dedicated size
     prefix = &interest_pkt.name.components[2].value[0];
@@ -502,6 +461,17 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
         interface_num[parameters]++;
 
+        prefix = &interest_pkt.name.components[2].value[0];
+        prefix = trimwhitespace(prefix);
+        
+        if(strcmp(prefix, "3") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face3;
+        }
+        else if(strcmp(prefix, "4") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face4;
+        }
         //insert_pit(interest_pkt);
         //call insert pit here as well for first case scenario
         // if(interface_num[parameters] >= max_interfaces) {
@@ -571,30 +541,6 @@ void populate_incoming_fib() {
     //remove youre own incoming interface
     //change NODE(NUM) and face(num)
     //Node1-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE1;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face1 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node2-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE2;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face2 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node3-Anchor
     sz_port1 = "5000";
@@ -621,71 +567,6 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face4 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node5-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE5;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face5 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node7-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE7;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face7 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node8-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE8;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face8 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node9-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE9;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face9 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node10-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE10;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face10 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //DEMO: CHANGE
     ancmt_string = "/ancmt/1/3";
