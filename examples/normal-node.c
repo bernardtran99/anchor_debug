@@ -912,4 +912,6 @@ int main(int argc, char *argv[]) {
         usleep(10000);
     }
     //ndn_face_destroy(&face->intf);
+
+    return 0;
 }
