@@ -30,6 +30,8 @@
 #include "ndn-lite/forwarder/forwarder.h"
 #include "ndn-lite/util/uniform-time.h"
 
+#include "normal-node.h"
+
 #define PORT 8888
 #define NODE1 "155.246.1.1"
 #define NODE2 "155.246.1.1"
@@ -689,6 +691,42 @@ void populate_incoming_fib() {
     
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
+}
+
+void on_data(const uint8_t* rawdata, uint32_t data_size, ndn_face_intf_t* face) {
+    printf("On data\n");
+
+    ndn_data_t data;
+    char *prefix = &data.name.components[0].value[0];
+    
+    if (ndn_data_tlv_decode_digest_verify(&data, rawdata, data_size)) {
+        printf("Decoding failed.\n");
+    }
+
+    printf("DATA PREFIX: %s\n", prefix);
+    printf("It says: %s\n", data.content_value);
+}
+
+void generate_data() {
+    printf("Generate Data\n");
+
+    ndn_data_t data;
+    ndn_encoder_t encoder;
+    char *str = "This is Layer 1 Data Packet";
+
+    uint8_t buf[4096];
+
+    ndn_name_t prefix_name;
+    char *prefix_string = "/l1data/1/2";
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    
+    data.name = prefix_name;
+    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+    ndn_metainfo_init(&data.metainfo);
+    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 }
 
 //interest is saved in pit until put-Data is called

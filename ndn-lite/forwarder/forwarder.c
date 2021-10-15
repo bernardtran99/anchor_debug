@@ -16,6 +16,7 @@
 #include "../encode/tlv.h"
 #include "../encode/name.h"
 #include "../util/logger.h"
+#include "../../examples/normal-node.h"
 
 uint8_t encoding_buf[2048];
 
@@ -338,6 +339,84 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
     return NDN_WRONG_TLV_TYPE;
   }
 }
+
+//this function will always call on data if dat ais received from interface no matter the prefix
+//only need to define udp face
+int
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
+{
+  uint32_t type, val_len;
+  uint8_t* buf;
+  uint8_t *name;
+  size_t name_len;
+  interest_options_t options;
+  int ret;
+  ndn_table_id_t face_id = (face ? face->face_id : NDN_INVALID_ID);
+
+  if (packet == NULL)
+    return NDN_INVALID_POINTER;
+
+  buf = tlv_get_type_length(packet, length, &type, &val_len);
+  if (val_len != length - (buf - packet))
+    return NDN_WRONG_TLV_LENGTH;
+
+  if (type == TLV_Interest) {
+    ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
+    if (ret != NDN_SUCCESS)
+      return ret;
+    return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);
+  }
+  else if(type == TLV_Data) {
+    ret = tlv_data_get_name(packet, length, &name, &name_len);
+    //make sure to include normal node.h in here
+    on_data(packet, length, face);
+    if (ret != NDN_SUCCESS)
+      return ret;
+    return NDN_SUCCESS;
+  }
+  else {
+    return NDN_WRONG_TLV_TYPE;
+  }
+}
+
+//changing this function
+//orginal below
+/*
+int
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
+{
+  uint32_t type, val_len;
+  uint8_t* buf;
+  uint8_t *name;
+  size_t name_len;
+  interest_options_t options;
+  int ret;
+  ndn_table_id_t face_id = (face ? face->face_id : NDN_INVALID_ID);
+
+  if (packet == NULL)
+    return NDN_INVALID_POINTER;
+
+  buf = tlv_get_type_length(packet, length, &type, &val_len);
+  if (val_len != length - (buf - packet))
+    return NDN_WRONG_TLV_LENGTH;
+
+  if (type == TLV_Interest) {
+    ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
+    if (ret != NDN_SUCCESS)
+      return ret;
+    return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);
+  }
+  else if(type == TLV_Data) {
+    ret = tlv_data_get_name(packet, length, &name, &name_len);
+    if (ret != NDN_SUCCESS)
+      return ret;
+    return fwd_data_pipeline(packet, length, name, name_len, face_id);
+  }
+  else {
+    return NDN_WRONG_TLV_TYPE;
+  }
+}
+*/
 
 static int
 fwd_on_incoming_interest(uint8_t* interest,
