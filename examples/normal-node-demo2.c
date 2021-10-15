@@ -348,6 +348,7 @@ void generate_data() {
     struct in_addr ** paddrs;
     
     //Node1-Anchor
+    printf("here");
     sz_port1 = "3000";
     sz_addr = NODE1;
     sz_port2 = "5000";
