@@ -87,6 +87,9 @@ ndn_forwarder_init(void)
 }
 
 void callback_insert(ndn_on_data_func on_data_input) {
+  callback_holder_t *ptr = malloc(200);
+  ptr->on_data_func = malloc(200);
+  holder = ptr;
   holder->on_data_func = on_data_input;
 }
 
