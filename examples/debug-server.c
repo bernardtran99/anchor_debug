@@ -17,6 +17,17 @@
 #define FALSE  0 
 #define PORT 8888
 
+#define NODE1 "155.246.44.142"
+#define NODE2 "155.246.215.101"
+#define NODE3 "155.246.202.145"
+#define NODE4 "155.246.216.113"
+#define NODE5 "155.246.203.173"
+#define NODE6 "155.246.216.39"
+#define NODE7 "155.246.202.111"
+#define NODE8 "155.246.212.111"
+#define NODE9 "155.246.213.83"
+#define NODE10 "155.246.210.98"
+
 struct Node{
     char *data;
     struct Node *firstChild;
@@ -223,34 +234,34 @@ int main(int argc , char *argv[])
              
             //inform user of socket number - used in send and receive commands
             char *node_num = "Node";
-            if(strcmp( inet_ntoa(address.sin_addr), "155.246.44.142") == 0) {
+            if(strcmp( inet_ntoa(address.sin_addr), NODE1) == 0) {
                 node_num = "Node 1";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.215.101") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE2) == 0) {
                 node_num = "Node 2";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.202.145") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE3) == 0) {
                 node_num = "Node 3";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.216.113") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE4) == 0) {
                 node_num = "Node 4";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.203.173") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE5) == 0) {
                 node_num = "Node 5";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.216.33") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE6) == 0) {
                 node_num = "Node 6";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.202.111") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE7) == 0) {
                 node_num = "Node 7";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.212.111") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE8) == 0) {
                 node_num = "Node 8";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.213.83") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE9) == 0) {
                 node_num = "Node 9";
             }
-            else if(strcmp( inet_ntoa(address.sin_addr), "155.246.210.98") == 0) {
+            else if(strcmp( inet_ntoa(address.sin_addr), NODE10) == 0) {
                 node_num = "Node 10";
             }
             printf("New connection , socket fd is %d , ip is : %s , port : %d (%s)\n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port), node_num);
@@ -328,34 +339,34 @@ int main(int argc , char *argv[])
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
                     char *node_num = "Node";
-                    if(strcmp(temp, "155.246.44.142") == 0) {
+                    if(strcmp(temp, NODE1) == 0) {
                         node_num = "Node 1";
                     }
-                    else if(strcmp(temp, "155.246.215.101") == 0) {
+                    else if(strcmp(temp, NODE2) == 0) {
                         node_num = "Node 2";
                     }
-                    else if(strcmp(temp, "155.246.202.145") == 0) {
+                    else if(strcmp(temp, NODE3) == 0) {
                         node_num = "Node 3";
                     }
-                    else if(strcmp(temp, "155.246.216.113") == 0) {
+                    else if(strcmp(temp, NODE4) == 0) {
                         node_num = "Node 4";
                     }
-                    else if(strcmp(temp, "155.246.203.173") == 0) {
+                    else if(strcmp(temp, NODE5) == 0) {
                         node_num = "Node 5";
                     }
-                    else if(strcmp(temp, "155.246.216.33") == 0) {
+                    else if(strcmp(temp, NODE6) == 0) {
                         node_num = "Node 6";
                     }
-                    else if(strcmp(temp, "155.246.202.111") == 0) {
+                    else if(strcmp(temp, NODE7) == 0) {
                         node_num = "Node 7";
                     }
-                    else if(strcmp(temp, "155.246.212.111") == 0) {
+                    else if(strcmp(temp, NODE8) == 0) {
                         node_num = "Node 8";
                     }
-                    else if(strcmp(temp, "155.246.213.83") == 0) {
+                    else if(strcmp(temp, NODE9) == 0) {
                         node_num = "Node 9";
                     }
-                    else if(strcmp(temp, "155.246.210.98") == 0) {
+                    else if(strcmp(temp, NODE10) == 0) {
                         node_num = "Node 10";
                     }
                     printf("%s: -> ", node_num);
