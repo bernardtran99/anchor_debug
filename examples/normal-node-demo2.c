@@ -328,18 +328,16 @@ void generate_data() {
     //sends data anchor direction (layer1)
     //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
     printf("Generate Data\n");
-    printf("Generate Data\n");
     ndn_data_t data;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
-    printf("here");
     ndn_name_t prefix_name;
+    
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-    printf("here");
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
@@ -347,11 +345,10 @@ void generate_data() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    printf("here");
     //Node1-Anchor
-    sz_port1 = "6000";
+    sz_port1 = "4000";
     sz_addr = NODE1;
-    sz_port2 = "4000";
+    sz_port2 = "6000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
