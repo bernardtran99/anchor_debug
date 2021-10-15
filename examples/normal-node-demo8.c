@@ -370,11 +370,24 @@ void generate_data() {
     send_debug_message("Data Sent");
 }
 
+void *periodic_publish(void *arguements) {
+    int num_pub = 1;
+    while(true) {
+        clock_t timer = clock();
+        while (clock() < (timer + 6000000)) {
+        }
+        printf("Publish Times: %d", num_pub);
+        generate_data();
+        num_pub++;
+    }
+}
+
 //is this threaded
 //non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
+    pthread_t per_pub;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
@@ -465,6 +478,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         //    did_flood[parameters] = true;
         //    reply_ancmt();
         // }
+        pthread_create(&per_pub, NULL, &periodic_publish, NULL);
     }
 
     else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
@@ -490,16 +504,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
-
-    //DEMO: CHANGE
-    //this is for producer generate data fter 6 second delay
-    
-    clock_t timer = clock();
-    printf("Delay Time: %d seconds\n", 6);
-    while (clock() < (timer + 6000000)) {
-    }
-    
-    generate_data();
 
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
@@ -566,25 +570,46 @@ void populate_incoming_fib() {
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
-    send_debug_message("On Data");
 
     ndn_data_t data;
-    char *prefix = &data.name.components[0].value[0];
+    ndn_encoder_t encoder;
+    uint8_t buf[4096];
     
     if (ndn_data_tlv_decode_digest_verify(&data, rawdata, data_size)) {
         printf("Decoding failed.\n");
     }
 
-    printf("DATA PREFIX: %s\n", prefix);
-    printf("It says: %s\n", data.content_value);
+    char *prefix = &data.name.components[0].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("DATA PREFIX: /%s", prefix);
+    prefix = &data.name.components[1].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("/%s", prefix);
+    prefix = &data.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("/%s\n", prefix);
+    printf("DATA CONTENT: %s\n", data.content_value);
+
+    prefix = &data.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    char temp_message[80];
+    strcat(temp_message, "On Data: ");
+    strcat(temp_message, prefix);
+    strcat(temp_message, " ");
+    send_debug_message(temp_message);
 
     clock_t timer = clock();
     printf("Delay Time: %d seconds\n", 1);
-    while (clock() < (timer + 10000000)) {
+    while (clock() < (timer + 1000000)) {
     }
 
-    generate_data();
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
+
+    send_debug_message("Data Forwarded");
 }
+
 
 //interest is saved in pit until put-Data is called
 /*

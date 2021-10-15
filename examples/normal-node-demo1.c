@@ -530,31 +530,6 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
 }
 
-void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
-    printf("On data\n");
-    send_debug_message("On Data");
-
-    ndn_data_t data;
-    char *prefix = &data.name.components[0].value[0];
-    
-    if (ndn_data_tlv_decode_digest_verify(&data, rawdata, data_size)) {
-        printf("Decoding failed.\n");
-    }
-
-    printf("DATA PREFIX: %s\n", prefix);
-    printf("It says: %s\n", data.content_value);
-
-    //DEMO: CHANGE
-    //node 1 should not generate data
-
-    // clock_t timer = clock();
-    // printf("Delay Time: %d seconds\n", 1);
-    // while (clock() < (timer + 1000000)) {
-    // }
-
-    // generate_data();
-}
-
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
