@@ -9,9 +9,11 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
+
 #include "testfunc.h"
 
 int main() {
     a();
+    
     return 0;
 }

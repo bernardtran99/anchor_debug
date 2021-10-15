@@ -877,6 +877,7 @@ int main(int argc, char *argv[]) {
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     populate_incoming_fib();
+    populate_data_fib();
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 
