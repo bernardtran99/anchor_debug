@@ -116,7 +116,7 @@ struct sockaddr_in serv_addr;
 char *debug_message;
 char buffer[1024] = {0};
 
-ndn_udp_face_t *double_face;
+ndn_udp_face_t *global_face;
 
 int send_debug_message(char *input) {
     debug_message = input;
@@ -531,7 +531,7 @@ void populate_incoming_fib() {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    double_face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    global_face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node3-Anchor
     sz_port1 = "5000";
