@@ -29,7 +29,7 @@ uint8_t encoding_buf[2048];
 
 static ndn_forwarder_t forwarder;
 
-static callback_holder_t holder;
+static callback_holder_t *holder;
 
 // face_id is optional
 static int
@@ -87,7 +87,10 @@ ndn_forwarder_init(void)
 }
 
 void callback_insert(ndn_on_data_func on_data_input) {
-  holder.on_data_func = on_data_input;
+  callback_holder_t *ptr = malloc(100);
+  ptr->on_data_func = malloc(100);
+  holder = ptr;
+  holder->on_data_func = on_data_input;
 }
 
 // const ndn_forwarder_t*
@@ -348,7 +351,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
     ret = tlv_data_get_name(packet, length, &name, &name_len);
     //make sure to include normal node.h in here
     //when inside this statement call this inside normal node
-    holder.on_data_func(packet, length, NULL);
+    holder->on_data_func(packet, length, NULL);
     if (ret != NDN_SUCCESS)
       return ret;
     return NDN_SUCCESS;
