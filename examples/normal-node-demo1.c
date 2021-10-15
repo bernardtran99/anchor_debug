@@ -130,6 +130,7 @@ void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
+    //DEMO: CHANGE
     char *ancmt_string = "/ancmt/1/1";
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
@@ -168,6 +169,7 @@ void flood(ndn_interest_t interest_pkt) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
 
+        //DEMO: CHANGE
         //Node2-Anchor
         sz_port1 = "3000";
         sz_addr = NODE2;
@@ -204,38 +206,6 @@ void flood(ndn_interest_t interest_pkt) {
         //     ndn_fib_unregister_face(router->fib, temp_fib_id);
         // }
         //router->fib = layer1_fib;        
-
-        //Node2-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE2;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        //Node3-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE3;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        ndn_interest_from_name(&interest, &prefix_name);
-        ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
@@ -516,19 +486,6 @@ void populate_incoming_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    //Node1-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE1;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
     //Node2-Anchor
     sz_port1 = "5000";
     sz_addr = NODE2;
@@ -646,9 +603,6 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
-    ancmt_string = "/ancmt/1/2";
-    ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
-    ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
 void populate_incoming_data_fib() {
@@ -662,19 +616,7 @@ void populate_incoming_data_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    //Node1-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE1;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
+    //DEMO: CHANGE
     //Node2-Anchor
     sz_port1 = "6000";
     sz_addr = NODE2;
@@ -946,6 +888,7 @@ int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
 
+    //DEMO: CHANGE
     int node_num = 1;
 
     //socket connection
@@ -991,6 +934,7 @@ int main(int argc, char *argv[]) {
 
     //signature init
 
+    //DEMO: CHANGE
     is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor");

@@ -533,6 +533,8 @@ void populate_incoming_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    //remove youre own incoming interface
+    //DEMO: CHANGE
     //Node1-Anchor
     sz_port1 = "5000";
     sz_addr = NODE1;
@@ -684,6 +686,8 @@ void populate_incoming_data_fib() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    //remove youre own incoming interface
+    //DEMO: CHANGE
     //Node1-Anchor
     sz_port1 = "6000";
     sz_addr = NODE1;
