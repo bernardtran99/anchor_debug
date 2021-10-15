@@ -388,15 +388,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     prefix = trimwhitespace(prefix);
     printf("%s\n", prefix);
 
-    else if(strcmp(prefix, "6") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face6;
-    }
-    else if(strcmp(prefix, "7") == 0) {
-        printf("On Data Interface: %s", prefix);
-        data_face = face7;
-    }
-
     //TODO: make this a function later
     //strcat requires an array of dedicated size
     prefix = &interest_pkt.name.components[2].value[0];
