@@ -349,6 +349,7 @@ void generate_data() {
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     //this sends back a data packet from the global face defined in incoming interfaces
+    //example: node 1 sends interest on 3000 5000, node 2 sends data to the same ip at 5000 3000
     ndn_face_send(&global_face->intf, encoder.output_value, encoder.offset);
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);

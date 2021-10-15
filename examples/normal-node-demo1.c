@@ -499,7 +499,7 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    
+
     //Node3-Anchor
     sz_port1 = "5000";
     sz_addr = NODE3;
@@ -607,7 +607,7 @@ void populate_incoming_fib() {
 }
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
-    printf("On data\n");
+    printf("\nOn data\n");
 
     ndn_data_t data;
     char *prefix = &data.name.components[0].value[0];
@@ -618,6 +618,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     printf("DATA PREFIX: %s\n", prefix);
     printf("It says: %s\n", data.content_value);
+
+    send_debug_message("Data Received");
 }
 
 void generate_data() {
