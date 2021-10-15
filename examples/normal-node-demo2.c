@@ -446,9 +446,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("END OF ON_INTEREST\n");
 
     clock_t start_time = clock();
-    printf("Delay Time: %d seconds\n", delay/1000000);
-    while (clock() < start_time + delay) {
+    printf("Data Delay Time: %d seconds\n", 5000000/1000000);
+    while (clock() < start_time + 5000000) {
     }
+    generate_data();
     
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
