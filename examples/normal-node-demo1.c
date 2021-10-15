@@ -530,6 +530,37 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
 }
 
+void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
+    printf("On data\n");
+
+    ndn_data_t data;
+    ndn_encoder_t encoder;
+    uint8_t buf[4096];
+    
+    if (ndn_data_tlv_decode_digest_verify(&data, rawdata, data_size)) {
+        printf("Decoding failed.\n");
+    }
+
+    char *prefix = &data.name.components[0].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("DATA PREFIX: /%s", prefix);
+    prefix = &data.name.components[1].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("/%s", prefix);
+    prefix = &data.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    printf("/%s\n", prefix);
+    printf("DATA CONTENT: %s\n", data.content_value);
+
+    prefix = &data.name.components[2].value[0];
+    prefix = trimwhitespace(prefix);
+    char temp_message[80];
+    strcat(temp_message, "On Data: ");
+    strcat(temp_message, prefix);
+    strcat(temp_message, " ");
+    send_debug_message(temp_message);
+}
+
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
