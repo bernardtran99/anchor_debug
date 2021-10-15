@@ -9,18 +9,29 @@ from IPython import display
 inputFile = "/home/debug/Documents/anchor_debug/build/debug-output.txt"
 outputFile = "/home/debug/Documents/anchor_debug/build/parsed-debug.txt"
 
+NODE1 = "155.246.44.142"
+NODE2 = "155.246.215.101"
+NODE3 = "155.246.202.145"
+NODE4 = "155.246.216.113"
+NODE5 = "155.246.203.173"
+NODE6 = "155.246.216.39"
+NODE7 = "155.246.202.111"
+NODE8 = "155.246.212.111"
+NODE9 = "155.246.213.83"
+NODE10 = "155.246.210.98"
+
 #ip lookup dictionary
 ipDict = {
-  "155.246.44.142" : 1,
-  "155.246.215.101" : 2,
-  "155.246.202.145" : 3,
-  "155.246.216.113" : 4,
-  "155.246.203.173" : 5,
-  "155.246.216.33" : 6,
-  "155.246.202.111" : 7,
-  "155.246.212.111" : 8,
-  "155.246.213.83" : 9,
-  "155.246.210.98" : 10
+    NODE1 : 1,
+    NODE2 : 2,
+    NODE3 : 3,
+    NODE4 : 4,
+    NODE5 : 5,
+    NODE6 : 6,
+    NODE7 : 7,
+    NODE8 : 8,
+    NODE9 : 9,
+    NODE10 : 10
 }
 
 #dictionary of nodes that have flooded
