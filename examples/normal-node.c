@@ -436,43 +436,43 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     printf("%s\n", prefix);
 
     if(strcmp(prefix, "1")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face1;
     }
     else if(strcmp(prefix, "2")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face2;
     }
     else if(strcmp(prefix, "3")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face3;
     }
     else if(strcmp(prefix, "4")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face4;
     }
     else if(strcmp(prefix, "5")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face5;
     }
     else if(strcmp(prefix, "6")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face6;
     }
     else if(strcmp(prefix, "7")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face7;
     }
     else if(strcmp(prefix, "8")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face8;
     }
     else if(strcmp(prefix, "9")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face9;
     }
     else if(strcmp(prefix, "10")) {
-        print("On Data Interface: %s", prefix);
+        printf("On Data Interface: %s", prefix);
         data_face = face10;
     }
 
@@ -534,7 +534,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
         interface_num[parameters]++;
 
-        insert_pit(interest_pkt);
+        //insert_pit(interest_pkt);
         //call insert pit here as well for first case scenario
         // if(interface_num[parameters] >= max_interfaces) {
         //    flood(interest_pkt);
