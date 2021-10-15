@@ -222,7 +222,7 @@ int main(int argc , char *argv[])
             }  
              
             //inform user of socket number - used in send and receive commands
-            char *node_num;
+            char *node_num = "Node";
             if(strcmp( inet_ntoa(address.sin_addr), "155.246.44.142") == 0) {
                 node_num = "Node 1";
             }
@@ -327,7 +327,7 @@ int main(int argc , char *argv[])
                     getpeername(sd , (struct sockaddr*)&address , \
                         (socklen_t*)&addrlen);
                     char *temp = inet_ntoa(address.sin_addr);
-                    char *node_num;
+                    char *node_num = "Node";
                     if(strcmp(temp, "155.246.44.142") == 0) {
                         node_num = "Node 1";
                     }
