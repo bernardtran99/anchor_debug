@@ -358,7 +358,6 @@ void generate_data() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
@@ -493,10 +492,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
 
-    clock_t start_time = clock();
-    printf("Data Delay Time: %d seconds\n", 5000000/1000000);
-    while (clock() < start_time + 5000000) {
-    }
     generate_data();
     
     return NDN_FWD_STRATEGY_SUPPRESS;
