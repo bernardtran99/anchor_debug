@@ -331,7 +331,8 @@ void generate_data() {
 
     ndn_data_t data;
     ndn_udp_face_t *face;
-    ndn_face_intf_t *face_intf = malloc(sizeof(ndn_face_intf_t));
+    printf("here");
+    ndn_face_intf_t *face_intf = malloc(100));
     ndn_encoder_t encoder;
     char *str = "This is Layer 1 Data Packet";
     uint8_t buf[4096];
