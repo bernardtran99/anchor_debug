@@ -341,26 +341,6 @@ void generate_data() {
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char *prefix_string = "/l1data/1/2";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
-    // in_port_t port1, port2;
-    // in_addr_t server_ip;
-    // char *sz_port1, *sz_port2, *sz_addr;
-    // uint32_t ul_port;
-    // struct hostent * host_addr;
-    // struct in_addr ** paddrs;
-
-    // //Node1-Anchor
-    // sz_port1 = "5000";
-    // sz_addr = NODE1;
-    // sz_port2 = "3000";
-    // host_addr = gethostbyname(sz_addr);
-    // paddrs = (struct in_addr **)host_addr->h_addr_list;
-    // server_ip = paddrs[0]->s_addr;
-    // ul_port = strtoul(sz_port1, NULL, 10);
-    // port1 = htons((uint16_t) ul_port);
-    // ul_port = strtoul(sz_port2, NULL, 10);
-    // port2 = htons((uint16_t) ul_port);
-    // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     
     data.name = prefix_name;
     ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
@@ -368,6 +348,7 @@ void generate_data() {
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    //this sends back a data packet from the global face defined in incoming interfaces
     ndn_face_send(&global_face->intf, encoder.output_value, encoder.offset);
 
     //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
@@ -525,6 +506,18 @@ void populate_incoming_fib() {
     sz_port1 = "5000";
     sz_addr = NODE1;
     sz_port2 = "3000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    sz_port1 = "6000";
+    sz_addr = NODE1;
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
