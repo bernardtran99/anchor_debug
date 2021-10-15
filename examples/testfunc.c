@@ -10,17 +10,20 @@
 #include <stdbool.h>
 #include <setjmp.h>
 
-void a() {
-    b();
+void c() {
+    printf("test\n");
 }
+
 
 void b() {
     c();
 }
 
-void c() {
-    printf("test\n");
+
+void a() {
+    b();
 }
+
 
 int main() {
     a();
