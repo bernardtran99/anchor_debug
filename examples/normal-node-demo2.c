@@ -347,9 +347,9 @@ void generate_data() {
     struct in_addr ** paddrs;
 
     //Node1-Anchor
-    sz_port1 = "3000";
+    sz_port1 = "5000";
     sz_addr = NODE1;
-    sz_port2 = "5000";
+    sz_port2 = "3000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -365,7 +365,9 @@ void generate_data() {
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    ndn_forwarder_put_data(encoder.output_value, encoder.offset);
+    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+
+    //ndn_forwarder_put_data(encoder.output_value, encoder.offset);
 
     send_debug_message("Data Sent");
 }
@@ -492,6 +494,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     last_interest = current_time;
     printf("END OF ON_INTEREST\n");
 
+    clock_t start_time = clock();
+    printf("Data Delay Time: %d seconds\n", 6000000/1000000);
+    while (clock() < start_time + 6000000) {
+    }
     generate_data();
     
     return NDN_FWD_STRATEGY_SUPPRESS;
@@ -649,19 +655,6 @@ void populate_incoming_data_fib() {
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-
-    //Node1-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE1;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node3-Anchor
     sz_port1 = "6000";
