@@ -137,7 +137,7 @@ def parseData():
                     global node9_list
                     G.remove_edges_from(node9_list)
                     global prev_node9
-                    prev_node8 = 9
+                    prev_node9 = 9
                     node9_list = []
             if "On Data: 8" in line:
                 strings = line.split()
@@ -164,6 +164,9 @@ def parseData():
 #     prev_ancmt_list = input_ancmt_list
 #     prev_layer2_list = input_layer2_list
 #     time.sleep(0.001)
+
+node_sizes[0] = 1000
+node_colors[0] = 'red'
 
 while True:
     parseData()
