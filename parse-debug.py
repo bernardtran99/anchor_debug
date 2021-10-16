@@ -124,8 +124,8 @@ def parseData():
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
-                node_sizes[node_num] = 1000
-                node_colors[node_num] = 'yellow'
+                node_sizes[node_num-1] = 1000
+                node_colors[node_num-1] = 'yellow'
                 #clear graph
                 if node_num == 8:
                     global node8_list
