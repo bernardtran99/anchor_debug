@@ -82,6 +82,8 @@ def generate_continuous_nodes():
 
 def generate_data_nodes():
     combined_data_list = node8_list + node9_list
+    G.remove_edges_from(input_ancmt_list)
+    G.remove_edges_from(input_layer2_list)
     G.add_edges_from(combined_data_list)
     plt.clf()
     plt.title("Data Path")

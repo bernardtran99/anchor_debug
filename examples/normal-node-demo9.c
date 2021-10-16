@@ -479,6 +479,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         //    did_flood[parameters] = true;
         //    reply_ancmt();
         // }
+        clock_t timer_before = clock();
+        while (clock() < (timer_before + 15000000)) {
+        }
         pthread_create(&per_pub, NULL, &periodic_publish, NULL);
     }
 
