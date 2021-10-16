@@ -372,6 +372,9 @@ void generate_data() {
 
 void *periodic_publish(void *arguements) {
     int num_pub = 1;
+    clock_t timer_start = clock();
+    while (clock() < (timer_start + 3000000)) {
+    }
     while(num_pub <= 5) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
