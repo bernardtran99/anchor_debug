@@ -128,11 +128,11 @@ def parseData():
                 node_colors[node_num] = 'yellow'
                 #clear graph
                 if node_num == 8:
-                    G.remove_edges_from(node8_list)
+                    G.remove_edges_from(global node8_list)
                     prev_node8 = 8
                     node8_list = []
                 if node_num == 9:
-                    G.remove_edges_from(node9_list)
+                    G.remove_edges_from(global node9_list)
                     prev_node8 = 9
                     node9_list = []
             if "On Data: 8" in line:
