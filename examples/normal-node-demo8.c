@@ -436,7 +436,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     struct delay_struct args;
     args.interest = interest_pkt;
     args.struct_selector = parameters;
-    
     //printf("%s\n", prefix);
 
     //make sure to uncomment verify 
@@ -478,10 +477,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         //    did_flood[parameters] = true;
         //    reply_ancmt();
         // }
-        clock_t timer_before = clock();
-        while (clock() < (timer_before + 15000000)) {
-        }
-        pthread_create(&per_pub, NULL, &periodic_publish, NULL);
+        
+
     }
 
     else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
@@ -499,6 +496,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
+                running = false;
                 reply_ancmt();
                 //pthread_exit(NULL);
             }
@@ -771,7 +769,10 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
-    //ndn_face_destroy(&face->intf);
+    clock_t timer_before = clock();
+    while (clock() < (timer_before + 15000000)) {
+    }
+    generate_data();
 
     return 0;
 }

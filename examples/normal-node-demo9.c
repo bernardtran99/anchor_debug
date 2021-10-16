@@ -501,6 +501,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
                 reply_ancmt();
+                running = false;
                 //pthread_exit(NULL);
             }
         }
@@ -772,6 +773,10 @@ int main(int argc, char *argv[]) {
         usleep(10000);
     }
     //ndn_face_destroy(&face->intf);
+    clock_t timer_before = clock();
+    while (clock() < (timer_before + 15000000)) {
+    }
+    generate_data();
 
     return 0;
 }
