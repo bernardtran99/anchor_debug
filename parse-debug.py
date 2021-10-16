@@ -92,6 +92,7 @@ def generate_data_nodes():
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
+            
             if "Is Anchor" in line:
                 node_sizes[0] = 1000
                 node_colors[0] = 'red'
@@ -99,6 +100,8 @@ def readIn():
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
+                global input_ancmt_list
+                global input_layer2_list
                 for i in range(len(strings)):
                     if strings[i] == "Interest:":
                         string_value = int(strings[i+1])
@@ -111,13 +114,8 @@ def readIn():
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
             if "Data" in line:
-                combined_list = input_ancmt_list + input_layer2_list
-                G.remove_edges_from(combined_list)
-                plt.clf()
-                plt.title("Anchor Demo")
-                nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-                plt.show(block=False)
-                plt.pause(0.002)
+                G.remove_edges_from(input_ancmt_list)
+                G.remove_edges_from(input_layer2_list)
                 global data_gen_start
                 data_gen_start = 1
 
