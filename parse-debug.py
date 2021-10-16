@@ -158,15 +158,12 @@ def parseData():
 # generate_continuous_nodes(0)
 
 
-# while data_gen_start == 0:
-#     readIn()
-#     generate_continuous_nodes()
-#     prev_ancmt_list = input_ancmt_list
-#     prev_layer2_list = input_layer2_list
-#     time.sleep(0.001)
-
-node_sizes[0] = 1000
-node_colors[0] = 'red'
+while data_gen_start == 0:
+    readIn()
+    generate_continuous_nodes()
+    prev_ancmt_list = input_ancmt_list
+    prev_layer2_list = input_layer2_list
+    time.sleep(0.001)
 
 while True:
     parseData()
