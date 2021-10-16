@@ -148,7 +148,7 @@ def parseData():
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
-                global prev_node8
+                global prev_node9
                 node9_list.append((prev_node9, node_num))
                 prev_node9 = node_num
 
