@@ -116,6 +116,11 @@ def readIn():
             if "Data" in line:
                 G.remove_edges_from(input_ancmt_list)
                 G.remove_edges_from(input_layer2_list)
+                plt.clf()
+                plt.title("Data Path")
+                nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+                plt.show(block=False)
+                plt.pause(0.1)
                 global data_gen_start
                 data_gen_start = 1
 
@@ -147,13 +152,15 @@ def parseData():
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
-                node8_list.append((prev_node8, node_num))
+                if (prev_node8, node_num) > (1,1) :
+                    node8_list.append((prev_node8, node_num))
                 prev_node8 = node_num
             if "On Data: 9" in line:
                 strings = line.split()
                 node_ip = strings[2]
                 node_num = ipDict[node_ip]
-                node9_list.append((prev_node9, node_num))
+                if (prev_node9, node_num) > (1,1) :
+                    node9_list.append((prev_node9, node_num))
                 prev_node9 = node_num
 
 # readIn()
