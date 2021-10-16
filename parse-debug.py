@@ -130,11 +130,13 @@ def parseData():
                 if node_num == 8:
                     global node8_list
                     G.remove_edges_from(node8_list)
+                    global prev_node8
                     prev_node8 = 8
                     node8_list = []
                 if node_num == 9:
                     global node9_list
                     G.remove_edges_from(node9_list)
+                    global prev_node9
                     prev_node8 = 9
                     node9_list = []
             if "On Data: 8" in line:
