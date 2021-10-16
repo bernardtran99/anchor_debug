@@ -375,14 +375,14 @@ void *periodic_publish(void *arguements) {
     clock_t timer_start = clock();
     while (clock() < (timer_start + 3000000)) {
     }
-    while(num_pub <= 5) {
+    //while(num_pub <= 5) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
         }
         printf("Publish Times: %d", num_pub);
         generate_data();
         num_pub++;
-    }
+    //}
 }
 
 //is this threaded
