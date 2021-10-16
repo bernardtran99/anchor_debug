@@ -113,6 +113,12 @@ def readIn():
             if "Data" in line:
                 combined_list = input_ancmt_list + input_layer2_list
                 G.remove_edges_from(combined_list)
+                plt.clf()
+                plt.title("Anchor Demo")
+                nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+                plt.show(block=False)
+                plt.pause(0.002)
+                global data_gen_start
                 data_gen_start = 1
 
 #G.remove_edges_from(
