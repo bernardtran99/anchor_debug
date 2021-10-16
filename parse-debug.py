@@ -47,6 +47,14 @@ prev_ancmt_list = []
 prev_layer2_list = []
 combined_list = []
 
+node8_list = []
+node9_list = []
+combined_data_list = []
+prev_node8 = 0
+prev_node9 = 0
+
+data_gen_start = 0
+
 G = nx.MultiDiGraph()
 G.add_node(1,pos=(2,6))
 G.add_node(2,pos=(4,10))
@@ -72,6 +80,15 @@ def generate_continuous_nodes():
     plt.show(block=False)
     plt.pause(0.002)
 
+def generate_data_nodes():
+    combined_data_list = node8_list + node9_list
+    G.add_edges_from(combined_data_list)
+    plt.clf()
+    plt.title("Data Path")
+    nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+    plt.show(block=False)
+    plt.pause(0.3)
+
 def readIn():
     with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
         for line in fd:
@@ -93,19 +110,61 @@ def readIn():
                         if node_num != 1:
                             if (node_num, firstInterest[node_num]) not in input_layer2_list:
                                 input_layer2_list.append((node_num, firstInterest[node_num]))
+            if "Data" in line:
+                combined_list = input_ancmt_list + input_layer2_list
+                G.remove_edges_from(combined_list)
+                data_gen_start = 1
+
+#G.remove_edges_from(
+
+def parseData():
+    with open(inputFile, 'r+', encoding = "ISO-8859-1") as fd:
+        for line in fd:
+            if "Data Sent" in line:
+                strings = line.split()
+                node_ip = strings[2]
+                node_num = ipDict[node_ip]
+                node_sizes[node_num] = 1000
+                node_colors[node_num] = 'yellow'
+                #clear graph
+                if node_num == 8:
+                    G.remove_edges_from(node8_list)
+                    prev_node8 = 8
+                    node8_list = []
+                if node_num == 9:
+                    G.remove_edges_from(node9_list)
+                    prev_node8 = 9
+                    node9_list = []
+            if "On Data: 8" in line:
+                strings = line.split()
+                node_ip = strings[2]
+                node_num = ipDict[node_ip]
+                node8_list.append((prev_node8, node_num))
+                prev_node8 = node_num
+            if "On Data: 9" in line:
+                strings = line.split()
+                node_ip = strings[2]
+                node_num = ipDict[node_ip]
+                node8_list.append((prev_node9, node_num))
+                prev_node9 = node_num
 
 # readIn()
 # print(input_ancmt_list)
 # print(input_layer2_list)
 # generate_continuous_nodes(0)
 
-while True:
-    readIn()
-    generate_continuous_nodes()
-    prev_ancmt_list = input_ancmt_list
-    prev_layer2_list = input_layer2_list
-    time.sleep(0.001)
 
+# while data_gen_start == 0:
+#     readIn()
+#     generate_continuous_nodes()
+#     prev_ancmt_list = input_ancmt_list
+#     prev_layer2_list = input_layer2_list
+#     time.sleep(0.001)
+
+while True:
+    parseData()
+    generate_data_nodes()
+    time.sleep(0.2)
 
 # def remove_suffix(input_string, suffix):
 #     if suffix and input_string.endswith(suffix):
