@@ -26,7 +26,8 @@ async def handle_client(reader, writer):
     while request != 'quit':
         request = (await reader.read(255)).decode('utf8')
         print(request)
-        response = str(eval(request)) + '\n'
+        #response = str(eval(request)) + '\n'
+        response = "OK"
         writer.write(response.encode('utf8'))
         await writer.drain()
     writer.close()
