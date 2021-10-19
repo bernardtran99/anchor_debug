@@ -55,6 +55,7 @@ int main() {
     }
 
     send_debug_message("This is the reply message");
+    send_debug_message("Testing again")
 
     return 0;
 }
