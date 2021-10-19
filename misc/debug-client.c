@@ -25,7 +25,7 @@ void send_debug_message(char *input) {
 
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
-    printf("Hello message sent\n");
+    //printf("Message Sent\n");
     valread = read(sock , buffer, 1024);
     printf("%s\n", buffer);
 }
@@ -54,7 +54,7 @@ int main() {
         return -1;
     }
 
-    send_debug_message("testing");
+    send_debug_message("This is the reply message");
 
     return 0;
 }
