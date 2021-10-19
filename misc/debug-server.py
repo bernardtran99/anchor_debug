@@ -21,20 +21,34 @@ import time
 #                 break
 #             conn.sendall(data)
 
-async def handle_client(reader, writer):
-    request = None
-    while request != 'quit':
-        request = (await reader.read(255)).decode('utf8')
-        print(request)
-        #response = str(eval(request)) + '\n'
-        response = "OK"
-        writer.write(response.encode('utf8'))
-        await writer.drain()
-    writer.close()
+class EchoServerProtocol(asyncio.Protocol):
+    def connection_made(self, transport):
+        peername = transport.get_extra_info('peername')
+        print('Connection from {}'.format(peername))
+        self.transport = transport
 
-async def run_server():
-    server = await asyncio.start_server(handle_client, "0.0.0.0", 8888)
+    def data_received(self, data):
+        message = data.decode()
+        print('Data received: {!r}'.format(message))
+
+        print('Send: {!r}'.format(message))
+        self.transport.write(data)
+
+        print('Close the client socket')
+        self.transport.close()
+
+
+async def main():
+    # Get a reference to the event loop as we plan to use
+    # low-level APIs.
+    loop = asyncio.get_running_loop()
+
+    server = await loop.create_server(
+        lambda: EchoServerProtocol(),
+        '0.0.0.0', 8888)
+
     async with server:
         await server.serve_forever()
 
-asyncio.run(run_server())
+
+asyncio.run(main())
