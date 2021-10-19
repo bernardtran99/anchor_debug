@@ -52,12 +52,12 @@ int main() {
         return -1;
     }
 
-    send_debug_message("This is the reply message\n");
+    send_debug_message("Message 1");
     clock_t start_time = clock();
     while (clock() < (start_time + 5000000)) {
     }
     printf("Delay Complete\n");
-    send_debug_message("Testing again\n");
+    send_debug_message("Message 2");
 
     return 0;
 }
