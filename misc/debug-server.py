@@ -31,10 +31,10 @@ class EchoServerProtocol(asyncio.Protocol):
         message = data.decode()
         print('Data received: {!r}'.format(message))
 
-        print('Send: {!r}'.format(message))
-        self.transport.write(data)
+        # print('Send: {!r}'.format(message))
+        # self.transport.write(data)
 
-        print('Close the client socket')
+        # print('Close the client socket')
         self.transport.close()
 
 
