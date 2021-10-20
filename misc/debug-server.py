@@ -3,39 +3,8 @@ import asyncio
 import sys
 import time
 from datetime import datetime
-import os
-import networkx as nx
-import matplotlib.pyplot as plt
-import pprint
-from IPython import display
 
 #python3
-
-NODE1 = "155.246.44.142"
-NODE2 = "155.246.215.101"
-NODE3 = "155.246.202.145"
-NODE4 = "155.246.216.113"
-NODE5 = "155.246.203.173"
-NODE6 = "155.246.216.39"
-NODE7 = "155.246.202.111"
-NODE8 = "155.246.212.111"
-NODE9 = "155.246.213.83"
-NODE10 = "155.246.210.98"
-
-G = nx.MultiDiGraph()
-G.add_node(1,pos=(2,6))
-G.add_node(2,pos=(4,10))
-G.add_node(3,pos=(4,2))
-G.add_node(4,pos=(6,6))
-G.add_node(5,pos=(8,10))
-G.add_node(6,pos=(8,2))
-G.add_node(7,pos=(10,6))
-G.add_node(8,pos=(12,10))
-G.add_node(9,pos=(12,2))
-G.add_node(10,pos=(14,6))
-pos = nx.get_node_attributes(G,'pos')
-node_sizes = [500]*10
-node_colors = ['green']*10
 
 class EchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
