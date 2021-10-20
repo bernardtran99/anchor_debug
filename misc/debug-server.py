@@ -2,6 +2,7 @@ import socket
 import asyncio
 import sys
 import time
+from datetime import datetime
 
 #python3
 
@@ -28,10 +29,11 @@ class EchoServerProtocol(asyncio.Protocol):
         self.transport = transport
 
     def data_received(self, data):
+        #time stamp, ip, node num, data
         message = data.decode()
-        print('Data received: {!r}'.format(message))
-        print(self.transport.get_extra_info('peername'))
-
+        peer_ip = self.transport.get_extra_info('peername'))
+        now = datetime.now()
+        print('{} IP: {} Message: {!r}'.format(now, peer_ip, message))
         # print('Send: {!r}'.format(message))
         # self.transport.write(data)
 
