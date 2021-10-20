@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Running Script..."
+
 git pull
 cmake -DCMAKE_BUILD_TYPE=Release ..
 python ../misc/change-link.py
