@@ -32,9 +32,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.142"
-#define NODE2 "155.246.215.101"
-#define NODE3 "155.246.202.145"
+#define NODE1 "155.246.44.35"
+#define NODE2 "155.246.216.79"
+#define NODE3 "155.246.202.139"
 #define NODE4 "155.246.216.113"
 #define NODE5 "155.246.203.173"
 #define NODE6 "155.246.216.39"
@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.111"
 #define NODE9 "155.246.213.83"
 #define NODE10 "155.246.210.98"
-#define DEBUG "155.246.182.52"
+#define DEBUG "155.246.182.93"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -113,14 +113,14 @@ uint8_t secp256r1_pub_key_str[64] = {
 //socket variables
 int sock = 0, valread;
 struct sockaddr_in serv_addr;
-char *debug_message;
 char buffer[1024] = {0};
+char *debug_message;
 
 ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 int send_debug_message(char *input) {
     debug_message = input;
-    send(sock , debug_message, strlen(debug_message) , 0 );
+    send(sock , debug_message, strlen(debug_message) , 0);
 
     //printf("Hello message sent\n");
     //valread = read( sock , buffer, 1024);
