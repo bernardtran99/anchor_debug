@@ -451,7 +451,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //strcat requires an array of dedicated size
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
-    char temp_message[80];
+    char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
     strcat(temp_message, " ");
@@ -773,7 +773,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     prefix = &data.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
-    char temp_message[80];
+    char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
     strcat(temp_message, " ");

@@ -381,7 +381,7 @@ void generate_data() {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Sent");
+    send_debug_message("Data Sent ");
 }
 
 //is this threaded
@@ -678,12 +678,12 @@ int main(int argc, char *argv[]) {
     }
 
     //TODO: make this a function later
-    char temp_message[80] = "";
-    char temp_num[10];
-    strcat(temp_message, "Node Start: ");
-    sprintf(temp_num, "%d", node_num);
-    strcat(temp_message, temp_num);
-    send_debug_message(temp_message);
+    // char temp_message[80] = "";
+    // char temp_num[10];
+    // strcat(temp_message, "Node Start: ");
+    // sprintf(temp_num, "%d", node_num);
+    // strcat(temp_message, temp_num);
+    // send_debug_message(temp_message);
     
     ndn_lite_startup();
 

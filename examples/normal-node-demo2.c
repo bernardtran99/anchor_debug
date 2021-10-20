@@ -381,7 +381,7 @@ void generate_data() {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Sent");
+    send_debug_message("Data Sent ");
 }
 
 //is this threaded
@@ -588,7 +588,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Forwarded");
+    send_debug_message("Data Forwarded ");
 }
 
 
