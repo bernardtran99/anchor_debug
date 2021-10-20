@@ -678,7 +678,7 @@ int main(int argc, char *argv[]) {
     }
 
     //TODO: make this a function later
-    char temp_message[80];
+    char temp_message[80] = "";
     char temp_num[10];
     strcat(temp_message, "Node Start: ");
     sprintf(temp_num, "%d", node_num);

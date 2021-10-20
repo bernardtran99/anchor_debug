@@ -262,7 +262,7 @@ void flood(ndn_interest_t interest_pkt) {
     }
 
     printf("Flooded Interest!\n");
-    send_debug_message("Flooded Interest");
+    send_debug_message("Flooded Interest ");
 }
 
 void send_ancmt() {
@@ -412,7 +412,7 @@ void generate_data() {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Sent");
+    send_debug_message("Data Sent ");
 }
 
 void *periodic_publish(void *arguements) {
@@ -788,7 +788,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Forwarded");
+    send_debug_message("Data Forwarded ");
 }
 
 //interest is saved in pit until put-Data is called
@@ -908,12 +908,12 @@ int main(int argc, char *argv[]) {
     }
 
     //TODO: make this a function later
-    char temp_message[80];
-    char temp_num[10];
-    strcat(temp_message, "Node Start: ");
-    sprintf(temp_num, "%d", node_num);
-    strcat(temp_message, temp_num);
-    send_debug_message(temp_message);
+    // char temp_message[80];
+    // char temp_num[10];
+    // strcat(temp_message, "Node Start: ");
+    // sprintf(temp_num, "%d", node_num);
+    // strcat(temp_message, temp_num);
+    // send_debug_message(temp_message);
     
     ndn_lite_startup();
 
@@ -931,7 +931,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     //is_anchor = true;
     if(is_anchor == true) {
-        send_debug_message("Is Anchor");
+        send_debug_message("Is Anchor ");
     }
 
     running = true;
