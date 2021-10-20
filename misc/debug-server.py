@@ -14,7 +14,7 @@ class EchoServerProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         #time stamp, ip, node num, data
-        message = data.decode()
+        message = data.decode("ISO-8859-1")
         peer_info = self.transport.get_extra_info('peername')
         peer_ip = peer_info[0]
         now = datetime.now()
