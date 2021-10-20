@@ -60,12 +60,17 @@ class EchoServerProtocol(asyncio.Protocol):
     def data_received(self, data):
         #time stamp, ip, node num, data
         message = data.decode("ISO-8859-1")
-        peer_info = self.transport.get_extra_info('peername')
-        peer_ip = peer_info[0]
+        node_info = self.transport.get_extra_info('peername')
+        node_ip = peer_info[0]
         now = datetime.now()
-        print('{} FROM: {!r} MESSAGE: {!r}'.format(now, peer_ip, message))
+        print('{} FROM: {!r} MESSAGE: {!r}'.format(now, node_ip, message))
 
-        
+        strings = message.split()
+        node_num = ipDict[node_ip]
+        if "Is Anchor" in message:
+            node_sizes[0] = 1000
+            node_colors[0] = 'red'
+        if "On Interest" in message:
 
         # print('Send: {!r}'.format(message))
         # self.transport.write(data)

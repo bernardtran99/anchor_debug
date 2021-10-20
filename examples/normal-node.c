@@ -891,6 +891,11 @@ int main(int argc, char *argv[]) {
         printf("\n Socket creation error \n");
         return -1;
     }
+
+    int flags = 1;
+    if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+        perror("ERROR: setsocketopt(), TCP_NODELAY"); exit(0); 
+    }
    
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
