@@ -12,6 +12,7 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h> 
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -667,7 +668,7 @@ int main(int argc, char *argv[]) {
         printf("ERROR: setsocketopt(), TCP_NODELAY");
         exit(0); 
     }
-    
+
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
