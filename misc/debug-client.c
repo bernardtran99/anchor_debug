@@ -13,7 +13,7 @@
 #include <arpa/inet.h>
 
 #define PORT 8888
-#define DEBUG "155.246.182.93"
+#define DEBUG "155.246.182.138"
 
 int sock = 0;
 
