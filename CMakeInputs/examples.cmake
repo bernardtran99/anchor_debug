@@ -25,7 +25,7 @@ set(LIST_EXAMPLES
   "normal-node-demo9"
   "normal-node-demo10"
 #  "ancmt-interest-debug"
-  "debug-server"
+#  "debug-server"
 #  "access-control-producer"
 #  "access-control-consumer"
 #  "access-control-controller"
