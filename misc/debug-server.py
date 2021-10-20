@@ -32,7 +32,7 @@ class EchoServerProtocol(asyncio.Protocol):
         #time stamp, ip, node num, data
         message = data.decode()
         peer_info = self.transport.get_extra_info('peername')
-        peer_ip = peer_info(0)
+        peer_ip = peer_info[0]
         now = datetime.now()
         print('{} FROM: {} Message: {}'.format(now, peer_ip, message))
         # print('Send: {!r}'.format(message))
