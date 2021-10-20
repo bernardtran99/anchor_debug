@@ -50,6 +50,12 @@ node_sizes = [500]*10
 node_colors = ['green']*10
 
 #python3
+graph_title = "Anchor Demo"
+data_received = 0
+input_ancmt_list = []
+input_layer2_list = []
+prev_node8 = 0
+prev_node9 = 0
 
 class EchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
@@ -70,7 +76,59 @@ class EchoServerProtocol(asyncio.Protocol):
         if "Is Anchor" in message:
             node_sizes[0] = 1000
             node_colors[0] = 'red'
-        if "On Interest" in message:
+        if "On Interest" or "Flooded Interest" in message:
+            global input_ancmt_list
+            global input_layer2_list
+            for i in range(len(strings)):
+                if strings[i] == "Interest:":
+                    string_value = int(strings[i+1])
+                    if node_num not in firstInterest:
+                        firstInterest[node_num] = string_value
+                    if (string_value, node_num) not in input_ancmt_list:
+                        input_ancmt_list.append((string_value, node_num))
+                    G.add_edges_from([(string_value, node_num)])
+                if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
+                    input_layer2_list.append((node_num, firstInterest[node_num]))
+                    G.add_edges_from([(node_num, firstInterest[node_num])])
+        if "Data" in message:
+            if data_received == 0:
+                G.remove_edges_from(input_ancmt_list)
+                G.remove_edges_from(input_layer2_list)
+                global graph_title
+                graph_title = "Data Path"
+                global data_received
+                data_received = 1
+            if "Data Sent" in line:
+                node_sizes[node_num-1] = 1000
+                node_colors[node_num-1] = 'yellow'
+                if node_num == 8:
+                    global node8_list
+                    G.remove_edges_from(node8_list)
+                    global prev_node8
+                    prev_node8 = 8
+                    node8_list = []
+                if node_num == 9:
+                    global node9_list
+                    G.remove_edges_from(node9_list)
+                    global prev_node9
+                    prev_node9 = 9
+                    node9_list = []
+            if "On Data: 8" in line:
+                if (prev_node8, node_num) > (1,1) :
+                    G.add_edges_from([(prev_node9, node_num)])
+                    node8_list.append((prev_node8, node_num))
+                prev_node8 = node_num
+            if "On Data: 9" in line:
+                if (prev_node9, node_num) > (1,1) :
+                    G.add_edges_from([(prev_node9, node_num)])
+                    node9_list.append((prev_node9, node_num))
+                prev_node9 = node_num
+
+        plt.clf()
+        plt.title(graph_title)
+        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.show(block=False)
+        plt.pause(0.000001)
 
         # print('Send: {!r}'.format(message))
         # self.transport.write(data)
