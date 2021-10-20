@@ -15,9 +15,7 @@
 #define PORT 8888
 #define DEBUG "155.246.182.93"
 
-
 int sock = 0;
-
 
 void send_debug_message(char *input) {
     char *debug_message;
@@ -54,11 +52,11 @@ int main() {
     }
 
     send_debug_message("Message 1");
-    clock_t start_time = clock();
-    while (clock() < (start_time + 5000000)) {
-    }
-    printf("Delay Complete\n");
-    send_debug_message("Message 2");
+    // clock_t start_time = clock();
+    // while (clock() < (start_time + 5000000)) {
+    // }
+    // printf("Delay Complete\n");
+    // send_debug_message("Message 2");
 
     return 0;
 }
