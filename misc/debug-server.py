@@ -9,16 +9,16 @@ import matplotlib.pyplot as plt
 import pprint
 from IPython import display
 
-NODE1 = "155.246.44.142"
-NODE2 = "155.246.215.101"
+NODE1 = "155.246.44.31"
+NODE2 = "155.246.215.26"
 NODE3 = "155.246.202.145"
-NODE4 = "155.246.216.113"
+NODE4 = "155.246.216.79"
 NODE5 = "155.246.203.173"
-NODE6 = "155.246.216.39"
-NODE7 = "155.246.202.111"
+NODE6 = "155.246.216.46"
+NODE7 = "155.246.202.56"
 NODE8 = "155.246.212.111"
-NODE9 = "155.246.213.83"
-NODE10 = "155.246.210.98"
+NODE9 = "155.246.213.56"
+NODE10 = "155.246.210.55"
 
 #ip lookup dictionary
 ipDict = {

@@ -32,17 +32,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.142"
-#define NODE2 "155.246.215.101"
+#define NODE1 "155.246.44.31"
+#define NODE2 "155.246.215.26"
 #define NODE3 "155.246.202.145"
-#define NODE4 "155.246.216.113"
+#define NODE4 "155.246.216.79"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.39"
-#define NODE7 "155.246.202.111"
+#define NODE6 "155.246.216.46"
+#define NODE7 "155.246.202.56"
 #define NODE8 "155.246.212.111"
-#define NODE9 "155.246.213.83"
-#define NODE10 "155.246.210.98"
-#define DEBUG "155.246.182.52"
+#define NODE9 "155.246.213.56"
+#define NODE10 "155.246.210.55"
+#define DEBUG "155.246.182.138"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -111,14 +111,15 @@ uint8_t secp256r1_pub_key_str[64] = {
 };
 
 //socket variables
-int sock = 0, valread;
+int sock = 0;
 struct sockaddr_in serv_addr;
-char *debug_message;
-char buffer[1024] = {0};
 
 ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 int send_debug_message(char *input) {
+    char *debug_message;
+    //char buffer[1024] = {0};
+    //int valread;
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
 
@@ -402,6 +403,7 @@ void generate_data() {
 
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
+    //DEMO: CHANGE
     char *prefix_string = "/l1data/1/8";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -505,6 +507,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             delay_start[parameters] = true;
         }
         interface_num[parameters]++;
+
+        prefix = &interest_pkt.name.components[2].value[0];
+        prefix = trimwhitespace(prefix);
 
         if(strcmp(prefix, "1") == 0) {
             printf("On Data Interface: %s", prefix);
@@ -895,7 +900,8 @@ int main(int argc, char *argv[]) {
 
     int flags = 1;
     if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
-        perror("ERROR: setsocketopt(), TCP_NODELAY"); exit(0); 
+        printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+        exit(0); 
     }
    
     serv_addr.sin_family = AF_INET;

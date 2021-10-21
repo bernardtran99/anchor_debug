@@ -387,7 +387,7 @@ void *periodic_publish(void *arguements) {
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
-    pthread_t per_pub;
+    //pthread_t per_pub;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 

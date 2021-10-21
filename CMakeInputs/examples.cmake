@@ -24,6 +24,7 @@ set(LIST_EXAMPLES
   "normal-node-demo8"
   "normal-node-demo9"
   "normal-node-demo10"
+  "test-name-print"
 #  "ancmt-interest-debug"
 #  "debug-server"
 #  "access-control-producer"
