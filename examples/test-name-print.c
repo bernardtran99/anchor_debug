@@ -34,16 +34,15 @@
 int main() {
     ndn_interest_t interest;
     ndn_name_t prefix_name;
-    ndn_name_t *prefix_name_ptr = &prefix_name;
     //DEMO: CHANGE
     char *ancmt_string = "/ancmt/1/1";
     printf("'");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    for (int i = 0; i < prefix_name_ptr->components_size; i++) {
+    for (int i = 0; i < prefix_name.components_size; i++) {
         printf("/");
-        for (int j = 0; j < prefix_name_ptr->components[i]->size; j++) {
-            if (prefix_name_ptr->components[i]->value[j] >= 33 && prefix_name_ptr->components[i]->value[j] < 126) {
-                printf("%c", prefix_name_ptr->components[i]->value[j]);
+        for (int j = 0; j < prefix_name.components[i].size; j++) {
+            if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
+                printf("%c", prefix_name.components[i].value[j]);
             }
             // else {
             //     printf("0x%02x", component.value[j]);

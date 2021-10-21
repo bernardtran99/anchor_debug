@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include <signal.h>
 #include <string.h>
 #include <ctype.h>
@@ -12,6 +11,7 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h> 
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -32,17 +32,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.142"
-#define NODE2 "155.246.215.101"
+#define NODE1 "155.246.44.31"
+#define NODE2 "155.246.215.26"
 #define NODE3 "155.246.202.145"
-#define NODE4 "155.246.216.113"
+#define NODE4 "155.246.216.79"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.39"
-#define NODE7 "155.246.202.111"
+#define NODE6 "155.246.216.46"
+#define NODE7 "155.246.202.56"
 #define NODE8 "155.246.212.111"
-#define NODE9 "155.246.213.83"
-#define NODE10 "155.246.210.98"
-#define DEBUG "155.246.182.52"
+#define NODE9 "155.246.213.56"
+#define NODE10 "155.246.210.55"
+#define DEBUG "155.246.182.138"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -111,14 +111,15 @@ uint8_t secp256r1_pub_key_str[64] = {
 };
 
 //socket variables
-int sock = 0, valread;
+int sock = 0;
 struct sockaddr_in serv_addr;
-char *debug_message;
-char buffer[1024] = {0};
 
 ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 int send_debug_message(char *input) {
+    char *debug_message;
+    //char buffer[1024] = {0};
+    //int valread;
     debug_message = input;
     send(sock , debug_message, strlen(debug_message) , 0 );
 
@@ -171,6 +172,39 @@ void flood(ndn_interest_t interest_pkt) {
         //     //printf("looking at interfaces in fib")
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
+
+        //DEMO: CHANGE
+        //Node2-Anchor
+        sz_port1 = "3000";
+        sz_addr = NODE2;
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+        //Node3-Anchor
+        sz_port1 = "3000";
+        sz_addr = NODE3;
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+        ndn_interest_from_name(&interest, &prefix_name);
+        ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
     }
 
     else {
@@ -192,7 +226,7 @@ void flood(ndn_interest_t interest_pkt) {
         //router->fib = layer1_fib;        
 
         //DEMO: CHANGE
-        //Node2-Anchor
+        //Node3-Anchor
         sz_port1 = "3000";
         sz_addr = NODE10;
         sz_port2 = "5000";
@@ -216,7 +250,7 @@ void flood(ndn_interest_t interest_pkt) {
     }
 
     printf("Flooded Interest!\n");
-    send_debug_message("Flooded Interest");
+    send_debug_message("Flooded Interest ");
 }
 
 void send_ancmt() {
@@ -328,7 +362,6 @@ void *start_delay(void *arguments) {
         //pthread_exit(NULL);
     }
 }
-
 char *trimwhitespace(char *str) {
     char *end;
 
@@ -356,6 +389,7 @@ void generate_data() {
 
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
+    //DEMO: CHANGE
     char *prefix_string = "/l1data/1/8";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -367,27 +401,28 @@ void generate_data() {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Sent");
+    send_debug_message("Data Sent ");
 }
 
 void *periodic_publish(void *arguements) {
     int num_pub = 1;
-    //while(num_pub <= 5) {
+    while(num_pub <= 5) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
         }
         printf("Publish Times: %d", num_pub);
         generate_data();
         num_pub++;
-    //}
+    }
 }
+
 
 //is this threaded
 //non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
     pthread_t layer1;
-    //pthread_t per_pub;
+    pthread_t per_pub;
     ndn_interest_t interest_pkt;
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
@@ -405,7 +440,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //strcat requires an array of dedicated size
     prefix = &interest_pkt.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
-    char temp_message[80];
+    char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
     strcat(temp_message, " ");
@@ -436,6 +471,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     struct delay_struct args;
     args.interest = interest_pkt;
     args.struct_selector = parameters;
+    
     //printf("%s\n", prefix);
 
     //make sure to uncomment verify 
@@ -460,15 +496,51 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
         prefix = &interest_pkt.name.components[2].value[0];
         prefix = trimwhitespace(prefix);
-        
-        if(strcmp(prefix, "5") == 0) {
+
+        if(strcmp(prefix, "1") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face1;
+        }
+        else if(strcmp(prefix, "2") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face2;
+        }
+        else if(strcmp(prefix, "3") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face3;
+        }
+        else if(strcmp(prefix, "4") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face4;
+        }
+        else if(strcmp(prefix, "5") == 0) {
             printf("On Data Interface: %s", prefix);
             data_face = face5;
+        }
+        else if(strcmp(prefix, "6") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face6;
         }
         else if(strcmp(prefix, "7") == 0) {
             printf("On Data Interface: %s", prefix);
             data_face = face7;
         }
+        else if(strcmp(prefix, "8") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face8;
+        }
+        else if(strcmp(prefix, "9") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face9;
+        }
+        else if(strcmp(prefix, "10") == 0) {
+            printf("On Data Interface: %s", prefix);
+            data_face = face10;
+        }
+
+        //DEMO: CHANGE
+        //this is for producer generate data fter 6 second delay
+        //pthread_create(&per_pub, NULL, &periodic_publish, NULL);
 
         //insert_pit(interest_pkt);
         //call insert pit here as well for first case scenario
@@ -477,8 +549,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         //    did_flood[parameters] = true;
         //    reply_ancmt();
         // }
-        
-
     }
 
     else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
@@ -496,8 +566,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                running = false;
                 reply_ancmt();
+                //DEMO: CHANGE
+                running = false;
                 //pthread_exit(NULL);
             }
         }
@@ -593,7 +664,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     prefix = &data.name.components[2].value[0];
     prefix = trimwhitespace(prefix);
-    char temp_message[80];
+    char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
     strcat(temp_message, " ");
@@ -608,9 +679,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
     ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Data Forwarded");
+    send_debug_message("Data Forwarded ");
 }
-
 
 //interest is saved in pit until put-Data is called
 /*
@@ -712,6 +782,12 @@ int main(int argc, char *argv[]) {
         printf("\n Socket creation error \n");
         return -1;
     }
+
+    int flags = 1;
+    if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+        printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+        exit(0); 
+    }
    
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
@@ -729,12 +805,12 @@ int main(int argc, char *argv[]) {
     }
 
     //TODO: make this a function later
-    char temp_message[80];
-    char temp_num[10];
-    strcat(temp_message, "Node Start: ");
-    sprintf(temp_num, "%d", node_num);
-    strcat(temp_message, temp_num);
-    send_debug_message(temp_message);
+    // char temp_message[80];
+    // char temp_num[10];
+    // strcat(temp_message, "Node Start: ");
+    // sprintf(temp_num, "%d", node_num);
+    // strcat(temp_message, temp_num);
+    // send_debug_message(temp_message);
     
     ndn_lite_startup();
 
@@ -743,7 +819,7 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     //DEMO: CHANGE
     populate_incoming_fib();
-    callback_insert(on_data);
+    //callback_insert(on_data);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 
@@ -752,7 +828,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     //is_anchor = true;
     if(is_anchor == true) {
-        send_debug_message("Is Anchor");
+        send_debug_message("Is Anchor ");
     }
 
     running = true;
@@ -769,10 +845,12 @@ int main(int argc, char *argv[]) {
         ndn_forwarder_process();
         usleep(10000);
     }
+    //DEMO: CHANGE
     clock_t timer_before = clock();
     while (clock() < (timer_before + 15000000)) {
     }
     generate_data();
+    //ndn_face_destroy(&face->intf);
 
     return 0;
 }
