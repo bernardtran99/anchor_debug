@@ -39,6 +39,7 @@ int main() {
     printf("'");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     for (int i = 0; i < prefix_name.components_size; i++) {
+        print("/")
         for (int j = 0; j < prefix_name.components[i].size; j++) {
             if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
                 printf("%c", prefix_name.components[i].value[j]);
