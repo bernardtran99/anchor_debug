@@ -38,13 +38,13 @@ int main() {
     char *ancmt_string = "/ancmt/1/1";
     printf("'");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
-    for (int i = 0; i < &prefix_name->components_size; i++) {
-        for (int j = 0; j < &prefix_name->component[i]->size; j++) {
-            if (&prefix_name->component[i]->value[j] >= 33 && &prefix_name->component[i]->value[j] < 126) {
-                printf("%c", &prefix_name->component[i]->value[j]);
+    for (int i = 0; i < prefix_name.components_size; i++) {
+        for (int j = 0; j < prefix_name.component[i].size; j++) {
+            if (prefix_name.component[i].value[j] >= 33 && prefix_name.component[i].value[j] < 126) {
+                printf("%c", prefix_name.component[i].value[j]);
             }
             // else {
-            //     printf("0x%02x", component->value[j]);
+            //     printf("0x%02x", component.value[j]);
             // }
         }
     }
