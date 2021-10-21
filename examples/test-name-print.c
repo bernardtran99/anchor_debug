@@ -36,6 +36,7 @@ int main() {
     ndn_name_t prefix_name;
     //DEMO: CHANGE
     char *ancmt_string = "/ancmt/1/1";
+    printf("'");
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     for (int i = 0; i < &prefix_name->components_size; i++) {
         for (int j = 0; j < &prefix_name->component[i]->size; j++) {
@@ -47,7 +48,7 @@ int main() {
             // }
         }
     }
-    printf("'");
+    printf("'\n'");
     ndn_name_print(&prefix_name);
     printf("'");
     
