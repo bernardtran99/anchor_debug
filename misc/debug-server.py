@@ -54,6 +54,9 @@ graph_title = "Anchor Demo"
 data_received = 0
 input_ancmt_list = []
 input_layer2_list = []
+firstInterest = {}
+node8_list = []
+node9_list = []
 prev_node8 = 0
 prev_node9 = 0
 
@@ -67,7 +70,7 @@ class EchoServerProtocol(asyncio.Protocol):
         #time stamp, ip, node num, data
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
-        node_ip = peer_info[0]
+        node_ip = node_info[0]
         now = datetime.now()
         print('{} FROM: {!r} MESSAGE: {!r}'.format(now, node_ip, message))
 
@@ -98,7 +101,7 @@ class EchoServerProtocol(asyncio.Protocol):
                 graph_title = "Data Path"
                 global data_received
                 data_received = 1
-            if "Data Sent" in line:
+            if "Data Sent" in message:
                 node_sizes[node_num-1] = 1000
                 node_colors[node_num-1] = 'yellow'
                 if node_num == 8:
@@ -113,12 +116,12 @@ class EchoServerProtocol(asyncio.Protocol):
                     global prev_node9
                     prev_node9 = 9
                     node9_list = []
-            if "On Data: 8" in line:
+            if "On Data: 8" in message:
                 if (prev_node8, node_num) > (1,1) :
                     G.add_edges_from([(prev_node9, node_num)])
                     node8_list.append((prev_node8, node_num))
                 prev_node8 = node_num
-            if "On Data: 9" in line:
+            if "On Data: 9" in message:
                 if (prev_node9, node_num) > (1,1) :
                     G.add_edges_from([(prev_node9, node_num)])
                     node9_list.append((prev_node9, node_num))
