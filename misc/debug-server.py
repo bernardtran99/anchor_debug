@@ -51,7 +51,7 @@ node_colors = ['green']*10
 
 #python3
 graph_title = "Anchor Demo"
-data_received = 0
+data_received_bool = 0
 input_ancmt_list = []
 input_layer2_list = []
 firstInterest = {}
@@ -94,13 +94,13 @@ class EchoServerProtocol(asyncio.Protocol):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
                     G.add_edges_from([(node_num, firstInterest[node_num])])
         if "Data" in message:
-            if data_received == 0:
+            if data_received_bool == 0:
                 G.remove_edges_from(input_ancmt_list)
                 G.remove_edges_from(input_layer2_list)
                 global graph_title
                 graph_title = "Data Path"
-                global data_received
-                data_received = 1
+                global data_received_bool
+                data_received_bool = 1
             if "Data Sent" in message:
                 node_sizes[node_num-1] = 1000
                 node_colors[node_num-1] = 'yellow'
