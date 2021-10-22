@@ -100,9 +100,6 @@ class EchoServerProtocol(asyncio.Protocol):
                 if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
                     G.add_edges_from([(node_num, firstInterest[node_num])], color='b')
-                    edges = G.edges()
-                    global colors
-                    colors = [G[u][v]['color'] for u,v in edges]
         if "Data" in message:
             global data_received_bool
             if data_received_bool == 0:
@@ -137,6 +134,9 @@ class EchoServerProtocol(asyncio.Protocol):
                 node9_list.append((prev_node9, node_num))
                 prev_node9 = node_num
 
+        edges = G.edges()
+        global colors
+        colors = [G[u][v]['color'] for u,v in edges]
         plt.clf()
         plt.title(graph_title)
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors=colors,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
