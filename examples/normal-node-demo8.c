@@ -846,10 +846,10 @@ int main(int argc, char *argv[]) {
     }
     //DEMO: CHANGE
     clock_t timer_before = clock();
-    while (clock() < (timer_before + 6000000)) {
+    while (clock() < (timer_before + 15000000)) {
     }
-    generate_data();
-    //periodic_publish(5);
+    //generate_data();
+    periodic_publish(5);
     //ndn_face_destroy(&face->intf);
 
     return 0;
