@@ -80,20 +80,22 @@ class EchoServerProtocol(asyncio.Protocol):
         if "Is Anchor" in message:
             node_sizes[0] = 1000
             node_colors[0] = 'red'
-        # if "On Interest" or "Flooded Interest" in message:
-        #     global input_ancmt_list
-        #     global input_layer2_list
-        #     for i in range(len(strings)):
-        #         if strings[i] == "Interest:":
-        #             string_value = int(strings[i+1])
-        #             if node_num not in firstInterest:
-        #                 firstInterest[node_num] = string_value
-        #             if (string_value, node_num) not in input_ancmt_list:
-        #                 input_ancmt_list.append((string_value, node_num))
-        #             G.add_edges_from([(string_value, node_num)])
-        #         if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
-        #             input_layer2_list.append((node_num, firstInterest[node_num]))
-        #             G.add_edges_from([(node_num, firstInterest[node_num])])
+        if ("On Interest" in message) or ("Flooded Interest" in message):
+            for i in range(len(strings)):
+                global input_ancmt_list
+                global input_layer2_list
+                global firstInterest
+                if strings[i] == "Interest:":
+                    string_value = int(strings[i+1])
+                    if node_num not in firstInterest:
+                        firstInterest[node_num] = string_value
+                    if (string_value, node_num) not in input_ancmt_list:
+                        input_ancmt_list.append((string_value, node_num))
+                    global G
+                    G.add_edges_from([(string_value, node_num)])
+                if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
+                    input_layer2_list.append((node_num, firstInterest[node_num]))
+                    G.add_edges_from([(node_num, firstInterest[node_num])])
         # if "Data" in message:
         #     global data_received_bool
         #     if data_received_bool == 0:
