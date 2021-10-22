@@ -786,17 +786,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     strcat(temp_message, prefix);
     strcat(temp_message, " ");
     send_debug_message(temp_message);
-
-    clock_t timer = clock();
-    printf("Delay Time: %d seconds\n", 1);
-    while (clock() < (timer + 1000000)) {
-    }
-
-    encoder_init(&encoder, buf, 4096);
-    ndn_data_tlv_encode_digest_sign(&encoder, &data);
-    ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
-
-    send_debug_message("Data Forwarded ");
 }
 
 //interest is saved in pit until put-Data is called

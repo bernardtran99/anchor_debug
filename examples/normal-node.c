@@ -787,6 +787,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     strcat(temp_message, " ");
     send_debug_message(temp_message);
 
+    //change conditions for on data if anchor or not anchor 
+    if(is_anchor) {
+
+    }
+
     clock_t timer = clock();
     printf("Delay Time: %d seconds\n", 1);
     while (clock() < (timer + 1000000)) {
