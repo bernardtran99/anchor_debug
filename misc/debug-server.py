@@ -59,6 +59,7 @@ node8_list = []
 node9_list = []
 prev_node8 = 0
 prev_node9 = 0
+#create a global module later
 
 class EchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
@@ -96,14 +97,16 @@ class EchoServerProtocol(asyncio.Protocol):
                 if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
                     G.add_edges_from([(node_num, firstInterest[node_num])])
-        # if "Data" in message:
-        #     global data_received_bool
-        #     if data_received_bool == 0:
-        #         G.remove_edges_from(input_ancmt_list)
-        #         G.remove_edges_from(input_layer2_list)
-        #         global graph_title
-        #         graph_title = "Data Path"
-        #         data_received_bool = 1
+        if "Data" in message:
+            global data_received_bool
+            if data_received_bool == 0:
+                global input_ancmt_list
+                global input_layer2_list
+                G.remove_edges_from(input_ancmt_list)
+                G.remove_edges_from(input_layer2_list)
+                global graph_title
+                graph_title = "Data Path"
+                data_received_bool = 1
         #     if "Data Sent" in message:
         #         node_sizes[node_num-1] = 1000
         #         node_colors[node_num-1] = 'yellow'
