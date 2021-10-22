@@ -847,7 +847,7 @@ int main(int argc, char *argv[]) {
     }
     //DEMO: CHANGE
     clock_t timer_before = clock();
-    while (clock() < (timer_before + 15000000)) {
+    while (clock() < (timer_before + 17000000)) {
     }
     generate_data();
     //ndn_face_destroy(&face->intf);
