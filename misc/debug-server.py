@@ -72,10 +72,11 @@ class EchoServerProtocol(asyncio.Protocol):
         node_info = self.transport.get_extra_info('peername')
         node_ip = node_info[0]
         now = datetime.now()
-        print('{} FROM: {!r} MESSAGE: {!r}'.format(now, node_ip, message))
+        strings = message.split()
+        node_num = ipDict[node_ip]
+        print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
-        # strings = message.split()
-        # node_num = ipDict[node_ip]
+        # 
         # if "Is Anchor" in message:
         #     node_sizes[0] = 1000
         #     node_colors[0] = 'red'
