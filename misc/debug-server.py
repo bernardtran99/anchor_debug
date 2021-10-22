@@ -128,11 +128,11 @@ class EchoServerProtocol(asyncio.Protocol):
         #             node9_list.append((prev_node9, node_num))
         #         prev_node9 = node_num
 
-        # plt.clf()
-        # plt.title(graph_title)
-        # nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        # plt.show(block=False)
-        # plt.pause(0.000001)
+        plt.clf()
+        plt.title(graph_title)
+        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.show(block=False)
+        plt.pause(0.000001)
 
         # print('Send: {!r}'.format(message))
         # self.transport.write(data)
