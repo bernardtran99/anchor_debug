@@ -105,21 +105,21 @@ class EchoServerProtocol(asyncio.Protocol):
                 global graph_title
                 graph_title = "Data Path"
                 data_received_bool = 1
-        #     if "Data Sent" in message:
-        #         node_sizes[node_num-1] = 1000
-        #         node_colors[node_num-1] = 'yellow'
-        #         if node_num == 8:
-        #             global node8_list
-        #             G.remove_edges_from(node8_list)
-        #             global prev_node8
-        #             prev_node8 = 8
-        #             node8_list = []
-        #         if node_num == 9:
-        #             global node9_list
-        #             G.remove_edges_from(node9_list)
-        #             global prev_node9
-        #             prev_node9 = 9
-        #             node9_list = []
+            if "Data Sent" in message:
+                node_sizes[node_num-1] = 1000
+                node_colors[node_num-1] = 'yellow'
+                if node_num == 8:
+                    global node8_list
+                    G.remove_edges_from(node8_list)
+                    global prev_node8
+                    prev_node8 = 8
+                    node8_list = []
+                if node_num == 9:
+                    global node9_list
+                    G.remove_edges_from(node9_list)
+                    global prev_node9
+                    prev_node9 = 9
+                    node9_list = []
         #     if "On Data: 8" in message:
         #         if (prev_node8, node_num) > (1,1) :
         #             G.add_edges_from([(prev_node9, node_num)])
