@@ -64,7 +64,9 @@ prev_node9 = 0
 class EchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         peername = transport.get_extra_info('peername')
-        print('Connection from {}'.format(peername))
+        node_ip = peername[0]
+        node_num = ipDict[node_ip]
+        print('Connection from {} (Node {})'.format(peername, node_num))
         self.transport = transport
 
     def data_received(self, data):

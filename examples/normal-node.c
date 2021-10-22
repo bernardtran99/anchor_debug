@@ -418,18 +418,17 @@ void generate_data() {
     send_debug_message("Data Sent ");
 }
 
-void *periodic_publish(void *arguements) {
-    int num_pub = 1;
-    while(num_pub <= 5) {
+void periodic_publish(int times) {
+    int num_pub = times;
+    while(num_pub <= times) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
         }
-        printf("Publish Times: %d", num_pub);
+        //printf("Publish Times: %d", num_pub);
         generate_data();
         num_pub++;
     }
 }
-
 
 //is this threaded
 //non zero chance of flooding twice due to multithreading

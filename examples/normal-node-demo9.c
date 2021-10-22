@@ -404,13 +404,13 @@ void generate_data() {
     send_debug_message("Data Sent ");
 }
 
-void *periodic_publish(void *arguements) {
-    int num_pub = 1;
-    while(num_pub <= 5) {
+void periodic_publish(int times) {
+    int num_pub = times;
+    while(num_pub <= times) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
         }
-        printf("Publish Times: %d", num_pub);
+        //printf("Publish Times: %d", num_pub);
         generate_data();
         num_pub++;
     }
@@ -849,7 +849,7 @@ int main(int argc, char *argv[]) {
     clock_t timer_before = clock();
     while (clock() < (timer_before + 17000000)) {
     }
-    generate_data();
+    periodic_publish(5);
     //ndn_face_destroy(&face->intf);
 
     return 0;
