@@ -136,7 +136,7 @@ class EchoServerProtocol(asyncio.Protocol):
 
         edges = G.edges()
         print(edges)
-        colors = nx.get_edge_attributes(G,'color').values()
+        colors = nx.get_edge_attributes(G,'color')
         print(colors)
         plt.clf()
         plt.title(graph_title)
