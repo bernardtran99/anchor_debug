@@ -76,10 +76,10 @@ class EchoServerProtocol(asyncio.Protocol):
         node_num = ipDict[node_ip]
         print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
-        # 
-        # if "Is Anchor" in message:
-        #     node_sizes[0] = 1000
-        #     node_colors[0] = 'red'
+        
+        if "Is Anchor" in message:
+            node_sizes[0] = 1000
+            node_colors[0] = 'red'
         # if "On Interest" or "Flooded Interest" in message:
         #     global input_ancmt_list
         #     global input_layer2_list
