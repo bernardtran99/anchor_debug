@@ -120,16 +120,16 @@ class EchoServerProtocol(asyncio.Protocol):
                     global prev_node9
                     prev_node9 = 9
                     node9_list = []
-        #     if "On Data: 8" in message:
-        #         if (prev_node8, node_num) > (1,1) :
-        #             G.add_edges_from([(prev_node9, node_num)])
-        #             node8_list.append((prev_node8, node_num))
-        #         prev_node8 = node_num
-        #     if "On Data: 9" in message:
-        #         if (prev_node9, node_num) > (1,1) :
-        #             G.add_edges_from([(prev_node9, node_num)])
-        #             node9_list.append((prev_node9, node_num))
-        #         prev_node9 = node_num
+            if "On Data: 8" in message:
+                if (prev_node8, node_num) != (1,1) :
+                    G.add_edges_from([(prev_node8, node_num)])
+                node8_list.append((prev_node8, node_num))
+                prev_node8 = node_num
+            if "On Data: 9" in message:
+                if (prev_node9, node_num) != (1,1) :
+                    G.add_edges_from([(prev_node9, node_num)])
+                node9_list.append((prev_node9, node_num))
+                prev_node9 = node_num
 
         plt.clf()
         plt.title(graph_title)
