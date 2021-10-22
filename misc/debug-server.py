@@ -100,8 +100,6 @@ class EchoServerProtocol(asyncio.Protocol):
         if "Data" in message:
             global data_received_bool
             if data_received_bool == 0:
-                global input_ancmt_list
-                global input_layer2_list
                 G.remove_edges_from(input_ancmt_list)
                 G.remove_edges_from(input_layer2_list)
                 global graph_title
