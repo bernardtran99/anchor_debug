@@ -848,7 +848,8 @@ int main(int argc, char *argv[]) {
     clock_t timer_before = clock();
     while (clock() < (timer_before + 8000000)) {
     }
-    periodic_publish(5);
+    generate_data();
+    //periodic_publish(5);
     //ndn_face_destroy(&face->intf);
 
     return 0;
