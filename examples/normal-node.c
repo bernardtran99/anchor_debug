@@ -419,7 +419,7 @@ void generate_data() {
 }
 
 void periodic_publish(int times) {
-    int num_pub = times;
+    int num_pub = 1;
     while(num_pub <= times) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {

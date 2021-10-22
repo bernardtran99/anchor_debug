@@ -405,7 +405,7 @@ void generate_data() {
 }
 
 void periodic_publish(int times) {
-    int num_pub = times;
+    int num_pub = 1;
     while(num_pub <= times) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
@@ -415,7 +415,6 @@ void periodic_publish(int times) {
         num_pub++;
     }
 }
-
 
 //is this threaded
 //non zero chance of flooding twice due to multithreading
@@ -847,9 +846,9 @@ int main(int argc, char *argv[]) {
     }
     //DEMO: CHANGE
     clock_t timer_before = clock();
-    while (clock() < (timer_before + 15000000)) {
+    while (clock() < (timer_before + 6000000)) {
     }
-    generate_data();
+    periodic_publish(5);
     //ndn_face_destroy(&face->intf);
 
     return 0;
