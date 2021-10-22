@@ -100,7 +100,7 @@ class EchoServerProtocol(asyncio.Protocol):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
                     G.add_edges_from([(node_num, firstInterest[node_num])], color='b')
                     edges = G.edges()
-                    colors = [G[u][v]['color'] for u,v in edges]
+                    colors = [G[u]['color'] for u in edges]
         if "Data" in message:
             global data_received_bool
             if data_received_bool == 0:
