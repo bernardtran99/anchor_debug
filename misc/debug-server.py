@@ -134,7 +134,7 @@ class EchoServerProtocol(asyncio.Protocol):
                 node9_list.append((prev_node9, node_num))
                 prev_node9 = node_num
 
-        colors = nx.get_edge_attributes(G,'color').values()
+        colors = list(nx.get_edge_attributes(G,'color').values())
         plt.clf()
         plt.title(graph_title)
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black',edge_color = colors,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
