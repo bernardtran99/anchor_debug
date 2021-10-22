@@ -96,10 +96,10 @@ class EchoServerProtocol(asyncio.Protocol):
                     if (string_value, node_num) not in input_ancmt_list:
                         input_ancmt_list.append((string_value, node_num))
                     global G
-                    G.add_edges_from([(string_value, node_num)], color='r', weight = 4)
+                    G.add_edges_from([(string_value, node_num)], color='r', weight = 3)
                 if (strings[i] == "Flooded") and (node_num != 1) and ((node_num, firstInterest[node_num]) not in input_layer2_list):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
-                    G.add_edges_from([(node_num, firstInterest[node_num])], color='b', weight = 4)
+                    G.add_edges_from([(node_num, firstInterest[node_num])], color='b', weight = 3)
         if "Data" in message:
             global data_received_bool
             if data_received_bool == 0:
@@ -125,13 +125,13 @@ class EchoServerProtocol(asyncio.Protocol):
                     node9_list = []
             if "On Data: 8" in message:
                 if (prev_node8, node_num) != (1,1) :
-                    G.add_edges_from([(prev_node8, node_num)], color='black', weight = 4)
+                    G.add_edges_from([(prev_node8, node_num)], color='black', weight = 3)
                 node8_list.append((prev_node8, node_num))
                 prev_node8 = node_num
             if "On Data: 9" in message:
                 if (prev_node9, node_num) != (1,1) :
-                    G.add_edges_from([(prev_node9, node_num)])
-                node9_list.append((prev_node9, node_num), color='black', weight = 4)
+                    G.add_edges_from([(prev_node9, node_num)], color='black', weight = 3)
+                node9_list.append((prev_node9, node_num))
                 prev_node9 = node_num
 
         edges = G.edges()
