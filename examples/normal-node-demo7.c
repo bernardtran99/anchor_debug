@@ -813,11 +813,11 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    int flags = 1;
-    if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
-        printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
-        exit(0); 
-    }
+    // int flags = 1;
+    // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+    //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+    //     exit(0); 
+    // }
    
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
