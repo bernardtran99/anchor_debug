@@ -59,6 +59,7 @@ node8_list = []
 node9_list = []
 prev_node8 = 0
 prev_node9 = 0
+colors = 0
 #create a global module later
 
 class EchoServerProtocol(asyncio.Protocol):
@@ -100,7 +101,8 @@ class EchoServerProtocol(asyncio.Protocol):
                     input_layer2_list.append((node_num, firstInterest[node_num]))
                     G.add_edges_from([(node_num, firstInterest[node_num])], color='b')
                     edges = G.edges()
-                    colors = [G[u]['color'] for u in edges]
+                    global colors
+                    colors = [G[u][v]['color'] for u,v in edges]
         if "Data" in message:
             global data_received_bool
             if data_received_bool == 0:
