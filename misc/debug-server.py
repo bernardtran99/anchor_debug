@@ -135,7 +135,7 @@ class EchoServerProtocol(asyncio.Protocol):
                 prev_node9 = node_num
 
         edges = G.edges()
-        print(edges)
+        #print(edges)
         colors = list(nx.get_edge_attributes(G,'color').values())
         weights = list(nx.get_edge_attributes(G,'weight').values())
         # print(colors)

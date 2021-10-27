@@ -50,6 +50,16 @@
 //link.txt
 ///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
+typedef struct anchor_pit_entry {
+    ndn_name_t name_struct;
+    char *prefix;
+    ndn_udp_face_t face;
+} anchor_pit_entry_t;
+
+typedef struct anchor_pit {
+    anchor_pit_entry_t slots[10];
+} anchor_pit_t;
+
 struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
@@ -127,6 +137,10 @@ int send_debug_message(char *input) {
     //valread = read( sock , buffer, 1024);
     //printf("%s\n",buffer);
     return 0;
+}
+
+void insert_pit(char *ip_address, ndn_udp_face_t face) {
+    if()
 }
 
 //may have to use interest as a pointer
