@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 
+//added includes btran
+#include "../../adaptation/udp/udp-face.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,6 +30,8 @@ extern "C" {
 typedef int (*ndn_on_interest_func)(const uint8_t* interest,
                                     uint32_t interest_size,
                                     void* userdata);
+
+typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face);
 
 /** The onData callback function.
  *

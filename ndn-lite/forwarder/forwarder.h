@@ -23,6 +23,7 @@
 
 //added includes
 #include "../encode/data.h"
+#include "../../adaptation/udp/udp-face.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -68,10 +69,15 @@ typedef struct ndn_forwarder {
   uint8_t memory[NDN_FORWARDER_DEFAULT_SIZE];
 } ndn_forwarder_t;
 
+//user-defined callback function that is called by a node to get the packet info and face received to add to 
+typedef int (*ndn_on_interest_func)(const uint8_t* interest,
+                                    uint32_t interest_size,
+                                    void* userdata);
 
 //user added data structure to hold an on-data callback function
 typedef struct callback_holder {
   ndn_on_data_func on_data_func;
+  ndn_fill_pit_func fill_pit_func;
 } callback_holder_t;
 
 /**@defgroup NDNFwd Forwarder
@@ -90,7 +96,7 @@ void
 ndn_forwarder_init(void);
 
 //user added fucntion (btran)
-void callback_insert(ndn_on_data_func on_data_input);
+void callback_insert(ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input);
 
 /** Returns the forwarder as a pointer
  */
@@ -174,11 +180,18 @@ ndn_forwarder_remove_route(ndn_face_intf_t* face, uint8_t* prefix, size_t length
 int
 ndn_forwarder_remove_all_routes(uint8_t* prefix, size_t length);
 
+//changed by btran
 /** Receive a packet from a face.
  *
  */
 int
-ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length);
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length, ndn_udp_face_t *udp_face);
+
+/** Receive a packet from a face.
+ *
+ */
+// int
+// ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length);
 
 /** Register a prefix.
  *

@@ -198,6 +198,7 @@ ndn_udp_multicast_face_construct(
   return ndn_udp_face_construct(local_addr, port, group_addr, port, true);
 }
 
+//changed by btran
 static void
 ndn_udp_face_recv(void *self, size_t param_len, void *param){
   struct sockaddr_in client_addr;
@@ -211,7 +212,7 @@ ndn_udp_face_recv(void *self, size_t param_len, void *param){
                     (struct sockaddr*)&client_addr, &addr_len);
     if(size >= 0){
       // A packet recved
-      ret = ndn_forwarder_receive(&ptr->intf, ptr->buf, size);
+      ret = ndn_forwarder_receive(&ptr->intf, ptr->buf, size, ptr);
     }else if(size == -1 && (errno == EWOULDBLOCK || errno == EAGAIN)){
       // No more packet
       break;

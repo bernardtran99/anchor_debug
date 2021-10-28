@@ -50,13 +50,15 @@
 //link.txt
 ///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
+
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
-    char *prefix;
+    char *prefix = "";
     ndn_udp_face_t face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
+    size_t mem = 10;
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
@@ -64,6 +66,8 @@ struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
 };
+
+anchor_pit_t node_anchor_pit;
 
 //intitialize pit and fib for layer 1
 ndn_pit_t *layer1_pit;
@@ -137,10 +141,6 @@ int send_debug_message(char *input) {
     //valread = read( sock , buffer, 1024);
     //printf("%s\n",buffer);
     return 0;
-}
-
-void insert_pit(char *ip_address, ndn_udp_face_t face) {
-    if()
 }
 
 //may have to use interest as a pointer
@@ -770,6 +770,55 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
+void insert_entry(anchor_pit_entry_t entry) {
+    for(size_t i = 0; i < node_anchor_pit.mem; i++) {
+        if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
+            
+        }
+        else {
+            node_anchor_pit.slots[i] = entry;
+            return;
+        }
+    }
+}
+
+char *get_string_prefix(ndn_interest_t interest) {
+    char return_string[80] = "";
+    ndn_name_t prefix_name;
+    prefix_name = interest.name;
+
+    for (int i = 0; i < prefix_name.components_size; i++) {
+        strcat(return_string,"/");
+        for (int j = 0; j < prefix_name.components[i].size; j++) {
+            if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
+                char temp_char[1];
+                sprintf(temp_char, "%c", prefix_name.components[i].value[j]);
+                strcat(return_string, temp_char);
+            }
+            // else {
+            //     printf("0x%02x", component.value[j]);
+            // }
+        }
+    }
+    return return_string;
+}
+
+void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face) {
+    ndn_interest_t interest_pkt;
+    anchor_pit_entry_t entry;
+    char *insert_prefix = "";
+
+    ndn_interest_from_block(&interest_pkt, interest, interest_size);
+
+    insert_prefix = get_string_prefix(interest_pkt);
+
+    entry.face = face;
+    entry.name_struct = interest_pkt.name;
+    entry.prefix = insert_prefix;
+
+    insert_entry(entry);
+}
+
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
@@ -954,7 +1003,7 @@ int main(int argc, char *argv[]) {
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     //DEMO: CHANGE
     populate_incoming_fib();
-    callback_insert(on_data);
+    callback_insert_data(on_data, fill_pit);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 

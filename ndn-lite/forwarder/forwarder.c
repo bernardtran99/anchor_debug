@@ -19,6 +19,7 @@
 
 //added includes
 #include "../encode/data.h"
+#include "../../adaptation/udp/udp-face.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -86,11 +87,14 @@ ndn_forwarder_init(void)
   ptr += NDN_PIT_RESERVE_SIZE(NDN_PIT_MAX_SIZE);
 }
 
-void callback_insert(ndn_on_data_func on_data_input) {
-  callback_holder_t *ptr = malloc(200);
-  ptr->on_data_func = malloc(200);
+//call once only
+void callback_insert(ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input) {
+  callback_holder_t *ptr = malloc(sizeof(callback_holder_t));
+  ptr->on_data_func = malloc(sizeof(ndn_on_data_func));
+  ptr->fill_pit_func = malloc(sizeof(ndn_fill_pit_func));
   holder = ptr;
   holder->on_data_func = on_data_input;
+  holder->fill_pit_func = fill_pit_input;
 }
 
 // const ndn_forwarder_t*
@@ -321,10 +325,10 @@ ndn_forwarder_put_data(uint8_t* data, size_t length)
   return fwd_data_pipeline(data, length, name, name_len, NDN_INVALID_ID);
 }
 
-//this function will always call on data if dat ais received from interface no matter the prefix
+//this function will always call on data if data is received from interface no matter the prefix
 //only need to define udp face
 int
-ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length, ndn_udp_face_t *udp_face)
 {
   uint32_t type, val_len;
   uint8_t* buf;
@@ -343,6 +347,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
 
   if (type == TLV_Interest) {
     ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
+    holder->fill_pit_func(packet, length, udp_face);
     if (ret != NDN_SUCCESS)
       return ret;
     return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);
