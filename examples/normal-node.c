@@ -53,13 +53,11 @@
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
-    prefix = "";
     ndn_face_intf_t face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
     int mem;
-    mem = 10;
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
@@ -996,6 +994,13 @@ int main(int argc, char *argv[]) {
     // sprintf(temp_num, "%d", node_num);
     // strcat(temp_message, temp_num);
     // send_debug_message(temp_message);
+    
+
+    //init pit
+    node_anchor_pit.mem = 10;
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        node_anchor_pit.slots[i].prefix = "";
+    }
     
     ndn_lite_startup();
 
