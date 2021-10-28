@@ -799,7 +799,7 @@ char *get_string_prefix(ndn_interest_t interest) {
             // }
         }
     }
-    return return_string;
+    return &return_string;
 }
 
 void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
