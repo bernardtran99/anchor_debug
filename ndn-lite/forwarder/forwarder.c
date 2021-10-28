@@ -20,6 +20,7 @@
 //added includes
 #include "../encode/data.h"
 #include "../../adaptation/udp/udp-face.h"
+#include "callback-funcs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

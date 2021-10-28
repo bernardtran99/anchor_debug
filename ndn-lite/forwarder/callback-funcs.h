@@ -31,8 +31,6 @@ typedef int (*ndn_on_interest_func)(const uint8_t* interest,
                                     uint32_t interest_size,
                                     void* userdata);
 
-typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face);
-
 /** The onData callback function.
  *
  * @param[in] data The encoded data.
@@ -46,6 +44,8 @@ typedef void (*ndn_on_data_func)(const uint8_t* data, uint32_t data_size, void* 
  * @param[in] userdata [Optional] User defined data.
  */
 typedef void (*ndn_on_timeout_func)(void* userdata);
+
+typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face);
 
 #ifdef __cplusplus
 }
