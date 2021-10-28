@@ -43,8 +43,6 @@ typedef void (*ndn_on_data_func)(const uint8_t* data, uint32_t data_size, void* 
  */
 typedef void (*ndn_on_timeout_func)(void* userdata);
 
-typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face);
-
 #ifdef __cplusplus
 }
 #endif
