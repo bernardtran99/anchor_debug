@@ -53,12 +53,14 @@
 
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
-    char *prefix = "";
+    char *prefix;
+    prefix = "";
     ndn_face_intf_t face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
-    size_t mem = 10;
+    int mem;
+    mem = 10;
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
@@ -771,7 +773,7 @@ void populate_incoming_fib() {
 }
 
 void insert_entry(anchor_pit_entry_t entry) {
-    for(size_t i = 0; i < node_anchor_pit.mem; i++) {
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
         if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
             
         }
