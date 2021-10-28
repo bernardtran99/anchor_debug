@@ -27,9 +27,7 @@ extern "C" {
  * @param[in] userdata [Optional] User defined data.
  * @return The forward strategy to take, only used if no Data get from this function.
  */
-typedef int (*ndn_on_interest_func)(const uint8_t* interest,
-                                    uint32_t interest_size,
-                                    void* userdata);
+typedef int (*ndn_on_interest_func)(const uint8_t* interest, uint32_t interest_size, void* userdata);
 
 /** The onData callback function.
  *
@@ -45,7 +43,7 @@ typedef void (*ndn_on_data_func)(const uint8_t* data, uint32_t data_size, void* 
  */
 typedef void (*ndn_on_timeout_func)(void* userdata);
 
-typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face);
+typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face);
 
 #ifdef __cplusplus
 }

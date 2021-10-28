@@ -54,7 +54,7 @@
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix = "";
-    ndn_udp_face_t face;
+    ndn_face_intf_t face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
@@ -803,7 +803,7 @@ char *get_string_prefix(ndn_interest_t interest) {
     return return_string;
 }
 
-void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_udp_face_t *face) {
+void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
     ndn_interest_t interest_pkt;
     anchor_pit_entry_t entry;
     char *insert_prefix = "";

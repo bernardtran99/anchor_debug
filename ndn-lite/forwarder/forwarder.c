@@ -327,7 +327,7 @@ ndn_forwarder_put_data(uint8_t* data, size_t length)
 //this function will always call on data if data is received from interface no matter the prefix
 //only need to define udp face
 int
-ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length, ndn_udp_face_t *udp_face)
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
 {
   uint32_t type, val_len;
   uint8_t* buf;
@@ -346,7 +346,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length, ndn
 
   if (type == TLV_Interest) {
     ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
-    holder->fill_pit_func(packet, length, udp_face);
+    holder->fill_pit_func(packet, length, face);
     if (ret != NDN_SUCCESS)
       return ret;
     return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);

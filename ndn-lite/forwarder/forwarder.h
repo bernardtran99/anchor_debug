@@ -184,7 +184,7 @@ ndn_forwarder_remove_all_routes(uint8_t* prefix, size_t length);
  *
  */
 int
-ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length, ndn_udp_face_t *udp_face);
+ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length);
 
 /** Receive a packet from a face.
  *

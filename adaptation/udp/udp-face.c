@@ -212,7 +212,7 @@ ndn_udp_face_recv(void *self, size_t param_len, void *param){
                     (struct sockaddr*)&client_addr, &addr_len);
     if(size >= 0){
       // A packet recved
-      ret = ndn_forwarder_receive(&ptr->intf, ptr->buf, size, ptr);
+      ret = ndn_forwarder_receive(&ptr->intf, ptr->buf, size);
     }else if(size == -1 && (errno == EWOULDBLOCK || errno == EAGAIN)){
       // No more packet
       break;
