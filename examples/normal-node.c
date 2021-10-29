@@ -411,9 +411,48 @@ bool verify_interest(ndn_interest_t *interest) {
     return true;
 }
 
+//make sure to uncomment relpy ancmt
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
-    //look at find
+    ndn_face_intf_t *face_intf;
+    face_intf = node_anchor_pit.slots[0].face;
+    ndn_udp_face_t *face_udp;
+    face_udp = search_udp_face(face_intf);
+    char *ip_string = "";
+    ip_string = get_ip_address_string(face_udp);
+    
+    ndn_interest_t interest;
+    ndn_name_t prefix_name;
+    ndn_udp_face_t *face;
+    //DEMO: CHANGE
+    char *ancmt_string = "/l2interest/1/2";
+    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    
+    //myip, my outgoing port, their incoming ip, their incoming port
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+    
+    sz_port1 = "4000";
+    sz_addr = ip_string;
+    sz_port2 = "6000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+    ndn_interest_from_name(&interest, &prefix_name);
+    ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+    ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    
 }
 
 /*
@@ -442,7 +481,7 @@ void *start_delay(void *arguments) {
     else {
         flood(args->interest);
         did_flood[args->struct_selector] = true;
-        reply_ancmt();
+        //reply_ancmt();
         //pthread_exit(NULL);
     }
 }
@@ -649,7 +688,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                reply_ancmt();
+                //reply_ancmt();
                 //DEMO: CHANGE
                 //running = false;
                 //pthread_exit(NULL);
