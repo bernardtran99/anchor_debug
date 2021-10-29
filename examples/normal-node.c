@@ -54,18 +54,25 @@ typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
     ndn_face_intf_t *face;
-    ndn_udp_face_t udp_face;
+    ndn_udp_face_t *udp_face;
 } anchor_pit_entry_t;
 
 //for linking prefixes to a specific face
 typedef struct anchor_pit {
+    //change size to be more dynamic when iterating through array
     int mem;
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
+typedef struct udp_table_entry {
+    bool empty;
+    ndn_udp_face_t *face;
+} udp_table_entry_t;
+
 //for matching intf faces to udp faces to forward
 typedef struct udp_table {
-    ndn_udp_face_t table[50];
+    int size;
+    udp_table_entry_t faces[50];
 } udp_table_t;
 
 struct delay_struct {
@@ -150,6 +157,46 @@ int send_debug_message(char *input) {
     //valread = read( sock , buffer, 1024);
     //printf("%s\n",buffer);
     return 0;
+}
+
+void initialize_anchor_pit() {
+    //set flag to 0, mem_size, and all initial strings to ""
+}
+
+void initialize_anchor_face_table() {
+    //set flag to 0, mem_size
+
+}
+
+void add_face_entry(ndn_udp_face_t *input_face) {
+    for(int i = 0; i < face_table.size; i++) {
+        if(face_table.faces[i].empty == false) {
+            face_table.faces[i].face = input_face;
+            return
+        }
+        // else {
+        //     //empty
+        // }
+    }
+}
+
+ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
+    for(int i = 0; i < face_table.size; i++) {
+        printf("INPUT INTF: %p/n", input_intf);
+        printf("UDP FACE INTF: %p/n", &face_table.faces[i].face->intf);
+        if(&face_table.faces[i].face->intf == input_intf) {
+            return face_table.faces[i].face;
+        }
+    }
+}
+
+//inet ntoa
+char *get_ip_address_string(ndn_udp_face_t *input_face) {
+    char *output = "";
+    struct in_addr input;
+    input = input_face.remote_addr.sin_addr;
+    output = inet_ntoa(input);
+    return output;
 }
 
 //may have to use interest as a pointer
@@ -1017,6 +1064,10 @@ int main(int argc, char *argv[]) {
     node_anchor_pit.mem = 10;
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         node_anchor_pit.slots[i].prefix = "";
+    }
+    face_table.size = 50;
+    for(int i = 0; i < face_table.size; i++) {
+        face_table.faces[i].empty = false;
     }
     
     ndn_lite_startup();
