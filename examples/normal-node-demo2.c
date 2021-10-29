@@ -413,7 +413,7 @@ void reply_ancmt() {
     struct in_addr ** paddrs;
     
     sz_port1 = "4000";
-    sz_addr = NODE1;
+    sz_addr = ip_string;
     sz_port2 = "6000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;

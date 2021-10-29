@@ -199,6 +199,8 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
     return output;
 }
 
+//TODO: also fix the fact that normal nodes flood
+
 //may have to use interest as a pointer
 void flood(ndn_interest_t interest_pkt) {
     printf("\nFlooding\n");
@@ -423,6 +425,7 @@ void reply_ancmt() {
     printf("1\n");
     ndn_udp_face_t *face_udp;
     face_udp = search_udp_face(face_intf);
+    //ERROR: comparison of null pointer and actual address in search udp
     printf("2\n");
     char *ip_string = "";
     ip_string = get_ip_address_string(face_udp);
