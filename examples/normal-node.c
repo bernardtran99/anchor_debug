@@ -53,7 +53,7 @@
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
-    ndn_face_intf_t face;
+    ndn_face_intf_t *face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
