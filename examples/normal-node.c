@@ -782,8 +782,7 @@ void insert_entry(anchor_pit_entry_t entry) {
 }
 
 char *get_string_prefix(ndn_interest_t interest) {
-    char return_string[80] = "";
-    char *test = "";
+    char *return_string = "";
     ndn_name_t prefix_name;
     prefix_name = interest.name;
 
@@ -800,8 +799,7 @@ char *get_string_prefix(ndn_interest_t interest) {
             // }
         }
     }
-    test = &return_string[0];
-    return test;
+    return return_string;
 }
 
 void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
