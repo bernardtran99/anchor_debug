@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.27"
 #define NODE9 "155.246.213.56"
 #define NODE10 "155.246.210.39"
-#define DEBUG "155.246.182.138"
+#define DEBUG "155.246.182.79"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -482,7 +482,7 @@ void *start_delay(void *arguments) {
     else {
         flood(args->interest);
         did_flood[args->struct_selector] = true;
-        reply_ancmt();
+        //reply_ancmt();
         //pthread_exit(NULL);
     }
 }
@@ -678,7 +678,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                reply_ancmt();
+                //reply_ancmt();
                 //DEMO: CHANGE
                 //running = false;
                 //pthread_exit(NULL);
@@ -716,9 +716,9 @@ void populate_incoming_fib() {
     //remove youre own incoming interface
     //change NODE(NUM) and face(num)
     //Node1-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE1;
-    sz_port2 = "3000";
+    sz_port1 = "6000";
+    sz_addr = NODE2;
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -727,13 +727,13 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face1 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face1);
+    //add_face_entry(face1);
     
 
     //Node2-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE2;
-    sz_port2 = "3000";
+    sz_port1 = "6000";
+    sz_addr = NODE3;
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -742,119 +742,14 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face2 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face2);
-
-    //Node3-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE3;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face3 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face3);
-
-    //Node4-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE4;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face4 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node5-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE5;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face5 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node6-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE6;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face6 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node7-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE7;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face7 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node8-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE8;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face8 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node9-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE9;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face9 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node10-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE10;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face10 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    //add_face_entry(face2);
 
     //DEMO: CHANGE
-    ancmt_string = "/ancmt/1/CHANGE";
+    ancmt_string = "/l2interest/1/2";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
-    ancmt_string = "/ancmt/1/CHANGE";
+    ancmt_string = "/l2interest/1/3";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
@@ -1117,7 +1012,7 @@ int main(int argc, char *argv[]) {
     //signature init
 
     //DEMO: CHANGE
-    //is_anchor = true;
+    is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor ");
     }

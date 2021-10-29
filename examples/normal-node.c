@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.27"
 #define NODE9 "155.246.213.56"
 #define NODE10 "155.246.210.39"
-#define DEBUG "155.246.182.138"
+#define DEBUG "155.246.182.79"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -412,6 +412,8 @@ bool verify_interest(ndn_interest_t *interest) {
 }
 
 //make sure to uncomment relpy ancmt
+//reply ancmt not used by anchor nodes so add if statement in flood statements to account for this
+//only reply acnmt if acnhor when receiveing from another anchor in the network
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     
