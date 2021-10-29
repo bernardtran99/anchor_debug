@@ -713,9 +713,6 @@ void populate_incoming_fib() {
 void insert_entry(anchor_pit_entry_t entry) {
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
-            
-        }
-        else {
             printf("Inserted Entry at POS: %d", i);
             node_anchor_pit.slots[i] = entry;
             return;
