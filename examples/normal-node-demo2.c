@@ -135,6 +135,8 @@ struct sockaddr_in serv_addr;
 
 ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
+char return_string[80] = "";
+
 int send_debug_message(char *input) {
     char *debug_message;
     //char buffer[1024] = {0};
@@ -635,7 +637,7 @@ void insert_entry(anchor_pit_entry_t entry) {
 }
 
 char *get_string_prefix(ndn_interest_t interest) {
-    char return_string[80] = "";
+    return_string = "";
     ndn_name_t prefix_name;
     prefix_name = interest.name;
 
