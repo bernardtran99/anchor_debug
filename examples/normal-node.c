@@ -875,6 +875,7 @@ void insert_entry(anchor_pit_entry_t entry) {
             
         }
         else {
+            printf("Inserted Entry at POS: %d", i);
             node_anchor_pit.slots[i] = entry;
             return;
         }
