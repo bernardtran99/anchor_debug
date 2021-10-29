@@ -414,6 +414,7 @@ bool verify_interest(ndn_interest_t *interest) {
 //make sure to uncomment relpy ancmt
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
+    
     ndn_face_intf_t *face_intf;
     face_intf = node_anchor_pit.slots[0].face;
     ndn_udp_face_t *face_udp;
@@ -481,7 +482,7 @@ void *start_delay(void *arguments) {
     else {
         flood(args->interest);
         did_flood[args->struct_selector] = true;
-        //reply_ancmt();
+        reply_ancmt();
         //pthread_exit(NULL);
     }
 }
@@ -660,17 +661,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
             data_face = face10;
         }
 
-        //DEMO: CHANGE
-        //this is for producer generate data fter 6 second delay
-        //pthread_create(&per_pub, NULL, &periodic_publish, NULL);
-
-        //insert_pit(interest_pkt);
-        //call insert pit here as well for first case scenario
-        // if(interface_num[parameters] >= max_interfaces) {
-        //    flood(interest_pkt);
-        //    did_flood[parameters] = true;
-        //    reply_ancmt();
-        // }
     }
 
     else if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == true) {
@@ -688,7 +678,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                //reply_ancmt();
+                reply_ancmt();
                 //DEMO: CHANGE
                 //running = false;
                 //pthread_exit(NULL);
@@ -737,6 +727,8 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face1 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    add_face_entry(face1);
+    
 
     //Node2-Anchor
     sz_port1 = "5000";
@@ -750,6 +742,7 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face2 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    add_face_entry(face2);
 
     //Node3-Anchor
     sz_port1 = "5000";
@@ -763,6 +756,7 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face3 = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    add_face_entry(face3);
 
     //Node4-Anchor
     sz_port1 = "5000";
@@ -1127,6 +1121,8 @@ int main(int argc, char *argv[]) {
     if(is_anchor == true) {
         send_debug_message("Is Anchor ");
     }
+
+    //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
 
     running = true;
     while (running) {
