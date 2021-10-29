@@ -796,7 +796,7 @@ char *get_string_prefix(ndn_interest_t interest) {
     prefix_name = interest.name;
 
     for (int i = 0; i < prefix_name.components_size; i++) {
-        print("%d, ",prefix_name.components[i].type);
+        printf("%d, ",prefix_name.components[i].type);
         strcat(return_string,"/");
         for (int j = 0; j < prefix_name.components[i].size; j++) {
             if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
