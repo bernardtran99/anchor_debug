@@ -388,8 +388,10 @@ void reply_ancmt() {
     
     ndn_face_intf_t *face_intf;
     face_intf = node_anchor_pit.slots[0].face;
+    printf("1\n");
     ndn_udp_face_t *face_udp;
     face_udp = search_udp_face(face_intf);
+    printf("2\n");
     char *ip_string = "";
     ip_string = get_ip_address_string(face_udp);
     printf("LOOKUP IP: %s", ip_string);
