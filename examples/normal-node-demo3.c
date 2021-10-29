@@ -384,12 +384,15 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     
+    printf("\nReply Ancmt...\n");
+    
     ndn_face_intf_t *face_intf;
     face_intf = node_anchor_pit.slots[0].face;
     ndn_udp_face_t *face_udp;
     face_udp = search_udp_face(face_intf);
     char *ip_string = "";
     ip_string = get_ip_address_string(face_udp);
+    printf("LOOKUP IP: %s", ip_string);
     
     ndn_interest_t interest;
     ndn_name_t prefix_name;
