@@ -681,6 +681,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     insert_prefix = get_string_prefix(interest_pkt);
     printf("PIT PREFIX: %s/n", insert_prefix);
+    ndn_name_print(&interest_pkt.name);
 
     entry.face = face;
     entry.name_struct = interest_pkt.name;
