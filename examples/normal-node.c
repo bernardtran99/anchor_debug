@@ -57,11 +57,13 @@ typedef struct anchor_pit_entry {
     ndn_udp_face_t udp_face;
 } anchor_pit_entry_t;
 
+//for linking prefixes to a specific face
 typedef struct anchor_pit {
     int mem;
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
+//for matching intf faces to udp faces to forward
 typedef struct udp_table {
     ndn_udp_face_t table[50];
 } udp_table_t;
@@ -823,7 +825,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     insert_prefix = get_string_prefix(interest_pkt);
-    printf("PIT PREFIX: %s\n", insert_prefix);
+    //printf("PIT PREFIX: %s\n", insert_prefix);
     ndn_name_print(&interest_pkt.name);
 
     entry.face = face;
