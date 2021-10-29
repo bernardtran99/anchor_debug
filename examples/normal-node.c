@@ -194,7 +194,7 @@ ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
 char *get_ip_address_string(ndn_udp_face_t *input_face) {
     char *output = "";
     struct in_addr input;
-    input = input_face.remote_addr.sin_addr;
+    input = input_face->remote_addr.sin_addr;
     output = inet_ntoa(input);
     return output;
 }
