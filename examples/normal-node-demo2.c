@@ -637,26 +637,31 @@ void insert_entry(anchor_pit_entry_t entry) {
 }
 
 char *get_string_prefix(ndn_interest_t interest) {
+    //char *return_string = malloc(200);
     memset(return_string, 0, sizeof(return_string));
     ndn_name_t prefix_name;
     prefix_name = interest.name;
 
     for (int i = 0; i < prefix_name.components_size; i++) {
-        printf("%d, ",prefix_name.components[i].type);
-        strcat(return_string,"/");
-        for (int j = 0; j < prefix_name.components[i].size; j++) {
-            if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
-                char temp_char[10];
-                sprintf(temp_char, "%c", prefix_name.components[i].value[j]);
-                strcat(return_string, temp_char);
+        //printf("%d, ",prefix_name.components[i].type);
+        if(prefix_name.components[i].type == 8) {
+            strcat(return_string,"/");
+            for (int j = 0; j < prefix_name.components[i].size; j++) {
+                if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
+                    char temp_char[10];
+                    sprintf(temp_char, "%c", prefix_name.components[i].value[j]);
+                    strcat(return_string, temp_char);
+                }
+                // else {
+                //     printf("0x%02x", component.value[j]);
+                // }
             }
-            // else {
-            //     printf("0x%02x", component.value[j]);
-            // }
         }
+        
     }
     return return_string;
 }
+
 
 void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
     ndn_interest_t interest_pkt;
