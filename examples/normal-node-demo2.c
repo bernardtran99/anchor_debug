@@ -182,8 +182,8 @@ void add_face_entry(ndn_udp_face_t *input_face) {
 
 ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
     for(int i = 0; i < face_table.size; i++) {
-        printf("INPUT INTF: %p/n", input_intf);
-        printf("UDP FACE INTF: %p/n", &face_table.faces[i].face->intf);
+        printf("INPUT INTF: %p\n", input_intf);
+        printf("UDP FACE INTF: %p\n", &face_table.faces[i].face->intf);
         if(&face_table.faces[i].face->intf == input_intf) {
             return face_table.faces[i].face;
         }
@@ -387,15 +387,15 @@ void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
     
-    // ndn_face_intf_t *face_intf;
-    // face_intf = node_anchor_pit.slots[0].face;
-    // printf("1\n");
-    // ndn_udp_face_t *face_udp;
-    // face_udp = search_udp_face(face_intf);
-    // printf("2\n");
-    // char *ip_string = "";
-    // ip_string = get_ip_address_string(face_udp);
-    // printf("LOOKUP IP: %s", ip_string);
+    ndn_face_intf_t *face_intf;
+    face_intf = node_anchor_pit.slots[0].face;
+    printf("1\n");
+    ndn_udp_face_t *face_udp;
+    face_udp = search_udp_face(face_intf);
+    printf("2\n");
+    char *ip_string = "";
+    ip_string = get_ip_address_string(face_udp);
+    printf("LOOKUP IP: %s", ip_string);
     
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -413,7 +413,7 @@ void reply_ancmt() {
     struct in_addr ** paddrs;
     
     sz_port1 = "4000";
-    sz_addr = NODE1;
+    sz_addr = ip_string;
     sz_port2 = "6000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
