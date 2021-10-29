@@ -800,7 +800,7 @@ char *get_string_prefix(ndn_interest_t interest) {
             // }
         }
     }
-    test = *return_string[0];
+    test = &return_string[0];
     return test;
 }
 
