@@ -791,7 +791,7 @@ void insert_entry(anchor_pit_entry_t entry) {
 
 char *get_string_prefix(ndn_interest_t interest) {
     //char *return_string = malloc(200);
-    return_string = "";
+    memset(return_string, 0, sizeof(return_string));
     ndn_name_t prefix_name;
     prefix_name = interest.name;
 
