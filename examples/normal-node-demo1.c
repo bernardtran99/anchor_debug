@@ -50,10 +50,29 @@
 //link.txt
 ///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
+typedef struct anchor_pit_entry {
+    ndn_name_t name_struct;
+    char *prefix;
+    ndn_face_intf_t *face;
+    ndn_udp_face_t udp_face;
+} anchor_pit_entry_t;
+
+typedef struct anchor_pit {
+    int mem;
+    anchor_pit_entry_t slots[10];
+} anchor_pit_t;
+
+typedef struct udp_table {
+    ndn_udp_face_t table[50];
+} udp_table_t;
+
 struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
 };
+
+anchor_pit_t node_anchor_pit;
+udp_table_t face_table;
 
 //intitialize pit and fib for layer 1
 ndn_pit_t *layer1_pit;
@@ -418,18 +437,17 @@ void generate_data() {
     send_debug_message("Data Sent ");
 }
 
-void *periodic_publish(void *arguements) {
+void periodic_publish(int times) {
     int num_pub = 1;
-    while(num_pub <= 5) {
+    while(num_pub <= times) {
         clock_t timer = clock();
         while (clock() < (timer + 6000000)) {
         }
-        printf("Publish Times: %d", num_pub);
+        //printf("Publish Times: %d", num_pub);
         generate_data();
         num_pub++;
     }
 }
-
 
 //is this threaded
 //non zero chance of flooding twice due to multithreading
@@ -757,6 +775,56 @@ void populate_incoming_fib() {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
+void insert_entry(anchor_pit_entry_t entry) {
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
+            
+        }
+        else {
+            node_anchor_pit.slots[i] = entry;
+            return;
+        }
+    }
+}
+
+char *get_string_prefix(ndn_interest_t interest) {
+    char *return_string = malloc(200);
+    ndn_name_t prefix_name;
+    prefix_name = interest.name;
+
+    for (int i = 0; i < prefix_name.components_size; i++) {
+        strcat(return_string,"/");
+        for (int j = 0; j < prefix_name.components[i].size; j++) {
+            if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
+                char temp_char[1];
+                sprintf(temp_char, "%c", prefix_name.components[i].value[j]);
+                strcat(return_string, temp_char);
+            }
+            // else {
+            //     printf("0x%02x", component.value[j]);
+            // }
+        }
+    }
+    return return_string;
+}
+
+void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
+    ndn_interest_t interest_pkt;
+    anchor_pit_entry_t entry;
+    char *insert_prefix = "";
+
+    ndn_interest_from_block(&interest_pkt, interest, interest_size);
+
+    insert_prefix = get_string_prefix(interest_pkt);
+    print("PIT PREFIX: %s/n", insert_prefix);
+
+    entry.face = face;
+    entry.name_struct = interest_pkt.name;
+    entry.prefix = insert_prefix;
+
+    insert_entry(entry);
+}
+
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
@@ -786,6 +854,22 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     strcat(temp_message, prefix);
     strcat(temp_message, " ");
     send_debug_message(temp_message);
+
+    //change conditions for on data if anchor or not anchor 
+    if(is_anchor) {
+
+    }
+
+    clock_t timer = clock();
+    printf("Delay Time: %d seconds\n", 1);
+    while (clock() < (timer + 1000000)) {
+    }
+
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+    ndn_face_send(&data_face->intf, encoder.output_value, encoder.offset);
+
+    send_debug_message("Data Forwarded ");
 }
 
 //interest is saved in pit until put-Data is called
@@ -880,7 +964,7 @@ int main(int argc, char *argv[]) {
     printf("Maximum Interfaces: %d\n", max_interfaces);
 
     //DEMO: CHANGE
-    int node_num = 1;
+    int node_num = 0;
 
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -918,21 +1002,28 @@ int main(int argc, char *argv[]) {
     // strcat(temp_message, temp_num);
     // send_debug_message(temp_message);
     
+
+    //init pit
+    node_anchor_pit.mem = 10;
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        node_anchor_pit.slots[i].prefix = "";
+    }
+    
     ndn_lite_startup();
 
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     //DEMO: CHANGE
-    //populate_incoming_fib();
-    //callback_insert(on_data);
+    populate_incoming_fib();
+    callback_insert(on_data, fill_pit);
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //populate_outgoing_fib();
 
     //signature init
 
     //DEMO: CHANGE
-    is_anchor = true;
+    //is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor ");
     }
@@ -956,6 +1047,7 @@ int main(int argc, char *argv[]) {
     // while (clock() < (timer_before + 15000000)) {
     // }
     // generate_data();
+    //periodic_publish(5);
     //ndn_face_destroy(&face->intf);
 
     return 0;

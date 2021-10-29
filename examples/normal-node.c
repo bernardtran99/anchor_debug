@@ -54,6 +54,7 @@ typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
     ndn_face_intf_t *face;
+    ndn_udp_face_t udp_face;
 } anchor_pit_entry_t;
 
 typedef struct anchor_pit {
@@ -61,12 +62,17 @@ typedef struct anchor_pit {
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
+typedef struct udp_table {
+    ndn_udp_face_t table[50];
+} udp_table_t;
+
 struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
 };
 
 anchor_pit_t node_anchor_pit;
+udp_table_t face_table;
 
 //intitialize pit and fib for layer 1
 ndn_pit_t *layer1_pit;
@@ -782,7 +788,7 @@ void insert_entry(anchor_pit_entry_t entry) {
 }
 
 char *get_string_prefix(ndn_interest_t interest) {
-    char *return_string = malloc(1000);
+    char *return_string = malloc(200);
     ndn_name_t prefix_name;
     prefix_name = interest.name;
 
@@ -810,6 +816,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     insert_prefix = get_string_prefix(interest_pkt);
+    print("PIT PREFIX: %s/n", insert_prefix);
 
     entry.face = face;
     entry.name_struct = interest_pkt.name;
