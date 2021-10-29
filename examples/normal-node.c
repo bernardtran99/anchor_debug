@@ -172,7 +172,7 @@ void add_face_entry(ndn_udp_face_t *input_face) {
     for(int i = 0; i < face_table.size; i++) {
         if(face_table.faces[i].empty == false) {
             face_table.faces[i].face = input_face;
-            return
+            return;
         }
         // else {
         //     //empty
