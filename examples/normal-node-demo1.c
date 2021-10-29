@@ -652,16 +652,15 @@ void insert_entry(anchor_pit_entry_t entry) {
 }
 
 char *get_string_prefix(ndn_interest_t interest) {
-    char *return_string = malloc(200);
+    char return_string[80] = "";
     ndn_name_t prefix_name;
-    return_string = "";
     prefix_name = interest.name;
 
     for (int i = 0; i < prefix_name.components_size; i++) {
         strcat(return_string,"/");
         for (int j = 0; j < prefix_name.components[i].size; j++) {
             if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
-                char temp_char[1];
+                char temp_char[10];
                 sprintf(temp_char, "%c", prefix_name.components[i].value[j]);
                 strcat(return_string, temp_char);
             }
