@@ -334,6 +334,8 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
   uint8_t *name;
   size_t name_len;
   interest_options_t options;
+  ndn_face_intf_t *input_face;
+  input_face = face;
   int ret;
   ndn_table_id_t face_id = (face ? face->face_id : NDN_INVALID_ID);
 
@@ -346,7 +348,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
 
   if (type == TLV_Interest) {
     ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
-    holder->fill_pit_func(packet, length, face);
+    holder->fill_pit_func(packet, length, input_face);
     if (ret != NDN_SUCCESS)
       return ret;
     return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);

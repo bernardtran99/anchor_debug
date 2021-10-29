@@ -182,8 +182,8 @@ void add_face_entry(ndn_udp_face_t *input_face) {
 
 ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
     for(int i = 0; i < face_table.size; i++) {
-        printf("INPUT INTF: %p/n", input_intf);
-        printf("UDP FACE INTF: %p/n", &face_table.faces[i].face->intf);
+        printf("INPUT INTF: %p\n", input_intf);
+        printf("UDP FACE INTF: %p\n", &face_table.faces[i].face->intf);
         if(&face_table.faces[i].face->intf == input_intf) {
             return face_table.faces[i].face;
         }
@@ -428,6 +428,7 @@ void reply_ancmt() {
     //ERROR: comparison of null pointer and actual address in search udp
     printf("2\n");
     char *ip_string = "";
+    //ERROR: tries to lookup ipAdrees that doesnt exist
     ip_string = get_ip_address_string(face_udp);
     printf("LOOKUP IP: %s", ip_string);
     
@@ -915,7 +916,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     insert_prefix = get_string_prefix(interest_pkt);
-    //printf("PIT PREFIX: %s\n", insert_prefix);
+    printf("PIT PREFIX: %s\n", insert_prefix);
     ndn_name_print(&interest_pkt.name);
 
     entry.face = face;
