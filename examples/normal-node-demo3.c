@@ -748,6 +748,7 @@ char *get_string_prefix(ndn_interest_t interest) {
 }
 
 void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
+    printf("\nFill Pit.\n");
     ndn_interest_t interest_pkt;
     anchor_pit_entry_t entry;
     char *insert_prefix = "";
@@ -755,7 +756,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
     insert_prefix = get_string_prefix(interest_pkt);
-    //printf("PIT PREFIX: %s\n", insert_prefix);
+    printf("PIT PREFIX: %s\n", insert_prefix);
+    printf("FILL FACE: %p\n", face);
     ndn_name_print(&interest_pkt.name);
 
     entry.face = face;
