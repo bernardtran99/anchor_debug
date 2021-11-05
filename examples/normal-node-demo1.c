@@ -152,7 +152,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 0;
+int node_num = 1;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -768,6 +768,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 //how do i populate the pit
 //how do you send an interest to set of given entries inside pit of fib
 
+//add function to automatically create faces for layer 2 interest based on flooding function
 void populate_incoming_fib() {
     //NOTE: for recieving an incoming interest packet change the prefix string to the nodes that you want to recieve from
     //also to send a interest packet, change the outgoing interest packet prefix
@@ -789,51 +790,10 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //Node1-Anchor
     //only need to add face for layer 1 incoming
-    sz_port1 = "5000";
-    sz_addr = NODE1;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face);
-    
-
-    //Node2-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE2;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face);
-
-    //Node3-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE3;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    add_face_entry(face);
 
     //Node4-Anchor
     sz_port1 = "6000";
-    sz_addr = NODE4;
+    sz_addr = NODE2;
     sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -846,20 +806,7 @@ void populate_incoming_fib() {
 
     //Node5-Anchor
     sz_port1 = "6000";
-    sz_addr = NODE5;
-    sz_port2 = "4000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node6-Anchor
-    sz_port1 = "6000";
-    sz_addr = NODE6;
+    sz_addr = NODE3;
     sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
@@ -871,11 +818,11 @@ void populate_incoming_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //DEMO: CHANGE
-    ancmt_string = "/ancmt/1/CHANGE";
+    ancmt_string = "/l2interest/1/2";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
-    ancmt_string = "/l2interest/1/CHANGE";
+    ancmt_string = "/l2interest/1/3";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
@@ -1165,7 +1112,7 @@ int main(int argc, char *argv[]) {
     //signature init
 
     //DEMO: CHANGE
-    //is_anchor = true;
+    is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor ");
     }
