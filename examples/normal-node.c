@@ -150,6 +150,10 @@ struct sockaddr_in serv_addr;
 char return_string[80] = "";
 int ancmt_num = 0;
 
+//node_num future use for the third slot in prefix
+//DEMO: CHANGE
+int node_num = 0;
+
 int send_debug_message(char *input) {
     char *debug_message;
     //char buffer[1024] = {0};
@@ -778,6 +782,7 @@ void populate_incoming_fib() {
     //remove youre own incoming interface
     //change NODE(NUM) and face(num)
     //Node1-Anchor
+    //only need to add face for layer 1 incoming
     sz_port1 = "5000";
     sz_addr = NODE1;
     sz_port2 = "3000";
@@ -821,9 +826,9 @@ void populate_incoming_fib() {
     add_face_entry(face);
 
     //Node4-Anchor
-    sz_port1 = "5000";
+    sz_port1 = "6000";
     sz_addr = NODE4;
-    sz_port2 = "3000";
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -834,9 +839,9 @@ void populate_incoming_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node5-Anchor
-    sz_port1 = "5000";
+    sz_port1 = "6000";
     sz_addr = NODE5;
-    sz_port2 = "3000";
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -847,61 +852,9 @@ void populate_incoming_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //Node6-Anchor
-    sz_port1 = "5000";
+    sz_port1 = "6000";
     sz_addr = NODE6;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node7-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE7;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node8-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE8;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node9-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE9;
-    sz_port2 = "3000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    //Node10-Anchor
-    sz_port1 = "5000";
-    sz_addr = NODE10;
-    sz_port2 = "3000";
+    sz_port2 = "4000";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -1146,10 +1099,6 @@ void select_anchor() {
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
-
-    //node_num future use for the third slot in prefix
-    //DEMO: CHANGE
-    int node_num = 0;
 
     // //srand init
     // srand(time(0));
