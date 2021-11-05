@@ -840,6 +840,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
     printf("here\n");
+    printf("Strcmp result: %d\n", strcmp(cmp_string, "ancmt"));
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
         printf("FILL PIT ANCMT NUM: %s\n", ancmt_num);
