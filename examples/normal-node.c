@@ -743,6 +743,11 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
     }
 
+    //if l2interest do nothing, fill pi is enough
+    else if(strcmp(prefix, "l2interest") == 0) {
+
+    }
+
     last_interest = current_time;
     printf("\nEND OF ON_INTEREST\n");
 
