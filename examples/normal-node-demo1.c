@@ -924,10 +924,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     // printf("Delay Time: %d seconds\n", 2);
                     // while (clock() < (timer + 2000000)) {
                     // }
-                    
+                    printf("Layer2 Face: %p", face_intf);
                     generate_layer_2_data(face_intf);
-                    l2_interest_in = true;
-                }
+                    l2_interest_in = true; 
             }
 
             if(l2_interest_in == false) {
