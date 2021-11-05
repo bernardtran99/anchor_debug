@@ -235,6 +235,7 @@ char *get_string_prefix(ndn_name_t input_name) {
 
 
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
+    printf("Get Prefix Component %d\n",num_input);
     memset(return_string, 0, sizeof(return_string));
     ndn_name_t prefix_name;
     prefix_name = input_name;

@@ -31,6 +31,28 @@
 #include "ndn-lite/util/uniform-time.h"
 #include "ndn-lite/forwarder/face.h"
 
+char return_string[80] = "";
+
+char *get_prefix_component(ndn_name_t input_name, int num_input) {
+    printf("Get Prefix Component %d\n",num_input);
+    memset(return_string, 0, sizeof(return_string));
+    ndn_name_t prefix_name;
+    prefix_name = input_name;
+    printf("here\n");
+    //printf("%d, ",prefix_name.components[i].type);
+    if(prefix_name.components[num_input].type == 8) {
+        for (int j = 0; j < prefix_name.components[num_input].size; j++) {
+            if (prefix_name.components[num_input].value[j] >= 33 && prefix_name.components[num_input].value[j] < 126) {
+                char temp_char[10];
+                sprintf(temp_char, "%c", prefix_name.components[num_input].value[j]);
+                strcat(return_string, temp_char);
+            }
+        }
+    }
+
+    return return_string;
+}
+
 int main() {
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -39,23 +61,27 @@ int main() {
 
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
-    printf("Components Size: %d", prefix_name.components_size);
+    // printf("Components Size: %d", prefix_name.components_size);
 
-    printf("'");
-    for (int i = 0; i < prefix_name.components_size; i++) {
-        printf("/");
-        for (int j = 0; j < prefix_name.components[i].size; j++) {
-            if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
-                printf("%c", prefix_name.components[i].value[j]);
-            }
-            // else {
-            //     printf("0x%02x", component.value[j]);
-            // }
-        }
-    }
-    printf("'\n'");
-    ndn_name_print(&prefix_name);
-    printf("'");
+    // printf("'");
+    // for (int i = 0; i < prefix_name.components_size; i++) {
+    //     printf("/");
+    //     for (int j = 0; j < prefix_name.components[i].size; j++) {
+    //         if (prefix_name.components[i].value[j] >= 33 && prefix_name.components[i].value[j] < 126) {
+    //             printf("%c", prefix_name.components[i].value[j]);
+    //         }
+    //         // else {
+    //         //     printf("0x%02x", component.value[j]);
+    //         // }
+    //     }
+    // }
+    // printf("'\n'");
+    // ndn_name_print(&prefix_name);
+    // printf("'");
+
+    char *test = "";
+    test = get_prefix_component(prefix_name, 0);
+    printf("test component: %s\n", test);
     
     return 0;
 }
