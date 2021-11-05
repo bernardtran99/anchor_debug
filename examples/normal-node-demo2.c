@@ -843,7 +843,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     printf("Strcmp result: %d\n", strcmp(cmp_string, "ancmt"));
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
-        printf("FILL PIT ANCMT NUM: %s\n", ancmt_num);
+        printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
 
         entry.face = input_face;
         entry.name_struct = interest_pkt.name;
