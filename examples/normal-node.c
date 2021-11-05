@@ -547,7 +547,9 @@ void *start_delay(void *arguments) {
     else {
         flood(args->interest);
         did_flood[args->struct_selector] = true;
-        reply_ancmt();
+        if(is_anchor == false) {
+            reply_ancmt();
+        }
         //pthread_exit(NULL);
     }
 }
@@ -606,7 +608,7 @@ void generate_data() {
     ndn_name_t prefix_name;
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     //DEMO: CHANGE
-    char *prefix_string = "/l1data/1/8";
+    char *prefix_string = "/l1data/1/10";
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     //TODO: make function get rand
@@ -739,8 +741,11 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                reply_ancmt();
+                if(is_anchor == false) {
+                    reply_ancmt();
+                }
                 //DEMO: CHANGE
+                //generate_data();
                 //running = false;
                 //pthread_exit(NULL);
             }
@@ -869,7 +874,7 @@ void populate_incoming_fib() {
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
-    ancmt_string = "/ancmt/1/CHANGE";
+    ancmt_string = "/l2interest/1/CHANGE";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
@@ -976,7 +981,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 printf("Delay Time: %d seconds\n", 2);
                 while (clock() < (timer + 2000000)) {
                 }
-
+                
                 generate_layer_2_data(face_intf);
             }
 
