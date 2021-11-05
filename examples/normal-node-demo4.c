@@ -570,6 +570,7 @@ char *trimwhitespace(char *str) {
     return str;
 }
 
+//make for loop check l2interest
 void generate_layer_2_data(ndn_face_intf_t *input_intf) {
     printf("\nGenerate Layer 2 Data\n");
     ndn_data_t data;
@@ -994,6 +995,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             }
         }
 
+        //forward l2 data to all l2interest in pit
         if(l2_interest_in == true) {
             ndn_face_intf_t *face_intf;
             face_intf = node_anchor_pit.slots[l2_face_index].face;
