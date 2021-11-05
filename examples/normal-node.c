@@ -478,7 +478,7 @@ void reply_ancmt() {
 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
-        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name, 0);
+        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         if(strcmp(check_ancmt, "ancmt") == 0){
             reply[counter] = i;
             counter++;
@@ -615,7 +615,7 @@ void generate_data() {
 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
-        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name, 0);
+        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         if(strcmp(check_ancmt, "ancmt") == 0){
             reply[counter] = i;
             counter++;
@@ -922,7 +922,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
         insert_entry(entry);
     }
     else {
-        printf("Max Ancmt Fill Pit\n")
+        printf("Max Ancmt Fill Pit\n");
     }
 }
 
@@ -961,7 +961,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
             for(int i = 0; i < node_anchor_pit.mem; i++) {
                 char *check_string = "";
-                check_string = get_prefix_component(node_anchor_pit.slots[i].name, 0);
+                check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 if(strcmp(check_string, "l2interest") == 0) {
                     l2_face_index = i;
                     l2_interest_in = true;
@@ -994,7 +994,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
             for(int i = 0; i < node_anchor_pit.mem; i++) {
                 char *check_ancmt = "";
-                check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name, 0);
+                check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 if(strcmp(check_ancmt, "ancmt") == 0) {
                     reply[counter] = i;
                     counter++;
@@ -1034,7 +1034,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
-            check_string = get_prefix_component(node_anchor_pit.slots[i].name, 0);
+            check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             if(strcmp(check_string, "l2interest") == 0) {
                 l2_face_index = i;
                 l2_interest_in = true;
