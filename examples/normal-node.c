@@ -473,7 +473,7 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    int reply[max_interfaces] = { };
+    int reply[4] = { };
     int counter = 0;
 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -610,7 +610,7 @@ void generate_data() {
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     //TODO: make function get rand
-    int reply[max_interfaces] = { };
+    int reply[4] = { };
     int counter = 0;
 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -988,7 +988,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         else {
             printf("Node Layer 1 Data Received\n");
-            int reply[max_interfaces] = { };
+            int reply[4] = { };
             int counter = 0;
             bool ancmt_in = false;
 
