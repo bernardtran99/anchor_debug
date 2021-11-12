@@ -274,7 +274,7 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 }
 //TODO: also fix the fact that normal nodes flood
 
-ndn_udp_face_t *generate_udp_face(char* input_ip, char *port1, char *port2) {
+ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     ndn_udp_face_t *face;
 
     in_port_t port1, port2;
@@ -284,9 +284,9 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port1, char *port2) {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    sz_port1 = port1;
+    sz_port1 = port_1;
     sz_addr = input_ip;
-    sz_port2 = port2;
+    sz_port2 = port_2;
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
