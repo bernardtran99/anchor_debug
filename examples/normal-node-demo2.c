@@ -889,15 +889,13 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     cmp_string = get_prefix_component(interest_pkt.name, 0);    
 
     int third_slot = 0;
-    char *test = "";
-    test = get_prefix_component(interest_pkt.name, 2);
-    third_slot = atoi(test);
+    third_slot = atoi(get_prefix_component(interest_pkt.name, 2));
 
     if(strcmp(cmp_string, "ancmt") == 0) {
         printf("1\n");
     }
     if(ancmt_num < max_interfaces) {
-        printf("CMP STRING: _%s_\n",cmp_string);
+        printf("CMP STRING: %s\n",cmp_string);
         printf("2\n");
     }
 
