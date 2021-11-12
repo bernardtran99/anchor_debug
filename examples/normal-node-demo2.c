@@ -509,6 +509,7 @@ void reply_ancmt() {
             printf("Ancmt found\n");
             char *test = malloc(20);
             test = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+            printf("GET: %s\n",test);
             p[counter] = malloc(20);
             p[counter] = test;
             printf("COUNTER: %d\n",counter);
