@@ -1014,7 +1014,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
-    char *third_slot = "";
+    int third_slot;
     
     if(strcmp(first_slot, "l1data") == 0) {
         if(is_anchor) {
@@ -1028,7 +1028,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 if(strcmp(check_string, "l2interest") == 0) {
                     l2_face_index = i;
 
-                    third_slot = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+                    third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
                     // ndn_face_intf_t *face_intf;
@@ -1116,7 +1116,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             if(strcmp(check_string, "l2interest") == 0) {
                 l2_face_index = i;
 
-                third_slot = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
