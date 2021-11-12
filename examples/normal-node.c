@@ -867,6 +867,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "5000", "3000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 1 Data Forwarded\n");
 
                 send_debug_message("Layer 1 Data Forwarded ; ");
             }
@@ -901,6 +902,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
                 l2_interest_in = true;
