@@ -977,8 +977,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
-    char *third_slot = "";
-    third_slot = get_prefix_component(interest_pkt.name, 2);
+    int third_slot;
+    third_slot = atoi(get_prefix_component(interest_pkt.name, 2));
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
@@ -1040,7 +1040,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
-    char *third_slot = "";
+    int third_slot;
     
     if(strcmp(first_slot, "l1data") == 0) {
         if(is_anchor) {
