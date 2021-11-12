@@ -292,10 +292,10 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "3000", "5000");
+    face = generate_udp_face(NODE7, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE4, "3000", "5000");
+    face = generate_udp_face(NODE8, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);

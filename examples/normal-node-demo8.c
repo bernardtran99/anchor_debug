@@ -164,7 +164,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 1;
+int node_num = 8;
 
 int send_debug_message(char *input) {
     char *debug_message;
