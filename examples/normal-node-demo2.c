@@ -880,7 +880,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     //we only care about ndn name, and we can search ip table during fill pit to put ip string inside of pit entry
     insert_prefix = get_string_prefix(interest_pkt.name);
-    printf("PIT PREFIX: %s\n", insert_prefix);
+    printf("PIT PREFIX: _%s_\n", insert_prefix);
     printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
 
@@ -888,6 +888,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     cmp_string = get_prefix_component(interest_pkt.name, 0);
     int third_slot;
     third_slot = atoi(get_prefix_component(interest_pkt.name, 2));
+
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
@@ -899,6 +900,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
         insert_entry(entry);
         
     }
+
     else if(strcmp(cmp_string, "l2interest") == 0) {
         printf("FILL PIT L2INTEREST\n");
         entry.face = input_face;
