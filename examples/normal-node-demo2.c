@@ -228,7 +228,7 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
 
 char *get_string_prefix(ndn_name_t input_name) {
     char *return_string; 
-    return_string = malloc(sizeof(char)*40);
+    return_string = malloc(100);
     ndn_name_t prefix_name;
     prefix_name = input_name;
 
@@ -255,7 +255,7 @@ char *get_string_prefix(ndn_name_t input_name) {
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
     char *return_string; 
-    return_string = malloc(sizeof(char)*40);
+    return_string = malloc(100);
     ndn_name_t prefix_name;
     prefix_name = input_name;
 
@@ -880,7 +880,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     //we only care about ndn name, and we can search ip table during fill pit to put ip string inside of pit entry
     insert_prefix = get_string_prefix(interest_pkt.name);
-    printf("PIT PREFIX: _%s_\n", insert_prefix);
+    printf("PIT PREFIX: %s\n", insert_prefix);
     printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
 
