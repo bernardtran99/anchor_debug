@@ -516,7 +516,7 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     ip_string = search_ip_table(reply[rand_num]);
-    printf("LOOKUP IP: %s", ip_string);
+    printf("LOOKUP IP: %s\n", ip_string);
     
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -729,7 +729,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     char *prefix = "";
     prefix = get_string_prefix(interest_pkt.name);
-    printf("PREFIX: %s", prefix);
+    printf("PREFIX: %s\n", prefix);
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
@@ -952,7 +952,7 @@ void insert_entry(anchor_pit_entry_t entry) {
     int entry_pos;
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
-            printf("Inserted Entry at POS: %d", i);
+            printf("Inserted Entry at POS: %d\n", i);
             entry_pos = i;
             node_anchor_pit.slots[i] = entry;
             return;
