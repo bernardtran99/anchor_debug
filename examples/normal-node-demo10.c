@@ -945,7 +945,6 @@ void command_process(void *var) {
     while(select != 0) {
         printf("0: Exit\n2: Generate Layer 1 Data\n");
         scanf("%d", &select);
-        printf("SELECT: %d", select);
         switch (select) {
             case 2:
                 printf("Generate Data\n");
@@ -959,7 +958,7 @@ void command_process(void *var) {
             default:
                 printf("Invalid Input\n");
                 break;
-        };
+        }
     }
 }
 
