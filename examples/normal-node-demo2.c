@@ -185,16 +185,10 @@ void add_ip_table(char *input_num, char *input_ip) {
     ip_list.entries[num-1].ip_address = input_ip;
 }
 
-char *search_ip_table(char *input_num) {
+char *search_ip_table(int input_num) {
     printf("Search IP Table\n");
-    int num;
-    char *input = "";
-    input = input_num;
     char *return_var = "";
-    num = atoi(input_num);
-    printf("SEARCH INDEX: %d\n", num);
-    //return to num-1
-    return_var = ip_list.entries[num].ip_address;
+    return_var = ip_list.entries[input_num-1].ip_address;
     printf("RETURN IP: %s\n", return_var);
     return return_var;
 }
@@ -498,18 +492,19 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    char **reply = NULL;
+    int reply[10];
     int counter = 0;
     //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         //printf("Ancmt check: %s\n", check_ancmt);
+        //stack overflow array of char pointers
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
-            *(reply+counter) = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
-            printf("COUNTER: %d\n", counter);
-            printf("REPLY COUNTER: %s\n", *(reply+counter));
+            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+            //printf("COUNTER: %d\n", counter);
+            printf("REPLY COUNTER: %s\n", reply[counter]);
             counter++;
         }
     }
@@ -530,8 +525,7 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
-    printf("REPLY RAND: %s\n", *(reply+rand_num));
-    ip_string = search_ip_table(*(reply+rand_num));
+    ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
     //printf("4\n");
