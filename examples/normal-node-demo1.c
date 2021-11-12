@@ -787,9 +787,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix);
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    prefix = get_prefix_component(data.name, 2);
-    prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(data.name);
+    // prefix = get_prefix_component(data.name, 2);
+    // prefix = trimwhitespace(prefix);
+    // //prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);

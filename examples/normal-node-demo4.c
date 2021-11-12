@@ -292,17 +292,17 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE5, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE5, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE6, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE6, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE7, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE7, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    ndn_interest_from_name(&interest, &prefix_name);
-    ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    // ndn_interest_from_name(&interest, &prefix_name);
+    // ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
     printf("Flooded Interest!\n");
     // send_debug_message("Flooded Interest ; ");
@@ -646,7 +646,11 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                     reply_ancmt();
                 }
                 //DEMO: CHANGE
-                //generate_data();
+                clock_t timer = clock();
+                printf("Delay Time: %d seconds\n", 2);
+                while (clock() < (timer + 3000000)) {
+                }
+                generate_data();
                 //pthread_exit(NULL);
             }
         }
@@ -708,14 +712,14 @@ void populate_incoming_fib() {
     //DEMO: CHANGE
     face = generate_udp_face(NODE2, "5000", "3000");
     face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE5, "6000", "4000");
-    face = generate_udp_face(NODE6, "6000", "4000");
-    face = generate_udp_face(NODE7, "6000", "4000");
+    // face = generate_udp_face(NODE5, "6000", "4000");
+    // face = generate_udp_face(NODE6, "6000", "4000");
+    // face = generate_udp_face(NODE7, "6000", "4000");
     register_interest_prefix("/ancmt/1/2");
     register_interest_prefix("/ancmt/1/3");
-    register_interest_prefix("/l2interest/1/5");
-    register_interest_prefix("/l2interest/1/6");
-    register_interest_prefix("/l2interest/1/7");
+    // register_interest_prefix("/l2interest/1/5");
+    // register_interest_prefix("/l2interest/1/6");
+    // register_interest_prefix("/l2interest/1/7");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -796,9 +800,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix);
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    prefix = get_prefix_component(data.name, 2);
-    prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(data.name);
+    // prefix = get_prefix_component(data.name, 2);
+    // prefix = trimwhitespace(prefix);
+    // //prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);

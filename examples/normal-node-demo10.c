@@ -1048,8 +1048,8 @@ int main(int argc, char *argv[]) {
     }
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
-    pthread_create(&command_process_thread, NULL, command_process, NULL);
+    // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    // pthread_create(&command_process_thread, NULL, command_process, NULL);
     // running = true;
     // while (running) {
     //     if(is_anchor && !ancmt_sent) {

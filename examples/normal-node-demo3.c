@@ -295,8 +295,8 @@ void flood(ndn_interest_t interest_pkt) {
     face = generate_udp_face(NODE4, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE6, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE6, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -705,10 +705,10 @@ void populate_incoming_fib() {
     //DEMO: CHANGE
     face = generate_udp_face(NODE1, "5000", "3000");
     face = generate_udp_face(NODE4, "6000", "4000");
-    face = generate_udp_face(NODE6, "6000", "4000");
+    // face = generate_udp_face(NODE6, "6000", "4000");
     register_interest_prefix("/ancmt/1/1");
     register_interest_prefix("/l2interest/1/4");
-    register_interest_prefix("/l2interest/1/6");
+    // register_interest_prefix("/l2interest/1/6");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -789,9 +789,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix);
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    prefix = get_prefix_component(data.name, 2);
-    prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(data.name);
+    // prefix = get_prefix_component(data.name, 2);
+    // prefix = trimwhitespace(prefix);
+    // //prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
