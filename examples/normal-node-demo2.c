@@ -534,6 +534,8 @@ void reply_ancmt() {
     printf("RAND NUM: %d\n", rand_num);
     printf("REPLY RAND: _%d_\n", reply[0]);
     printf("REPLY RAND: _%s_\n", reply[0]);
+    printf("REPLY RAND: _%d_\n", reply[1]);
+    printf("REPLY RAND: _%s_\n", reply[1]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
