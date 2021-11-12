@@ -285,9 +285,9 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_interest_t interest;
     ndn_name_t prefix_name;
     //DEMO: CHANGE
-    char change_num[10];
+    char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char *ancmt_string = "/ancmt/1/";
+    char ancmt_string[20] = "/ancmt/1/";
     strcat(ancmt_string, change_num);
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
