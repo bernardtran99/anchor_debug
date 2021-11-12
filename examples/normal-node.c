@@ -190,7 +190,7 @@ char *search_ip_table(char *input_num) {
     int num;
     char *return_var = "";
     num = atoi(input_num);
-    return_var = ip_list.entries[num-1].ip_address;
+    return_var = ip_list.entries[num].ip_address;
     return return_var;
 }
 
