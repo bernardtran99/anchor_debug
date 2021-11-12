@@ -571,8 +571,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //TODO: make this a function later
     //strcat requires an array of dedicated size
     //should be thrid slot in prefix
-    prefix = get_prefix_component(interest_pkt.name, 2);
-    prefix = trimwhitespace(prefix);
+    // prefix = get_prefix_component(interest_pkt.name, 2);
+    // prefix = trimwhitespace(prefix);
     //prefix = get_string_prefix(interest_pkt.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
