@@ -78,7 +78,7 @@ typedef struct udp_table {
 
 typedef struct ip_table_entry {
     char *ip_address;
-    int node_num;
+    char *node_num;
 } ip_table_entry_t;
 
 typedef struct ip_table {
@@ -581,7 +581,6 @@ char *trimwhitespace(char *str) {
     while(isspace((unsigned char)*str)) str++;
 
     if(*str == 0)
-    ssh 
     return str;
 
     end = str + strlen(str) - 1;
@@ -1141,7 +1140,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 l2_face_index = i;
 
                 third_slot = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
-                char ip_string* = "";
+                char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
                 sz_port1 = "6000";
@@ -1269,16 +1268,16 @@ int main(int argc, char *argv[]) {
     //     face_table.faces[i].empty = true;
     // }
     //replace this later with node discovery
-    add_ip_table(1,NODE1);
-    add_ip_table(2,NODE2);
-    add_ip_table(3,NODE3);
-    add_ip_table(4,NODE4);
-    add_ip_table(5,NODE5);
-    add_ip_table(6,NODE6);
-    add_ip_table(7,NODE7);
-    add_ip_table(8,NODE8);
-    add_ip_table(9,NODE9);
-    add_ip_table(10,NODE10);
+    add_ip_table("1",NODE1);
+    add_ip_table("2",NODE2);
+    add_ip_table("3",NODE3);
+    add_ip_table("4",NODE4);
+    add_ip_table("5",NODE5);
+    add_ip_table("6",NODE6);
+    add_ip_table("7",NODE7);
+    add_ip_table("8",NODE8);
+    add_ip_table("9",NODE9);
+    add_ip_table("10",NODE10);
 
     ndn_lite_startup();
 
