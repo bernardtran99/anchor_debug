@@ -499,6 +499,7 @@ void reply_ancmt() {
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+        printf("Ancmt check: %s\n", check_ancmt);
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
             reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
