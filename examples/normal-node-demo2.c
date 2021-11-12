@@ -506,7 +506,7 @@ void reply_ancmt() {
         //printf("Ancmt check: %s\n", check_ancmt);
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
-            reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+            reply[counter] = &get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
             printf("COUNTER: %d\n",counter);
             printf("REPLY COUNTER: %s\n", reply[counter]);
             counter++;
