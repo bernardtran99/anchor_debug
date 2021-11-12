@@ -498,6 +498,8 @@ void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
     char *reply[10];
+    reply[0] = "2";
+    reply[1] = "2";
     int counter = 0;
     //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
