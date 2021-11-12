@@ -643,7 +643,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                     reply_ancmt();
                 }
                 //DEMO: CHANGE
-                generate_data();
+                //generate_data();
                 //pthread_exit(NULL);
             }
         }
