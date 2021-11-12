@@ -497,7 +497,7 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    char *reply[10];
+    char *reply[10] = {0};
     char **p = reply;
     int counter = 0;
     //printf("1\n");
@@ -532,6 +532,7 @@ void reply_ancmt() {
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
     printf("REPLY RAND: %s\n", p[rand_num]);
+    printf("REPLY RAND: %s\n", p[1]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
