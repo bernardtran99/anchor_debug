@@ -227,7 +227,8 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
 }
 
 char *get_string_prefix(ndn_name_t input_name) {
-    char return_string[80] = "";
+    char *return_string; 
+    return_string = malloc(sizeof(char)*40);
     ndn_name_t prefix_name;
     prefix_name = input_name;
 
@@ -253,7 +254,8 @@ char *get_string_prefix(ndn_name_t input_name) {
 
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
-    char return_string[80] = "";
+    char *return_string; 
+    return_string = malloc(sizeof(char)*40);
     ndn_name_t prefix_name;
     prefix_name = input_name;
 
