@@ -191,11 +191,11 @@ char *search_ip_table(char *input_num) {
     char *input = "";
     input = input_num;
     char *return_var = "";
-    print("here\n");
+    printf("here\n");
     num = atoi(input_num);
-    print("here\n");
+    printf("here\n");
     return_var = ip_list.entries[num-1].ip_address;
-    print("here\n");
+    printf("here\n");
     return return_var;
 }
 
