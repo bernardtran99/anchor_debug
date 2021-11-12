@@ -500,6 +500,7 @@ void reply_ancmt() {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         if(strcmp(check_ancmt, "ancmt") == 0){
+            printf("Ancmt found\n");
             reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
             counter++;
         }
@@ -507,6 +508,7 @@ void reply_ancmt() {
     printf("2\n");
 
     srand(time(0));
+    printf("4\n");
     int rand_num = rand() % counter;
 
     printf("3\n");
