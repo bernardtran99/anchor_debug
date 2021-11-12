@@ -51,10 +51,11 @@ node_colors = ['green']*10
 
 #python3
 graph_title = "Anchor Demo"
-data_received_bool = 0
 input_ancmt_list = []
-input_layer2_list = []
+input_l2interest_list = []
+
 firstInterest = {}
+data_received_bool = 0
 node8_list = []
 node9_list = []
 prev_node8 = 0
@@ -72,6 +73,10 @@ class EchoServerProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         #time stamp, ip, node num, data
+        global input_ancmt_list
+        global input_l2interest_list
+        global G
+
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
         node_ip = node_info[0]
@@ -80,6 +85,49 @@ class EchoServerProtocol(asyncio.Protocol):
         node_num = ipDict[node_ip]
         print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
+        if "Is Anchor" in message:
+            node_sizes[0] = 1000
+            node_colors[0] = 'red'
+
+        if "ancmt" in message:
+            for i in range(len(strings)):
+                if "ancmt" in strings[i]:
+                    dash_counter = 0
+                    for e in range(0, len(strings[i])):
+                        if "/" == strings[i][e]:
+                            dash_counter += 1
+                            if dash_counter == 3:
+                                third_slot = int(strings[i][e+1])
+                                input_ancmt_list.append((third_slot, node_num))
+                                G.add_edges_from([(third_slot, node_num)], color='r', weight = 2)
+        
+        if "l2interest" in message:
+            for i in range(len(strings)):
+                if "l2interest" in strings[i]:
+                    dash_counter = 0
+                    for e in range(0, len(strings[i])):
+                        if "/" == strings[i][e]:
+                            dash_counter += 1
+                            if dash_counter == 3:
+                                third_slot = int(strings[i][e+1])
+                                input_l2interest_list.append((node_num, third_slot))
+                                G.add_edges_from([(node_num, third_slot)], color='b', weight = 2)
+
+
+        if "l2interest" in message:
+            for i in range(len(strings)):
+            
+        edges = G.edges()
+        #print(edges)
+        colors = list(nx.get_edge_attributes(G,'color').values())
+        weights = list(nx.get_edge_attributes(G,'weight').values())
+        # print(colors)
+        # print(weights)
+        plt.clf()
+        plt.title(graph_title)
+        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.show(block=False)
+        plt.pause(0.000001)
         
         # if "Is Anchor" in message:
         #     node_sizes[0] = 1000
