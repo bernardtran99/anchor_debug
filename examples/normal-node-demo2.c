@@ -525,6 +525,7 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
+    printf("REPLY RAND NUM: %d\n", reply[rand_num]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
