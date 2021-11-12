@@ -78,7 +78,7 @@ typedef struct udp_table {
 
 typedef struct ip_table_entry {
     char *ip_address;
-    char *node_num;
+    char *node_selector;
 } ip_table_entry_t;
 
 typedef struct ip_table {
@@ -181,7 +181,7 @@ int send_debug_message(char *input) {
 void add_ip_table(char *input_num, char *input_ip) {
     int num;
     num = atoi(input_num);
-    ip_list.entries[num-1].node_num = input_num;
+    ip_list.entries[num-1].node_selector = input_num;
     ip_list.entries[num-1].ip_address = input_ip;
 }
 
@@ -286,7 +286,7 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_t prefix_name;
     //DEMO: CHANGE
     char *change_num = "";
-    change_num = atoi(node_num);
+    itoa(node_num, change_num, 10);
     char *ancmt_string = "/ancmt/1/";
     strcat(ancmt_string, change_num);
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
