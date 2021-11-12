@@ -32,9 +32,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.31"
-#define NODE2 "155.246.215.40"
-#define NODE3 "155.246.202.39"
+#define NODE1 "192.168.1.3"
+#define NODE2 "192.168.1.11"
+#define NODE3 "192.168.1.4"
 #define NODE4 "155.246.216.28"
 #define NODE5 "155.246.203.173"
 #define NODE6 "155.246.216.33"
@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.54"
 #define NODE9 "155.246.213.36"
 #define NODE10 "155.246.210.39"
-#define DEBUG "155.246.182.79"
+#define DEBUG "192.168.1.2"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
