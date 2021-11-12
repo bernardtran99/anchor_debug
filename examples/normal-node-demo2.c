@@ -504,7 +504,7 @@ void reply_ancmt() {
             printf("Ancmt found\n");
             reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
             //printf("COUNTER: %d\n", counter);
-            printf("REPLY COUNTER: %s\n", reply[counter]);
+            printf("REPLY COUNTER: %d\n", reply[counter]);
             counter++;
         }
     }
