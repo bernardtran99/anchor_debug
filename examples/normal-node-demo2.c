@@ -884,11 +884,14 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
 
+    //for some reason get prefix component keeps changing cmp_string intead of third slot
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);    
 
     int third_slot = 0;
-    third_slot = atoi(get_prefix_component(interest_pkt.name, 2));
+    char *test = "";
+    test = get_prefix_component(interest_pkt.name, 2);
+    third_slot = atoi(test);
 
     if(strcmp(cmp_string, "ancmt") == 0) {
         printf("1\n");
