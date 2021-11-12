@@ -508,7 +508,7 @@ void reply_ancmt() {
         //printf("Ancmt check: %s\n", check_ancmt);
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
-            reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+            &reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
             printf("COUNTER: %d\n",counter);
             printf("REPLY COUNTER: %s\n", reply[counter]);
             counter++;
@@ -532,10 +532,7 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
-    printf("REPLY RAND: _%d_\n", reply[0]);
-    printf("REPLY RAND: _%s_\n", &reply[0]);
-    printf("REPLY RAND: _%d_\n", reply[1]);
-    printf("REPLY RAND: _%s_\n", reply[1]);
+    printf("REPLY RAND: _%s_\n", &reply[rand_num]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
