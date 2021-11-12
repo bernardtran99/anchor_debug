@@ -193,6 +193,7 @@ char *search_ip_table(char *input_num) {
     char *return_var = "";
     num = atoi(input_num);
     printf("SEARCH INDEX: %d\n", num);
+    //return to num-1
     return_var = ip_list.entries[num].ip_address;
     printf("RETURN IP: %s\n", return_var);
     return return_var;
@@ -497,8 +498,7 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    char *reply[10] = {0};
-    char **p = reply;
+    char **reply;
     int counter = 0;
     //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -507,15 +507,10 @@ void reply_ancmt() {
         //printf("Ancmt check: %s\n", check_ancmt);
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
-            char *test = malloc(20);
-            test = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
-            printf("GET: %s\n",test);
-            p[counter] = malloc(20);
-            p[counter] = test;
+            *(reply+counter) = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
             printf("COUNTER: %d\n",counter);
-            printf("REPLY COUNTER: %s\n", p[counter]);
+            printf("REPLY COUNTER: %s\n", *(reply+counter));
             counter++;
-            printf("COUNTER: %d\n",counter);
         }
     }
     //printf("2\n");
@@ -535,9 +530,8 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
-    printf("REPLY RAND: %10s\n", p[rand_num]);
-    printf("REPLY RAND: %s\n", p[1]);
-    ip_string = search_ip_table(reply[rand_num]);
+    printf("REPLY RAND: %s\n", *(reply+rand_num));
+    ip_string = search_ip_table(*(reply+rand_num));
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
     //printf("4\n");
