@@ -164,7 +164,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 1;
+int node_num = 10;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -292,14 +292,14 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE2, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE3, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE3, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    ndn_interest_from_name(&interest, &prefix_name);
-    ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    // ndn_interest_from_name(&interest, &prefix_name);
+    // ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
     printf("Flooded Interest!\n");
     send_debug_message("Flooded Interest ; ");
@@ -642,7 +642,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                     reply_ancmt();
                 }
                 //DEMO: CHANGE
-                //generate_data();
+                generate_data();
                 //pthread_exit(NULL);
             }
         }
@@ -702,14 +702,10 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
-    face = generate_udp_face(NODE1, "5000", "3000");
-    face = generate_udp_face(NODE2, "5000", "3000");
-    face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    register_interest_prefix("/ancmt/1/1");
-    register_interest_prefix("/l2interest/1/2");
+    face = generate_udp_face(NODE8, "5000", "3000");
+    face = generate_udp_face(NODE9, "5000", "3000");
+    register_interest_prefix("/ancmt/1/8");
+    register_interest_prefix("/ancmt/1/9");
 }
 
 //check adding to array to store face and check if pointers are different

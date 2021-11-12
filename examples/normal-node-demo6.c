@@ -164,7 +164,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 1;
+int node_num = 6;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -292,10 +292,10 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "3000", "5000");
+    face = generate_udp_face(NODE7, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE3, "3000", "5000");
+    face = generate_udp_face(NODE9, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
@@ -702,14 +702,14 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
-    face = generate_udp_face(NODE1, "5000", "3000");
-    face = generate_udp_face(NODE2, "5000", "3000");
     face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    register_interest_prefix("/ancmt/1/1");
-    register_interest_prefix("/l2interest/1/2");
+    face = generate_udp_face(NODE4, "5000", "3000");
+    face = generate_udp_face(NODE7, "6000", "4000");
+    face = generate_udp_face(NODE9, "6000", "4000");
+    register_interest_prefix("/ancmt/1/3");
+    register_interest_prefix("/ancmt/1/4");
+    register_interest_prefix("/l2interest/1/7");
+    register_interest_prefix("/l2interest/1/9");
 }
 
 //check adding to array to store face and check if pointers are different

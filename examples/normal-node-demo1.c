@@ -702,14 +702,10 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
-    face = generate_udp_face(NODE1, "5000", "3000");
-    face = generate_udp_face(NODE2, "5000", "3000");
-    face = generate_udp_face(NODE3, "5000", "3000");
+    face = generate_udp_face(NODE2, "6000", "4000");
     face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    register_interest_prefix("/ancmt/1/1");
     register_interest_prefix("/l2interest/1/2");
+    register_interest_prefix("/l2interest/1/3");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -1004,7 +1000,7 @@ int main(int argc, char *argv[]) {
     //signature init here
 
     //DEMO: CHANGE
-    //is_anchor = true;
+    is_anchor = true;
     if(is_anchor == true) {
         send_debug_message("Is Anchor ; ");
     }
