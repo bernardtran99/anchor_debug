@@ -144,7 +144,7 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                H.add_edges_from([(node_num, selector)], color='green', weight = 2)
+                H.add_edges_from([(selector, node_num)], color='green', weight = 2)
 
             if "l2data" in strings[i]:
                 dash_counter = 0
@@ -155,7 +155,7 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                H.add_edges_from([(node_num, selector)], color='purple', weight = 2)
+                H.add_edges_from([(selector, node_num)], color='purple', weight = 2)
                 
         #print(edges)
         colors = list(nx.get_edge_attributes(G,'color').values())
