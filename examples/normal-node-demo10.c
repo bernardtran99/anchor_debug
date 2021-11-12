@@ -959,7 +959,7 @@ void command_process(void *var) {
             default:
                 printf("Invalid Input\n");
                 break;
-        }
+        };
     }
 }
 
