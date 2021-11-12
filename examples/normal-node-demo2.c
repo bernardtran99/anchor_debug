@@ -498,7 +498,7 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    char **reply;
+    char **reply = NULL;
     int counter = 0;
     //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -508,7 +508,7 @@ void reply_ancmt() {
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
             *(reply+counter) = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
-            printf("COUNTER: %d\n",counter);
+            printf("COUNTER: %d\n", counter);
             printf("REPLY COUNTER: %s\n", *(reply+counter));
             counter++;
         }
