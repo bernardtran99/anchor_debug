@@ -49,6 +49,21 @@ pos = nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
 
+H = nx.MultiDiGraph()
+H.add_node(1,pos=(2,6))
+H.add_node(2,pos=(4,10))
+H.add_node(3,pos=(4,2))
+H.add_node(4,pos=(6,6))
+H.add_node(5,pos=(8,10))
+H.add_node(6,pos=(8,2))
+H.add_node(7,pos=(10,6))
+H.add_node(8,pos=(12,10))
+H.add_node(9,pos=(12,2))
+H.add_node(10,pos=(14,6))
+pos = nx.get_node_attributes(H,'pos')
+node_sizes = [500]*10
+node_colors = ['green']*10
+
 #python3
 graph_title = "Anchor Demo"
 input_ancmt_list = []
@@ -79,6 +94,7 @@ class EchoServerProtocol(asyncio.Protocol):
         global input_ancmt_list
         global input_l2interest_list
         global G
+        global H
 
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
@@ -104,7 +120,6 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                input_ancmt_list.append((selector, node_num))
                 G.add_edges_from([(selector, node_num)], color='r', weight = 2)
                     
             if "l2interest" in strings[i]:
@@ -116,18 +131,43 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                input_l2interest_list.append((node_num, selector))
                 G.add_edges_from([(selector, node_num)], color='b', weight = 2)
-            
-        edges = G.edges()
+
+            if "l1data" in strings[i]:
+                node_sizes[3] = 1000
+                node_colors[3] = 'yellow'
+                dash_counter = 0
+                num_buffer = []
+                for e in range(len(chars)):
+                    if dash_counter == 3:
+                        num_buffer.append(chars[e])
+                    if chars[e] == "/":
+                        dash_counter += 1
+                selector = int(''.join(num_buffer))
+                H.add_edges_from([(node_num, selector)], color='green', weight = 2)
+
+            if "l2data" in strings[i]:
+                dash_counter = 0
+                num_buffer = []
+                for e in range(len(chars)):
+                    if dash_counter == 3:
+                        num_buffer.append(chars[e])
+                    if chars[e] == "/":
+                        dash_counter += 1
+                selector = int(''.join(num_buffer))
+                H.add_edges_from([(node_num, selector)], color='purple', weight = 2)
+                
         #print(edges)
         colors = list(nx.get_edge_attributes(G,'color').values())
         weights = list(nx.get_edge_attributes(G,'weight').values())
+        colors-data = list(nx.get_edge_attributes(H,'color').values())
+        weights-data = list(nx.get_edge_attributes(H,'weight').values())
         # print(colors)
         # print(weights)
         plt.clf()
         plt.title(graph_title)
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors-data, width = weights-data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
         plt.show(block=False)
         plt.pause(0.000001)
         
