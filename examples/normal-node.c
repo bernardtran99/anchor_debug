@@ -274,8 +274,28 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 }
 //TODO: also fix the fact that normal nodes flood
 
-ndn_udp_face_t *generate_udp_face(char* input_ip, int port1, int port2) {
+ndn_udp_face_t *generate_udp_face(char* input_ip, char *port1, char *port2) {
     ndn_udp_face_t *face;
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    sz_port1 = port1;
+    sz_addr = input_ip;
+    sz_port2 = port2;
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
     return face;
 }
 
@@ -531,7 +551,10 @@ void reply_ancmt() {
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     //DEMO: CHANGE
-    char *ancmt_string = "/l2interest/1/2";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char ancmt_string[20] = "/l2/interest/";
+    strcat(ancmt_string, change_num);
     //strcat here
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
@@ -618,7 +641,10 @@ void generate_layer_2_data(char *input_ip) {
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     //DEMO: CHANGE
-    char *prefix_string = "/l2data/1/1";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char prefix_string[20] = "/l2/data/";
+    strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     sz_port1 = "6000";
@@ -666,7 +692,10 @@ void generate_data() {
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     //DEMO: CHANGE
-    char *prefix_string = "/l1data/1/10";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char prefix_string[20] = "/l1data/1/";
+    strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     //TODO: make function get rand
