@@ -494,7 +494,7 @@ void reply_ancmt() {
     printf("\nReply Ancmt...\n");
     char *reply[10];
     int counter = 0;
-    printf("here\n");
+    printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
@@ -503,6 +503,7 @@ void reply_ancmt() {
             counter++;
         }
     }
+    printf("2\n")
 
     srand(time(0));
     int rand_num = rand() % counter;
