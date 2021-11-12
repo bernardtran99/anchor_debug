@@ -188,9 +188,14 @@ void add_ip_table(char *input_num, char *input_ip) {
 char *search_ip_table(char *input_num) {
     printf("Search IP Table\n");
     int num;
+    char *input = "";
+    input = input_num;
     char *return_var = "";
+    print("here\n");
     num = atoi(input_num);
+    print("here\n");
     return_var = ip_list.entries[num-1].ip_address;
+    print("here\n");
     return return_var;
 }
 
