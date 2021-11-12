@@ -361,10 +361,10 @@ void flood(ndn_interest_t interest_pkt) {
 //     //send_debug_message("Announcment Sent");
 // }
 
+//check signature is correct from the public key is valid for all normal nodes
+//check if timestamp is before the current time
 bool verify_interest(ndn_interest_t *interest) {
     printf("\nVerifying Packet\n");
-    //check signature is correct from the public key is valid for all normal nodes
-    //check if timestamp is before the current time
     //int timestamp = interest->signature.timestamp;
     int timestamp = 0;
     int current_time = ndn_time_now_ms();
@@ -434,7 +434,7 @@ void generate_layer_2_data(char *input_ip) {
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l2data/1/";
+    char prefix_string[40] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -464,7 +464,7 @@ void generate_data() {
     uint8_t buf[4096];
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char change_num[20] = "";
+    char change_num[40] = "";
     sprintf(change_num, "%d", node_num);
     char prefix_string[20] = "/l1data/1/";
     strcat(prefix_string, change_num);
@@ -567,10 +567,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
-    //should be thrid slot in prefix
+    //should be third slot in prefix
     // prefix = get_prefix_component(interest_pkt.name, 2);
     // prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(interest_pkt.name);
+    // prefix = get_string_prefix(interest_pkt.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
@@ -784,12 +784,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *prefix = "";
     prefix = get_string_prefix(data.name);
-    printf("%s\n", prefix);
+    printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
     // prefix = get_prefix_component(data.name, 2);
     // prefix = trimwhitespace(prefix);
-    // //prefix = get_string_prefix(data.name);
+    // prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
@@ -859,10 +859,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // while (clock() < (timer + 1000000)) {
                 // }
 
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l1data/1/";
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "5000", "3000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 1 Data Forwarded\n");
 
                 send_debug_message("Layer 1 Data Forwarded ; ");
             }
@@ -893,10 +901,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // while (clock() < (timer + 1000000)) {
                 // }
 
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/1/";
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
                 l2_interest_in = true;
@@ -926,9 +942,49 @@ void select_anchor() {
 
 //write to mongodb so that we can generate web server to view pit
 
+void forwarding_process(void *var) {
+    running = true;
+    while (running) {
+        if(is_anchor && !ancmt_sent) {
+            //printf("send ancmt called\n");
+            ndn_interest_t interest;
+            flood(interest);
+            ancmt_sent = true;
+        }
+        ndn_forwarder_process();
+        usleep(10000);
+    }
+}
+
+void command_process(void *var) {
+    int select = 1;
+    while(select != 0) {
+        printf("0: Exit\n2: Generate Layer 1 Data\n");
+        scanf("%d", &select);
+        printf("SELECT: %d", select);
+        switch (select) {
+            case 2:
+                printf("Generate Data\n");
+                generate_data();
+                break;
+            
+            case 0:
+                printf("Exiting\n");
+                break;
+
+            default:
+                printf("Invalid Input\n");
+                break;
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
+
+    pthread_t forwarding_process_thread;
+    pthread_t command_process_thread;
 
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -1008,7 +1064,8 @@ int main(int argc, char *argv[]) {
     }
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-
+    // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    // pthread_create(&command_process_thread, NULL, command_process, NULL);
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
