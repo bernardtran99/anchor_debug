@@ -305,7 +305,7 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
     printf("Flooded Interest!\n");
-    send_debug_message("Flooded Interest ; ");
+    // send_debug_message("Flooded Interest ; ");
 }
 
 // void send_ancmt() {
