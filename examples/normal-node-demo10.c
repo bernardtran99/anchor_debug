@@ -946,7 +946,7 @@ void command_process(void *var) {
         printf("0: Exit\n2: Generate Layer 1 Data\n");
         scanf("%d", &select);
         printf("SELECT: %d", select);
-        switch (select)) {
+        switch (select) {
             case 2:
                 printf("Generate Data\n");
                 generate_data();
