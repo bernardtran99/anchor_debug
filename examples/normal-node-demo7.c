@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.66"
 #define NODE10 "155.246.210.83"
-#define DEBUG "192.168"
+#define DEBUG "155.246.182.47"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -932,7 +932,7 @@ void populate_incoming_fib() {
     ancmt_string = "/l2interest/1/8";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
-    
+
     ancmt_string = "/l2interest/1/9";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);

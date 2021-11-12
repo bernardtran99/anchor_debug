@@ -42,7 +42,7 @@
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.66"
 #define NODE10 "155.246.210.83"
-#define DEBUG "192.168"
+#define DEBUG "155.246.182.47"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
