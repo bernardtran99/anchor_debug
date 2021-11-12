@@ -674,14 +674,14 @@ void generate_data() {
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     //TODO: make function get rand
-    char *reply[10];
+    int reply[10];
     int counter = 0;
 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         if(strcmp(check_ancmt, "ancmt") == 0){
-            reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
             counter++;
         }
     }
@@ -1051,7 +1051,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         else {
             printf("Node Layer 1 Data Received\n");
-            char *reply[10];
+            int reply[10];
             int counter = 0;
             bool ancmt_in = false;
 
@@ -1059,7 +1059,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char *check_ancmt = "";
                 check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 if(strcmp(check_ancmt, "ancmt") == 0) {
-                    reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
+                    reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     counter++;
                     ancmt_in = true;
                 }
