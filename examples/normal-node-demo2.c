@@ -193,9 +193,9 @@ char *search_ip_table(char *input_num) {
     char *return_var = "";
     printf("here\n");
     num = atoi(input_num);
-    printf("here\n");
+    printf("SEARCH INDEX: %d\n", num);
     return_var = ip_list.entries[num-1].ip_address;
-    printf("here\n");
+    printf("RETURN IP: %s\n", return_var);
     return return_var;
 }
 
