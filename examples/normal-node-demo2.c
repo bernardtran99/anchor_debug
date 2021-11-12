@@ -186,6 +186,7 @@ void add_ip_table(char *input_num, char *input_ip) {
 }
 
 char *search_ip_table(char *input_num) {
+    printf("Search IP Table\n");
     int num;
     char *return_var = "";
     num = atoi(input_num);
@@ -507,6 +508,8 @@ void reply_ancmt() {
 
     srand(time(0));
     int rand_num = rand() % counter;
+
+    printf("3\n");
     
     // ndn_face_intf_t *face_intf;
     // face_intf = node_anchor_pit.slots[reply[rand_num]].face;
@@ -518,7 +521,8 @@ void reply_ancmt() {
     //ip_string = get_ip_address_string(face_udp);
     ip_string = search_ip_table(reply[rand_num]);
     printf("LOOKUP IP: %s\n", ip_string);
-    
+    printf("4\n");
+
     ndn_interest_t interest;
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;

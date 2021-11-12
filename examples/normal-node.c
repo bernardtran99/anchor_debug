@@ -186,6 +186,7 @@ void add_ip_table(char *input_num, char *input_ip) {
 }
 
 char *search_ip_table(char *input_num) {
+    printf("Search IP Table\n");
     int num;
     char *return_var = "";
     num = atoi(input_num);
@@ -494,7 +495,7 @@ void reply_ancmt() {
     printf("\nReply Ancmt...\n");
     char *reply[10];
     int counter = 0;
-    
+
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
