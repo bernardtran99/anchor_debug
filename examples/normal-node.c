@@ -635,7 +635,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 printf("Already flooded\n");
             }
             else {
-                //should call insert pit here and the start delay function
                 flood(interest_pkt);
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
@@ -693,9 +692,9 @@ void register_interest_prefix(char *input_prefix) {
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
 
+//NOTE: for recieving an incoming interest packet change the prefix string to the nodes that you want to recieve from
+//also to send a interest packet, change the outgoing interest packet prefix
 void populate_incoming_fib() {
-    //NOTE: for recieving an incoming interest packet change the prefix string to the nodes that you want to recieve from
-    //also to send a interest packet, change the outgoing interest packet prefix
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     ndn_udp_face_t *face;
 
@@ -712,6 +711,7 @@ void populate_incoming_fib() {
     register_interest_prefix("/ancmt/1/1");
     register_interest_prefix("/l2interest/1/2");
 }
+
 //check adding to array to store face and check if pointers are different
 //create individual faces for each one and add them to an array to see if it changes
 //look at udp face code to see if we can change it 
