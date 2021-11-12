@@ -117,7 +117,7 @@ class EchoServerProtocol(asyncio.Protocol):
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
                 input_l2interest_list.append((node_num, selector))
-                G.add_edges_from([(node_num, selector)], color='b', weight = 2)
+                G.add_edges_from([(selector, node_num)], color='b', weight = 2)
             
         edges = G.edges()
         #print(edges)
