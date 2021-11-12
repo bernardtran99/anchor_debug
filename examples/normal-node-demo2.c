@@ -520,8 +520,8 @@ void reply_ancmt() {
     int rand_num = rand() % counter;
 
     //printf("3\n");
-    
-    // ndn_face_intf_t *face_intf;
+    '
+ '   // ndn_face_intf_t *face_intf;
     // face_intf = node_anchor_pit.slots[reply[rand_num]].face;
     // ndn_udp_face_t *face_udp;
     // face_udp = search_udp_face(face_intf);
@@ -530,8 +530,8 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
-    printf("REPLY RAND: %d\n", reply[0]);
-    printf("REPLY RAND: %s\n", reply[0]);
+    printf("REPLY RAND: '%d'\n", reply[0]);
+    printf("REPLY RAND: '%s'\n", reply[0]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
