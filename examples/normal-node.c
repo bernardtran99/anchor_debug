@@ -863,7 +863,6 @@ void populate_incoming_fib() {
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     
-    ndn_udp_face_t *face2;
     //Node2-Anchor
     sz_port1 = "5000";
     sz_addr = NODE2;
@@ -930,6 +929,7 @@ void populate_incoming_fib() {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     //DEMO: CHANGE
+    //change to be more dynamic
     ancmt_string = "/ancmt/1/CHANGE";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
