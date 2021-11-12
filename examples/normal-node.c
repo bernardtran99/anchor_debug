@@ -434,7 +434,7 @@ void generate_layer_2_data(char *input_ip) {
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l2data/1/";
+    char prefix_string[40] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -464,7 +464,7 @@ void generate_data() {
     uint8_t buf[4096];
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char change_num[20] = "";
+    char change_num[40] = "";
     sprintf(change_num, "%d", node_num);
     char prefix_string[20] = "/l1data/1/";
     strcat(prefix_string, change_num);
@@ -791,9 +791,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    prefix = get_prefix_component(data.name, 2);
-    prefix = trimwhitespace(prefix);
-    prefix = get_string_prefix(data.name);
+    // prefix = get_prefix_component(data.name, 2);
+    // prefix = trimwhitespace(prefix);
+    // prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
@@ -863,6 +863,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // while (clock() < (timer + 1000000)) {
                 // }
 
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l1data/1/";
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "5000", "3000");
@@ -897,6 +904,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // printf("Delay Time: %d seconds\n", 1);
                 // while (clock() < (timer + 1000000)) {
                 // }
+
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/1/";
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
 
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
@@ -1056,18 +1070,18 @@ int main(int argc, char *argv[]) {
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
     // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
     // pthread_create(&command_process_thread, NULL, command_process, NULL);
-    // running = true;
-    // while (running) {
-    //     if(is_anchor && !ancmt_sent) {
-    //         //printf("send ancmt called\n");
-    //         ndn_interest_t interest;
-    //         flood(interest);
-    //         ancmt_sent = true;
-    //     }
+    running = true;
+    while (running) {
+        if(is_anchor && !ancmt_sent) {
+            //printf("send ancmt called\n");
+            ndn_interest_t interest;
+            flood(interest);
+            ancmt_sent = true;
+        }
         
-    //     ndn_forwarder_process();
-    //     usleep(10000);
-    // }
+        ndn_forwarder_process();
+        usleep(10000);
+    }
 
     return 0;
 }
