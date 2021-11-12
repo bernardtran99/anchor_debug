@@ -117,31 +117,7 @@ class EchoServerProtocol(asyncio.Protocol):
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
                 input_l2interest_list.append((node_num, selector))
-                G.add_edges_from([(node_num, selector)], color='r', weight = 2)
-
-        # if "ancmt" in message:
-        #     for i in range(len(strings)):
-        #         if "ancmt" in strings[i]:
-        #             dash_counter = 0
-        #             for e in range(0, len(strings[i])):
-        #                 if "/" == strings[i][e]:
-        #                     dash_counter += 1
-        #                     if dash_counter == 3:
-        #                         third_slot = int(strings[i][e+1])
-        #                         input_ancmt_list.append((third_slot, node_num))
-        #                         G.add_edges_from([(third_slot, node_num)], color='r', weight = 2)
-        
-        # if "l2interest" in message:
-        #     for i in range(len(strings)):
-        #         if "l2interest" in strings[i]:
-        #             dash_counter = 0
-        #             for e in range(0, len(strings[i])):
-        #                 if "/" == strings[i][e]:
-        #                     dash_counter += 1
-        #                     if dash_counter == 2:
-        #                         third_slot = int(strings[i][e+1])
-        #                         input_l2interest_list.append((node_num, third_slot))
-        #                         G.add_edges_from([(node_num, third_slot)], color='b', weight = 2)
+                G.add_edges_from([(node_num, selector)], color='b', weight = 2)
             
         edges = G.edges()
         #print(edges)
