@@ -1210,15 +1210,15 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    // node_anchor_pit.mem = 10;
-    // for(int i = 0; i < node_anchor_pit.mem; i++) {
-    //     node_anchor_pit.slots[i].prefix = "";
-    //     node_anchor_pit.slots[i].rand_flag = false;
-    // }
-    // face_table.size = 50;
-    // for(int i = 0; i < face_table.size; i++) {
-    //     face_table.faces[i].empty = true;
-    // }
+    node_anchor_pit.mem = 10;
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        node_anchor_pit.slots[i].prefix = "";
+        node_anchor_pit.slots[i].rand_flag = false;
+    }
+    face_table.size = 50;
+    for(int i = 0; i < face_table.size; i++) {
+        face_table.faces[i].empty = true;
+    }
     //replace this later with node discovery
     add_ip_table("1",NODE1);
     add_ip_table("2",NODE2);

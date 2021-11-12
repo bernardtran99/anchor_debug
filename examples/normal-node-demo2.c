@@ -495,24 +495,24 @@ void reply_ancmt() {
     printf("\nReply Ancmt...\n");
     char *reply[10];
     int counter = 0;
-    printf("1\n");
+    //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        printf("Ancmt check: %s\n", check_ancmt);
+        //printf("Ancmt check: %s\n", check_ancmt);
         if(strcmp(check_ancmt, "ancmt") == 0){
             printf("Ancmt found\n");
             reply[counter] = get_prefix_component(node_anchor_pit.slots[i].name_struct, 2);
             counter++;
         }
     }
-    printf("2\n");
+    //printf("2\n");
 
     srand(time(0));
-    printf("4\n");
+    //printf("4\n");
     int rand_num = rand() % counter;
 
-    printf("3\n");
+    //printf("3\n");
     
     // ndn_face_intf_t *face_intf;
     // face_intf = node_anchor_pit.slots[reply[rand_num]].face;
@@ -524,7 +524,7 @@ void reply_ancmt() {
     //ip_string = get_ip_address_string(face_udp);
     ip_string = search_ip_table(reply[rand_num]);
     printf("LOOKUP IP: %s\n", ip_string);
-    printf("4\n");
+    //printf("4\n");
 
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -1230,15 +1230,15 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    // node_anchor_pit.mem = 10;
-    // for(int i = 0; i < node_anchor_pit.mem; i++) {
-    //     node_anchor_pit.slots[i].prefix = "";
-    //     node_anchor_pit.slots[i].rand_flag = false;
-    // }
-    // face_table.size = 50;
-    // for(int i = 0; i < face_table.size; i++) {
-    //     face_table.faces[i].empty = true;
-    // }
+    node_anchor_pit.mem = 10;
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        node_anchor_pit.slots[i].prefix = "";
+        node_anchor_pit.slots[i].rand_flag = false;
+    }
+    face_table.size = 50;
+    for(int i = 0; i < face_table.size; i++) {
+        face_table.faces[i].empty = true;
+    }
     //replace this later with node discovery
     add_ip_table("1",NODE1);
     add_ip_table("2",NODE2);
