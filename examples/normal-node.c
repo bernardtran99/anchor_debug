@@ -361,10 +361,10 @@ void flood(ndn_interest_t interest_pkt) {
 //     //send_debug_message("Announcment Sent");
 // }
 
+//check signature is correct from the public key is valid for all normal nodes
+//check if timestamp is before the current time
 bool verify_interest(ndn_interest_t *interest) {
     printf("\nVerifying Packet\n");
-    //check signature is correct from the public key is valid for all normal nodes
-    //check if timestamp is before the current time
     //int timestamp = interest->signature.timestamp;
     int timestamp = 0;
     int current_time = ndn_time_now_ms();
@@ -567,9 +567,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
-    //should be thrid slot in prefix
+    //should be third slot in prefix
     prefix = get_prefix_component(interest_pkt.name, 2);
     prefix = trimwhitespace(prefix);
+    prefix = get_string_prefix(interest_pkt.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
@@ -787,11 +788,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *prefix = "";
     prefix = get_string_prefix(data.name);
-    printf("%s\n", prefix);
+    printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
     prefix = get_prefix_component(data.name, 2);
     prefix = trimwhitespace(prefix);
+    prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
