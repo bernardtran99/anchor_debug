@@ -503,7 +503,7 @@ void reply_ancmt() {
             counter++;
         }
     }
-    printf("2\n")
+    printf("2\n");
 
     srand(time(0));
     int rand_num = rand() % counter;
