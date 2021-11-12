@@ -497,7 +497,7 @@ bool verify_interest(ndn_interest_t *interest) {
 void reply_ancmt() {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
-    char reply[10][10];
+    char *reply[10] = {0};
     int counter = 0;
     //printf("1\n");
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -530,7 +530,7 @@ void reply_ancmt() {
     //ERROR: tries to lookup ipAdrees that doesnt exist
     //ip_string = get_ip_address_string(face_udp);
     printf("RAND NUM: %d\n", rand_num);
-    printf("REPLY RAND: _%s_\n", &reply[rand_num]);
+    printf("REPLY RAND: _%s_\n", reply[rand_num]);
     ip_string = search_ip_table(reply[rand_num]);
     //printf("here\n");
     printf("LOOKUP IP: %s\n", ip_string);
