@@ -50,6 +50,8 @@
 //link.txt
 ///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
+ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2);
+
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
@@ -162,7 +164,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 1;
+int node_num = 2;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -376,38 +378,6 @@ void flood(ndn_interest_t interest_pkt) {
         //router->fib = layer1_fib;        
 
         //DEMO: CHANGE
-        //Node2-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE2;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        //Node3-Anchor
-        sz_port1 = "3000";
-        sz_addr = NODE3;
-        sz_port2 = "5000";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-        ndn_interest_from_name(&interest, &prefix_name);
-        //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
-
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
         // }
@@ -543,17 +513,7 @@ void reply_ancmt() {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
     
-    sz_port1 = "4000";
-    sz_addr = ip_string;
-    sz_port2 = "6000";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    face = generate_udp_face(ip_string, "4000", "6000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
@@ -620,7 +580,7 @@ void generate_layer_2_data(char *input_ip) {
     //DEMO: CHANGE
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l2data/1";
+    char prefix_string[20] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -881,27 +841,21 @@ void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string;
     ndn_name_t name_prefix;
-
     ndn_udp_face_t *face;
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
+
+    // in_port_t port1, port2;
+    // in_addr_t server_ip;
+    // char *sz_port1, *sz_port2, *sz_addr;
+    // uint32_t ul_port;
+    // struct hostent * host_addr;
+    // struct in_addr ** paddrs;
 
     //remove youre own incoming interface
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
     face = generate_udp_face(NODE1, "5000", "3000");
-    face = generate_udp_face(NODE2, "5000", "3000");
-    face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
     register_interest_prefix("/ancmt/1/1");
-    register_interest_prefix("/l2interest/1/2");
 
     // sz_port1 = "5000";
     // sz_addr = NODE1;

@@ -622,7 +622,7 @@ void generate_layer_2_data(char *input_ip) {
     //DEMO: CHANGE
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l2data/1";
+    char prefix_string[20] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -883,14 +883,14 @@ void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     char *ancmt_string;
     ndn_name_t name_prefix;
-
     ndn_udp_face_t *face;
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
+
+    // in_port_t port1, port2;
+    // in_addr_t server_ip;
+    // char *sz_port1, *sz_port2, *sz_addr;
+    // uint32_t ul_port;
+    // struct hostent * host_addr;
+    // struct in_addr ** paddrs;
 
     //remove youre own incoming interface
     //change NODE(NUM) and face(num)
