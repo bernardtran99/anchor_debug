@@ -163,7 +163,7 @@ int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 0;
+int node_num = 1;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -285,7 +285,10 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_interest_t interest;
     ndn_name_t prefix_name;
     //DEMO: CHANGE
-    char *ancmt_string = "/ancmt/1/1";
+    char *change_num = "";
+    change_num = atoi(node_num);
+    char *ancmt_string = "/ancmt/1/";
+    strcat(ancmt_string, change_num);
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     // uint8_t selector[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
