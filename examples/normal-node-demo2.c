@@ -158,7 +158,6 @@ struct sockaddr_in serv_addr;
 
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
-char return_string[80] = "";
 int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
@@ -228,8 +227,7 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
 }
 
 char *get_string_prefix(ndn_name_t input_name) {
-    //char *return_string = malloc(200);
-    memset(return_string, 0, sizeof(return_string));
+    char return_string[80] = "";
     ndn_name_t prefix_name;
     prefix_name = input_name;
 
@@ -255,7 +253,7 @@ char *get_string_prefix(ndn_name_t input_name) {
 
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
-    memset(return_string, 0, sizeof(return_string));
+    char return_string[80] = "";
     ndn_name_t prefix_name;
     prefix_name = input_name;
 

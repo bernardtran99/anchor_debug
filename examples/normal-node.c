@@ -158,7 +158,6 @@ struct sockaddr_in serv_addr;
 
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
-char return_string[80] = "";
 int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
@@ -228,7 +227,7 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
 }
 
 char *get_string_prefix(ndn_name_t input_name) {
-    //char *return_string = malloc(200);
+    char return_string[80] = "";
     memset(return_string, 0, sizeof(return_string));
     ndn_name_t prefix_name;
     prefix_name = input_name;
@@ -255,6 +254,7 @@ char *get_string_prefix(ndn_name_t input_name) {
 
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
+    char return_string[80] = "";
     memset(return_string, 0, sizeof(return_string));
     ndn_name_t prefix_name;
     prefix_name = input_name;
@@ -1009,7 +1009,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
-    
+
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
