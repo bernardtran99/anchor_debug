@@ -78,7 +78,7 @@ typedef struct udp_table {
 
 typedef struct ip_table_entry {
     char *ip_address;
-    char *node_selector;
+    char *node_num;
 } ip_table_entry_t;
 
 typedef struct ip_table {
@@ -157,6 +157,7 @@ int sock = 0;
 struct sockaddr_in serv_addr;
 
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
+
 int ancmt_num = 0;
 
 //node_num future use for the third slot in prefix
@@ -179,7 +180,7 @@ int send_debug_message(char *input) {
 void add_ip_table(char *input_num, char *input_ip) {
     int num;
     num = atoi(input_num);
-    ip_list.entries[num-1].node_selector = input_num;
+    ip_list.entries[num-1].node_num = input_num;
     ip_list.entries[num-1].ip_address = input_ip;
 }
 
@@ -249,14 +250,13 @@ char *get_string_prefix(ndn_name_t input_name) {
         }
 
     }
-
     return return_string;
 }
 
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
     char *return_string;
-    return_string = malloc(40);
+    return_string = malloc(40); 
     return_string[0] = 0;
     ndn_name_t prefix_name;
     prefix_name = input_name;
@@ -276,8 +276,28 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 }
 //TODO: also fix the fact that normal nodes flood
 
-ndn_udp_face_t *generate_udp_face(char* input_ip, int port1, int port2) {
+ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     ndn_udp_face_t *face;
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    sz_port1 = port_1;
+    sz_addr = input_ip;
+    sz_port2 = port_2;
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
     return face;
 }
 
@@ -382,7 +402,24 @@ void flood(ndn_interest_t interest_pkt) {
 
         //DEMO: CHANGE
         //Node2-Anchor
-        
+
+        //Node3-Anchor
+        sz_port1 = "3000";
+        sz_addr = NODE4;
+        sz_port2 = "5000";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+        ndn_interest_from_name(&interest, &prefix_name);
+        //ndn_interest_set_Parameters(&interest, (uint8_t*)(selector_ptr + 1), sizeof(selector[1]));
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 
         // for(int i = 0; i < layer1_fib.capacity; i++) {
         //     ndn_forwarder_express_interest_struct(&interest, on_data, NULL, NULL);
@@ -504,7 +541,10 @@ void reply_ancmt() {
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     //DEMO: CHANGE
-    char *ancmt_string = "/l2interest/1/2";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char ancmt_string[20] = "/l2/interest/";
+    strcat(ancmt_string, change_num);
     //strcat here
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     
@@ -591,7 +631,10 @@ void generate_layer_2_data(char *input_ip) {
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     //DEMO: CHANGE
-    char *prefix_string = "/l2data/1/1";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char prefix_string[20] = "/l2/data/";
+    strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     sz_port1 = "6000";
@@ -639,7 +682,10 @@ void generate_data() {
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     //DEMO: CHANGE
-    char *prefix_string = "/l1data/1/10";
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char prefix_string[20] = "/l1data/1/";
+    strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     //TODO: make function get rand
@@ -844,14 +890,28 @@ void populate_incoming_fib() {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    
+
+    //Node4-Anchor
+    sz_port1 = "6000";
+    sz_addr = NODE4;
+    sz_port2 = "4000";
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+
     //DEMO: CHANGE
     //change to be more dynamic
     ancmt_string = "/ancmt/1/1";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 
-    ancmt_string = "/l2interest/1/CHANGE";
+    ancmt_string = "/l2interest/1/4";
     ndn_name_from_string(&name_prefix, ancmt_string, strlen(ancmt_string));
     ndn_forwarder_register_name_prefix(&name_prefix, on_interest, NULL);
 }
@@ -883,23 +943,11 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     //we only care about ndn name, and we can search ip table during fill pit to put ip string inside of pit entry
     insert_prefix = get_string_prefix(interest_pkt.name);
     printf("PIT PREFIX: %s\n", insert_prefix);
-    printf("FILL FACE: %p\n", input_face);
+    //printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
 
-    //for some reason get prefix component keeps changing cmp_string intead of third slot
     char *cmp_string = "";
-    cmp_string = get_prefix_component(interest_pkt.name, 0);    
-
-    int third_slot = 0;
-    third_slot = atoi(get_prefix_component(interest_pkt.name, 2));
-
-    if(strcmp(cmp_string, "ancmt") == 0) {
-        printf("1\n");
-    }
-    if(ancmt_num < max_interfaces) {
-        printf("CMP STRING: %s\n",cmp_string);
-        printf("2\n");
-    }
+    cmp_string = get_prefix_component(interest_pkt.name, 0);
 
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
@@ -912,7 +960,6 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
         insert_entry(entry);
         
     }
-
     else if(strcmp(cmp_string, "l2interest") == 0) {
         printf("FILL PIT L2INTEREST\n");
         entry.face = input_face;
