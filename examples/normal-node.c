@@ -1004,7 +1004,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     //we only care about ndn name, and we can search ip table during fill pit to put ip string inside of pit entry
     insert_prefix = get_string_prefix(interest_pkt.name);
     printf("PIT PREFIX: %s\n", insert_prefix);
-    printf("FILL FACE: %p\n", input_face);
+    //printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
 
     char *cmp_string = "";
