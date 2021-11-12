@@ -112,10 +112,6 @@ class EchoServerProtocol(asyncio.Protocol):
                                 third_slot = int(strings[i][e+1])
                                 input_l2interest_list.append((node_num, third_slot))
                                 G.add_edges_from([(node_num, third_slot)], color='b', weight = 2)
-
-
-        if "l2interest" in message:
-            for i in range(len(strings)):
             
         edges = G.edges()
         #print(edges)
