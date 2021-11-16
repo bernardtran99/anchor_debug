@@ -913,7 +913,7 @@ void select_anchor() {
 
 //write to mongodb so that we can generate web server to view pit
 
-void forwarding_process(void *var) {
+void *forwarding_process(void *var) {
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
@@ -927,7 +927,7 @@ void forwarding_process(void *var) {
     }
 }
 
-void command_process(void *var) {
+void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
         printf("0: Exit\n2: Generate Layer 1 Data\n");

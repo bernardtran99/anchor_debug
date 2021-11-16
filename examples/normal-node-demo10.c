@@ -899,7 +899,7 @@ void select_anchor() {
 
 //write to mongodb so that we can generate web server to view pit
 
-void forwarding_process(void *var) {
+void *forwarding_process(void *var) {
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
@@ -913,7 +913,7 @@ void forwarding_process(void *var) {
     }
 }
 
-void command_process(void *var) {
+void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
         printf("0: Exit\n2: Generate Layer 1 Data\n");
@@ -1018,20 +1018,20 @@ int main(int argc, char *argv[]) {
     }
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-    // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
-    // pthread_create(&command_process_thread, NULL, command_process, NULL);
-    running = true;
-    while (running) {
-        if(is_anchor && !ancmt_sent) {
-            //printf("send ancmt called\n");
-            ndn_interest_t interest;
-            flood(interest);
-            ancmt_sent = true;
-        }
+    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    pthread_create(&command_process_thread, NULL, command_process, NULL);
+    // running = true;
+    // while (running) {
+    //     if(is_anchor && !ancmt_sent) {
+    //         //printf("send ancmt called\n");
+    //         ndn_interest_t interest;
+    //         flood(interest);
+    //         ancmt_sent = true;
+    //     }
         
-        ndn_forwarder_process();
-        usleep(10000);
-    }
+    //     ndn_forwarder_process();
+    //     usleep(10000);
+    // }
 
     return 0;
 }
