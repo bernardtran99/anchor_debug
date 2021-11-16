@@ -1021,8 +1021,9 @@ int main(int argc, char *argv[]) {
     pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
     pthread_create(&command_process_thread, NULL, command_process, NULL);
 
-    pthread_join(forwarding_process_thread, NULL);
     pthread_join(command_process_thread, NULL);
+    pthread_join(forwarding_process_thread, NULL);
+    
     // running = true;
     // while (running) {
     //     if(is_anchor && !ancmt_sent) {
