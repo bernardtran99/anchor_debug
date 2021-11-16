@@ -900,6 +900,7 @@ void select_anchor() {
 //write to mongodb so that we can generate web server to view pit
 
 void *forwarding_process(void *var) {
+    running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
             //printf("send ancmt called\n");
@@ -917,7 +918,7 @@ void *command_process(void *var) {
     while(select != 0) {
         printf("0: Exit\n2: Generate Layer 1 Data\n");
         scanf("%d", &select);
-        printf("SELECT: %d", select);
+        printf("SELECT: %d\n", select);
         switch (select) {
             case 2:
                 printf("Generate Data\n");
@@ -1020,10 +1021,8 @@ int main(int argc, char *argv[]) {
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
     pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
     pthread_create(&command_process_thread, NULL, command_process, NULL);
-
-    pthread_join(command_process_thread, NULL);
     pthread_join(forwarding_process_thread, NULL);
-    
+    pthread_join(command_process_thread, NULL);
     // running = true;
     // while (running) {
     //     if(is_anchor && !ancmt_sent) {
