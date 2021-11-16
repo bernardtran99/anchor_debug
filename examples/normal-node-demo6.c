@@ -436,7 +436,6 @@ void generate_layer_2_data(char *input_ip) {
     sprintf(change_num, "%d", node_num);
     char prefix_string[20] = "/l2data/1/";
     strcat(prefix_string, change_num);
-    strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     data.name = prefix_name;
