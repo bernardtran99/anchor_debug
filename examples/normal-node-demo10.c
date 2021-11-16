@@ -900,7 +900,6 @@ void select_anchor() {
 //write to mongodb so that we can generate web server to view pit
 
 void *forwarding_process(void *var) {
-    running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
             //printf("send ancmt called\n");
@@ -1016,6 +1015,7 @@ int main(int argc, char *argv[]) {
     if(is_anchor == true) {
         send_debug_message("Is Anchor ; ");
     }
+    running = true;
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
     pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
