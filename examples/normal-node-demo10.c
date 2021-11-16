@@ -910,7 +910,6 @@ void *forwarding_process(void *var) {
         ndn_forwarder_process();
         usleep(10000);
     }
-    pthread_exit(NULL);
 }
 
 void *command_process(void *var) {
@@ -934,7 +933,6 @@ void *command_process(void *var) {
                 break;
         }
     }
-    pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
@@ -1022,6 +1020,9 @@ int main(int argc, char *argv[]) {
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
     pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
     pthread_create(&command_process_thread, NULL, command_process, NULL);
+
+    pthread_join(forwarding_process_thread, NULL);
+    pthread_join(command_process_thread, NULL);
     // running = true;
     // while (running) {
     //     if(is_anchor && !ancmt_sent) {
