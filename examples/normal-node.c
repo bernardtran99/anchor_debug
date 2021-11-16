@@ -67,17 +67,6 @@ typedef struct anchor_pit {
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
-typedef struct udp_table_entry {
-    bool empty;
-    ndn_udp_face_t *face;
-} udp_table_entry_t;
-
-//for matching intf faces to udp faces to forward
-typedef struct udp_table {
-    int size;
-    udp_table_entry_t faces[50];
-} udp_table_t;
-
 typedef struct ip_table_entry {
     char *ip_address;
     char *node_num;
@@ -91,7 +80,7 @@ typedef struct ip_table {
 typedef struct content_store {
     int size;
     ndn_data_t entries[20];
-}
+} content_store_t;
 
 typedef struct delay_struct {
     int struct_selector;
@@ -100,14 +89,7 @@ typedef struct delay_struct {
 
 ip_table_t ip_list;
 anchor_pit_t node_anchor_pit;
-udp_table_t face_table;
-
-//intitialize pit and fib for layer 1
-// ndn_pit_t *layer1_pit;
-// ndn_fib_t *router_fib;
-// ndn_fib_t *layer1_fib;
-// ndn_forwarder_t *router;
-//char ip_address = "192.168.1.10";
+content_store_t cs_table;
 
 //To start/stop main loop
 bool running;
@@ -198,30 +180,6 @@ char *search_ip_table(int input_num) {
     return_var = ip_list.entries[input_num-1].ip_address;
     printf("RETURN IP: %s\n", return_var);
     return return_var;
-}
-
-void add_face_entry(ndn_udp_face_t *input_face) {
-    printf("ADD FACE POINTER: %p\n", &input_face->intf);
-    for(int i = 0; i < face_table.size; i++) {
-        if(face_table.faces[i].empty == true) {
-            face_table.faces[i].face = input_face;
-            face_table.faces[i].empty == false;
-            return;
-        }
-        // else {
-        //     //empty
-        // }
-    }
-}
-
-ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
-    for(int i = 0; i < face_table.size; i++) {
-        printf("INPUT INTF: %p\n", input_intf);
-        printf("UDP FACE INTF: %p\n", &face_table.faces[i].face->intf);
-        if(&face_table.faces[i].face->intf == input_intf) {
-            return face_table.faces[i].face;
-        }
-    }
 }
 
 //inet ntoa
@@ -1037,10 +995,7 @@ int main(int argc, char *argv[]) {
         node_anchor_pit.slots[i].prefix = "";
         node_anchor_pit.slots[i].rand_flag = false;
     }
-    face_table.size = 50;
-    for(int i = 0; i < face_table.size; i++) {
-        face_table.faces[i].empty = true;
-    }
+    cs_table.size = 20;
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
