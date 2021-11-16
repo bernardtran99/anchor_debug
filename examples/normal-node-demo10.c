@@ -910,6 +910,7 @@ void *forwarding_process(void *var) {
         ndn_forwarder_process();
         usleep(10000);
     }
+    pthread_exit(NULL);
 }
 
 void *command_process(void *var) {
@@ -933,6 +934,7 @@ void *command_process(void *var) {
                 break;
         }
     }
+    pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
