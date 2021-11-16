@@ -869,18 +869,20 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 char prefix_string[40] = "/l2data/1/";
-                printf("Here\n");
+                printf("Here1\n");
                 strcat(prefix_string, change_num);
-                printf("Here\n");
+                printf("Here2\n");
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
 
-                printf("Here\n");
+                printf("Here3\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
-                printf("Here\n");
+                printf("Here4\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
+                printf("Here5\n");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Here6\n");
                 printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
