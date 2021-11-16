@@ -37,12 +37,12 @@
 #define NODE3 "155.246.202.140"
 #define NODE4 "155.246.216.85"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.92"
-#define NODE7 "155.246.202.141"
+#define NODE6 "155.246.216.95"
+#define NODE7 "155.246.202.144"
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.66"
-#define NODE10 "155.246.210.83"
-#define DEBUG "155.246.182.47"
+#define NODE10 "155.246.210.74"
+#define DEBUG "155.246.182.149"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -67,17 +67,6 @@ typedef struct anchor_pit {
     anchor_pit_entry_t slots[10];
 } anchor_pit_t;
 
-typedef struct udp_table_entry {
-    bool empty;
-    ndn_udp_face_t *face;
-} udp_table_entry_t;
-
-//for matching intf faces to udp faces to forward
-typedef struct udp_table {
-    int size;
-    udp_table_entry_t faces[50];
-} udp_table_t;
-
 typedef struct ip_table_entry {
     char *ip_address;
     char *node_num;
@@ -88,6 +77,11 @@ typedef struct ip_table {
     ip_table_entry_t entries[10];
 } ip_table_t;
 
+typedef struct content_store {
+    int size;
+    ndn_data_t entries[20];
+} content_store_t;
+
 typedef struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
@@ -95,14 +89,7 @@ typedef struct delay_struct {
 
 ip_table_t ip_list;
 anchor_pit_t node_anchor_pit;
-udp_table_t face_table;
-
-//intitialize pit and fib for layer 1
-// ndn_pit_t *layer1_pit;
-// ndn_fib_t *router_fib;
-// ndn_fib_t *layer1_fib;
-// ndn_forwarder_t *router;
-//char ip_address = "192.168.1.10";
+content_store_t cs_table;
 
 //To start/stop main loop
 bool running;
@@ -195,30 +182,6 @@ char *search_ip_table(int input_num) {
     return return_var;
 }
 
-void add_face_entry(ndn_udp_face_t *input_face) {
-    printf("ADD FACE POINTER: %p\n", &input_face->intf);
-    for(int i = 0; i < face_table.size; i++) {
-        if(face_table.faces[i].empty == true) {
-            face_table.faces[i].face = input_face;
-            face_table.faces[i].empty == false;
-            return;
-        }
-        // else {
-        //     //empty
-        // }
-    }
-}
-
-ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
-    for(int i = 0; i < face_table.size; i++) {
-        printf("INPUT INTF: %p\n", input_intf);
-        printf("UDP FACE INTF: %p\n", &face_table.faces[i].face->intf);
-        if(&face_table.faces[i].face->intf == input_intf) {
-            return face_table.faces[i].face;
-        }
-    }
-}
-
 //inet ntoa
 char *get_ip_address_string(ndn_udp_face_t *input_face) {
     char *output = "";
@@ -295,7 +258,7 @@ void flood(ndn_interest_t interest_pkt) {
     face = generate_udp_face(NODE7, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE9, "3000", "5000");
+    face = generate_udp_face(NODE10, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
@@ -361,10 +324,10 @@ void flood(ndn_interest_t interest_pkt) {
 //     //send_debug_message("Announcment Sent");
 // }
 
+//check signature is correct from the public key is valid for all normal nodes
+//check if timestamp is before the current time
 bool verify_interest(ndn_interest_t *interest) {
     printf("\nVerifying Packet\n");
-    //check signature is correct from the public key is valid for all normal nodes
-    //check if timestamp is before the current time
     //int timestamp = interest->signature.timestamp;
     int timestamp = 0;
     int current_time = ndn_time_now_ms();
@@ -434,7 +397,7 @@ void generate_layer_2_data(char *input_ip) {
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l2data/1/";
+    char prefix_string[40] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -464,7 +427,7 @@ void generate_data() {
     uint8_t buf[4096];
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char change_num[20] = "";
+    char change_num[40] = "";
     sprintf(change_num, "%d", node_num);
     char prefix_string[20] = "/l1data/1/";
     strcat(prefix_string, change_num);
@@ -567,10 +530,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
-    //should be thrid slot in prefix
+    //should be third slot in prefix
     // prefix = get_prefix_component(interest_pkt.name, 2);
     // prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(interest_pkt.name);
+    // prefix = get_string_prefix(interest_pkt.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Interest: ");
     strcat(temp_message, prefix);
@@ -703,14 +666,12 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
-    face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE4, "5000", "3000");
+    face = generate_udp_face(NODE5, "5000", "3000");
     face = generate_udp_face(NODE7, "6000", "4000");
-    face = generate_udp_face(NODE9, "6000", "4000");
-    register_interest_prefix("/ancmt/1/3");
-    register_interest_prefix("/ancmt/1/4");
+    face = generate_udp_face(NODE10, "6000", "4000");
+    register_interest_prefix("/ancmt/1/5");
     register_interest_prefix("/l2interest/1/7");
-    register_interest_prefix("/l2interest/1/9");
+    register_interest_prefix("/l2interest/1/10");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -788,12 +749,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *prefix = "";
     prefix = get_string_prefix(data.name);
-    printf("%s\n", prefix);
+    printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    prefix = get_prefix_component(data.name, 2);
-    prefix = trimwhitespace(prefix);
-    //prefix = get_string_prefix(data.name);
+    // prefix = get_prefix_component(data.name, 2);
+    // prefix = trimwhitespace(prefix);
+    // prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
@@ -863,10 +824,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // while (clock() < (timer + 1000000)) {
                 // }
 
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l1data/1/";
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "5000", "3000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 1 Data Forwarded\n");
 
                 send_debug_message("Layer 1 Data Forwarded ; ");
             }
@@ -879,7 +848,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
-        int l2_face_index;
+        int l2_face_index = 0;
         bool l2_interest_in = false;
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -897,10 +866,22 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 // while (clock() < (timer + 1000000)) {
                 // }
 
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/1/";
+                printf("Here\n");
+                strcat(prefix_string, change_num);
+                printf("Here\n");
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
+                printf("Here\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
                 l2_interest_in = true;
@@ -930,9 +911,49 @@ void select_anchor() {
 
 //write to mongodb so that we can generate web server to view pit
 
+void forwarding_process(void *var) {
+    running = true;
+    while (running) {
+        if(is_anchor && !ancmt_sent) {
+            //printf("send ancmt called\n");
+            ndn_interest_t interest;
+            flood(interest);
+            ancmt_sent = true;
+        }
+        ndn_forwarder_process();
+        usleep(10000);
+    }
+}
+
+void command_process(void *var) {
+    int select = 1;
+    while(select != 0) {
+        printf("0: Exit\n2: Generate Layer 1 Data\n");
+        scanf("%d", &select);
+        printf("SELECT: %d", select);
+        switch (select) {
+            case 2:
+                printf("Generate Data\n");
+                generate_data();
+                break;
+            
+            case 0:
+                printf("Exiting\n");
+                break;
+
+            default:
+                printf("Invalid Input\n");
+                break;
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
     printf("Main Loop\n");
     printf("Maximum Interfaces: %d\n", max_interfaces);
+
+    pthread_t forwarding_process_thread;
+    pthread_t command_process_thread;
 
     //socket connection
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -976,10 +997,7 @@ int main(int argc, char *argv[]) {
         node_anchor_pit.slots[i].prefix = "";
         node_anchor_pit.slots[i].rand_flag = false;
     }
-    face_table.size = 50;
-    for(int i = 0; i < face_table.size; i++) {
-        face_table.faces[i].empty = true;
-    }
+    cs_table.size = 20;
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
@@ -1012,7 +1030,8 @@ int main(int argc, char *argv[]) {
     }
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-
+    // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    // pthread_create(&command_process_thread, NULL, command_process, NULL);
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {

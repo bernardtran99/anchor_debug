@@ -37,12 +37,12 @@
 #define NODE3 "155.246.202.140"
 #define NODE4 "155.246.216.85"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.92"
-#define NODE7 "155.246.202.141"
+#define NODE6 "155.246.216.95"
+#define NODE7 "155.246.202.144"
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.66"
-#define NODE10 "155.246.210.83"
-#define DEBUG "155.246.182.47"
+#define NODE10 "155.246.210.74"
+#define DEBUG "155.246.182.149"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -850,7 +850,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
-        int l2_face_index;
+        int l2_face_index = 0;
         bool l2_interest_in = false;
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -871,12 +871,16 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 char prefix_string[40] = "/l2data/1/";
+                printf("Here\n");
                 strcat(prefix_string, change_num);
+                printf("Here\n");
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
 
+                printf("Here\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
                 printf("Layer 2 Data Forwarded\n");
