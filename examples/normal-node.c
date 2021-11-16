@@ -88,6 +88,11 @@ typedef struct ip_table {
     ip_table_entry_t entries[10];
 } ip_table_t;
 
+typedef struct content_store {
+    int size;
+    ndn_data_t entries[20];
+}
+
 typedef struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
