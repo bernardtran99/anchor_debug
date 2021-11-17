@@ -77,10 +77,19 @@ typedef struct ip_table {
     ip_table_entry_t entries[10];
 } ip_table_t;
 
+typedef struct udp_face_table {
+    int size;
+    ndn_udp_face_t entries[20];
+} udp_face_table_t;
+
 typedef struct content_store {
     int size;
     ndn_data_t entries[20];
 } content_store_t;
+
+typedef struct bit_vector {
+    int vector_num;
+} bit_vector_t;
 
 typedef struct delay_struct {
     int struct_selector;
@@ -189,6 +198,10 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
     input = input_face->remote_addr.sin_addr;
     output = inet_ntoa(input);
     return output;
+}
+
+bool check_faces_equal(ndn_udp_face_t *input_face, char *input_ip, char *port1, char *port2) {
+    return true;
 }
 
 char *get_string_prefix(ndn_name_t input_name) {
