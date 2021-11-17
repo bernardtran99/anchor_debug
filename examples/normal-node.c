@@ -655,17 +655,17 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     bool found = false;
 
     for(int i = 0; i < 5; i++) {
-        input = udp_table.faces->remote_addr.sin_addr;
+        input = udp_table->faces->remote_addr.sin_addr;
         check_ip = inet_ntoa(input);
         printf("IP: %s, ", check_ip);
-        check_port_1 = sprintf(check_port_1, "%d", htons(udp_table.faces->remote_addr.sin_port));
+        check_port_1 = sprintf(check_port_1, "%d", htons(udp_table->faces->remote_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
-        check_port_2 = sprintf(check_port_1, "%d", htons(udp_table.faces->local_addr.sin_port));
+        check_port_2 = sprintf(check_port_1, "%d", htons(udp_table->faces->local_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
         if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) && strcmp(port_2, check_port_2)) {
             printf("Exiting\n");
             found = true;
-            face = &udp_table.faces[i];
+            face = udp_table.faces[i];
             break;
         }
     }
