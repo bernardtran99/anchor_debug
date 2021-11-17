@@ -1075,8 +1075,8 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     //populate_incoming_fib();
     printf("Here\n");
-    ndn_udp_face_t *face;
-    face = generate_udp_face(NODE2, "3000", "5000");
+    // ndn_udp_face_t *face;
+    // face = generate_udp_face(NODE2, "3000", "5000");
     callback_insert(on_data, fill_pit);
 
     //signature init here
