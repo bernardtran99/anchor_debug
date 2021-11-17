@@ -1107,9 +1107,9 @@ int main(int argc, char *argv[]) {
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-    sz_port1 = "3000";
-    sz_addr = NODE2;
-    sz_port2 = "5000";
+    sz_port1 = "7000";
+    sz_addr = "0.0.0.0";
+    sz_port2 = "7001";
     host_addr = gethostbyname(sz_addr);
     paddrs = (struct in_addr **)host_addr->h_addr_list;
     server_ip = paddrs[0]->s_addr;
@@ -1140,9 +1140,9 @@ int main(int argc, char *argv[]) {
         printf("here\n");
         printf("IP: %s, ", check_ip);
         printf("here\n");
-        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
+        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
-        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
+        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
     }
 
