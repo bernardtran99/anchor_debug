@@ -1120,6 +1120,32 @@ int main(int argc, char *argv[]) {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
     udp_table.faces[0] = face;
 
+    char *check_ip = "";
+    char *check_port_1, *check_port_2;
+    check_port_1 = malloc(40); 
+    check_port_1[0] = 0;
+    check_port_2 = malloc(40); 
+    check_port_2[0] = 0;
+
+    struct in_addr input;
+    int last_face = 0;
+    bool found = false;
+
+    for(int i = 0; i < 5; i++) {
+        printf("here\n");
+        //maybe error because of nothing in the table
+        input = udp_table.faces[i]->remote_addr.sin_addr;
+        printf("here\n");
+        check_ip = inet_ntoa(input);
+        printf("here\n");
+        printf("IP: %s, ", check_ip);
+        printf("here\n");
+        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
+        printf("PORT1: %s, ", check_port_1);
+        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
+        printf("PORT2: %s\n", check_port_2);
+    }
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
