@@ -634,7 +634,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 }
 
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
-    ndn_udp_face_t *face;
+    ndn_udp_face_t face;
 
     in_port_t port1, port2;
     in_addr_t server_ip;
@@ -665,7 +665,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) && strcmp(port_2, check_port_2)) {
             printf("Exiting\n");
             found = true;
-            face = &udp_table.faces[i];
+            &face = &udp_table.faces[i];
             break;
         }
     }
@@ -686,12 +686,12 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         port1 = htons((uint16_t) ul_port);
         ul_port = strtoul(sz_port2, NULL, 10);
         port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        &face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
         printf("Added face to table\n");
-        &udp_table.faces[0] = face;
+        udp_table.faces[0] = face;
     }
 
-    return face;
+    return &face;
 }
 
 void register_interest_prefix(char *input_prefix) {
