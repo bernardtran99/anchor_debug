@@ -653,12 +653,14 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     struct in_addr input;
     int last_face = 0;
     bool found = false;
-    printf("here\n");
 
     for(int i = 0; i < 5; i++) {
         input = udp_table.faces[i]->remote_addr.sin_addr;
+        printf("here\n");
         check_ip = inet_ntoa(input);
+        printf("here\n");
         printf("IP: %s, ", check_ip);
+        printf("here\n");
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
         sprintf(check_port_2, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
