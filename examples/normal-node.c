@@ -1091,9 +1091,9 @@ int main(int argc, char *argv[]) {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    printf("here\n");
+    printf("2\n");
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    printf("here\n");
+    printf("1\n");
     udp_table.faces[0] = face;
 
     char *check_ip = "";
