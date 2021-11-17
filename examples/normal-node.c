@@ -655,17 +655,13 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     bool found = false;
 
     for(int i = 0; i < 5; i++) {
-        printf("here\n");
         //maybe error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr;
-        printf("here\n");
         check_ip = inet_ntoa(input);
-        printf("here\n");
         printf("IP: %s, ", check_ip);
-        printf("here\n");
-        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
+        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
-        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
+        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
         if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) && strcmp(port_2, check_port_2)) {
             printf("Exiting\n");
@@ -997,7 +993,7 @@ void *command_process(void *var) {
             case 3:
                 printf("Generating Face\n");
                 ndn_udp_face_t *face;
-                face = generate_udp_face("0.0.0.0", "7000", "7001");
+                face = generate_udp_face("0.0.0.0", "7000", "8000");
                 break;
 
             default:
