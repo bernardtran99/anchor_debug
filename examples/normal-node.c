@@ -663,6 +663,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         printf("PORT1: %s, ", check_port_1);
         sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
+        printf("CHECK IP: %s, CHECK PORT1 %s, CHECK PORT2 %s\n", check_ip, check_port_1, check_port_2);
         if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) && strcmp(port_2, check_port_2)) {
             printf("Exiting\n");
             found = true;
@@ -995,7 +996,7 @@ void *command_process(void *var) {
                 ndn_udp_face_t *face;
                 face = generate_udp_face("0.0.0.0", "7000", "8000");
                 break;
-                
+
             default:
                 printf("Invalid Input\n");
                 break;
