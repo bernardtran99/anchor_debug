@@ -32,17 +32,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.61"
-#define NODE2 "155.246.215.66"
+#define NODE1 "155.246.44.89"
+#define NODE2 "155.246.215.95"
 #define NODE3 "155.246.202.140"
 #define NODE4 "155.246.216.85"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.95"
+#define NODE6 "155.246.216.114"
 #define NODE7 "155.246.202.144"
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.66"
-#define NODE10 "155.246.210.74"
-#define DEBUG "155.246.182.149"
+#define NODE10 "155.246.210.80"
+#define DEBUG "155.246.182.138"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -64,7 +64,7 @@ typedef struct anchor_pit_entry {
 typedef struct anchor_pit {
     //change size to be more dynamic when iterating through array
     int mem;
-    anchor_pit_entry_t slots[10];
+    anchor_pit_entry_t slots[20];
 } anchor_pit_t;
 
 typedef struct ip_table_entry {
@@ -79,7 +79,7 @@ typedef struct ip_table {
 
 typedef struct udp_face_table {
     int size;
-    ndn_udp_face_t entries[20];
+    ndn_udp_face_t faces[20];
 } udp_face_table_t;
 
 typedef struct content_store {
@@ -99,6 +99,7 @@ typedef struct delay_struct {
 ip_table_t ip_list;
 anchor_pit_t node_anchor_pit;
 content_store_t cs_table;
+udp_face_table_t udp_table;
 
 //To start/stop main loop
 bool running;
@@ -198,10 +199,6 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
     input = input_face->remote_addr.sin_addr;
     output = inet_ntoa(input);
     return output;
-}
-
-bool check_faces_equal(ndn_udp_face_t *input_face, char *input_ip, char *port1, char *port2) {
-    return true;
 }
 
 char *get_string_prefix(ndn_name_t input_name) {
@@ -638,13 +635,19 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     ndn_udp_face_t *face;
-
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
+
+    if() {
+
+    }
+    else {
+
+    }
 
     sz_port1 = port_1;
     sz_addr = input_ip;
@@ -1007,12 +1010,13 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    node_anchor_pit.mem = 10;
+    node_anchor_pit.mem = 20;
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         node_anchor_pit.slots[i].prefix = "";
         node_anchor_pit.slots[i].rand_flag = false;
     }
     cs_table.size = 20;
+    udp_table.size = 20;
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
