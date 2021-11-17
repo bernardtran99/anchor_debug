@@ -992,7 +992,7 @@ void *command_process(void *var) {
             case 3:
                 printf("Generating Face");
                 ndn_udp_face_t *face;
-                face = generate_udp_face(NODE1, "3000", "5000");
+                face = generate_udp_face(NODE2, "3000", "5000");
                 break;
 
             default:
