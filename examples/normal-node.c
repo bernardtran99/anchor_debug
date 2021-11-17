@@ -1073,28 +1073,27 @@ int main(int argc, char *argv[]) {
 
     ndn_lite_startup();
 
-    ndn_udp_face_t *face;
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
-    sz_port1 = "7000";
-    sz_addr = "0.0.0.0";
-    sz_port2 = "7001";
-    host_addr = gethostbyname(sz_addr);
-    paddrs = (struct in_addr **)host_addr->h_addr_list;
-    server_ip = paddrs[0]->s_addr;
-    ul_port = strtoul(sz_port1, NULL, 10);
-    port1 = htons((uint16_t) ul_port);
-    ul_port = strtoul(sz_port2, NULL, 10);
-    port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    printf("2\n");
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-    printf("1\n");
-    udp_table.faces[0] = face;
+    for(int i = 0; i < udp_table.size; i++) {
+        ndn_udp_face_t *face;
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
+        sz_port1 = "7000";
+        sz_addr = "0.0.0.0";
+        sz_port2 = "7001";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        udp_table.faces[i] = face;
+    }
 
     char *check_ip = "";
     char *check_port_1, *check_port_2;
