@@ -653,6 +653,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     struct in_addr input;
     int last_face = 0;
     bool found = false;
+    printf("here\n");
 
     for(int i = 0; i < 5; i++) {
         input = udp_table.faces[i]->remote_addr.sin_addr;
@@ -1074,9 +1075,6 @@ int main(int argc, char *argv[]) {
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //DEMO: CHANGE
     //populate_incoming_fib();
-    printf("Here\n");
-    ndn_udp_face_t *face;
-    face = generate_udp_face(NODE2, "3000", "5000");
     callback_insert(on_data, fill_pit);
 
     //signature init here
