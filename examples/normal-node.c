@@ -1101,14 +1101,12 @@ int main(int argc, char *argv[]) {
     ndn_lite_startup();
 
     ndn_udp_face_t *face;
-
     in_port_t port1, port2;
     in_addr_t server_ip;
     char *sz_port1, *sz_port2, *sz_addr;
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-
     sz_port1 = "3000";
     sz_addr = NODE2;
     sz_port2 = "5000";
@@ -1120,6 +1118,7 @@ int main(int argc, char *argv[]) {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+    udp_table.faces[0] = face;
 
     last_interest = ndn_time_now_ms();
     
