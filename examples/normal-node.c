@@ -658,9 +658,9 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         input = udp_table.faces->remote_addr.sin_addr;
         check_ip = inet_ntoa(input);
         printf("IP: %s, ", check_ip);
-        check_port_1 = sprintf(check_port_1, "%s", htons(udp_table.faces->remote_addr.sin_port));
+        check_port_1 = sprintf(check_port_1, "%d", htons(udp_table.faces->remote_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
-        check_port_2 = sprintf(check_port_1, "%s", htons(udp_table.faces->local_addr.sin_port));
+        check_port_2 = sprintf(check_port_1, "%d", htons(udp_table.faces->local_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
         if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) && strcmp(port_2, check_port_2)) {
             printf("Exiting\n");
@@ -688,7 +688,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
         printf("Added face to table\n");
-        udp_table.face[0] = face;
+        udp_table.faces[0] = face;
     }
 
     return face;
