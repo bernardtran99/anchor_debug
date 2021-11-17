@@ -656,6 +656,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
 
     for(int i = 0; i < 5; i++) {
         printf("here\n");
+        //maybe error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr;
         printf("here\n");
         check_ip = inet_ntoa(input);
@@ -1057,6 +1058,30 @@ int main(int argc, char *argv[]) {
     }
     cs_table.size = 20;
     udp_table.size = 20;
+
+    ndn_udp_face_t *face;
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+    
+    for(int i = 0; i < udp_table.size; i++) {
+        sz_port1 = "1000";
+        sz_addr = "0.0.0.0";
+        sz_port2 = "1001";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        udp_table.faces[i] = face;
+    }
+    
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
