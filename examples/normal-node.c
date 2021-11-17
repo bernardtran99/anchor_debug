@@ -979,7 +979,7 @@ void *command_process(void *var) {
     while(select != 0) {
         printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face\n");
         scanf("%d", &select);
-        printf("SELECT: %d", select);
+        printf("SELECT: %d\n", select);
         switch (select) {
             case 0:
                 printf("Exiting\n");
@@ -991,7 +991,7 @@ void *command_process(void *var) {
                 break;
 
             case 3:
-                printf("Generating Face");
+                printf("Generating Face\n");
                 ndn_udp_face_t *face;
                 face = generate_udp_face(NODE2, "3000", "5000");
                 break;
