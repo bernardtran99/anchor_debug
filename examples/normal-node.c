@@ -1073,6 +1073,7 @@ int main(int argc, char *argv[]) {
 
     ndn_lite_startup();
 
+    //initializing face_table
     for(int i = 0; i < udp_table.size; i++) {
         ndn_udp_face_t *face;
         in_port_t port1, port2;
@@ -1081,9 +1082,9 @@ int main(int argc, char *argv[]) {
         uint32_t ul_port;
         struct hostent * host_addr;
         struct in_addr ** paddrs;
-        sz_port1 = "7000";
+        sz_port1 = "1000";
         sz_addr = "0.0.0.0";
-        sz_port2 = "7001";
+        sz_port2 = "10001";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
         server_ip = paddrs[0]->s_addr;
