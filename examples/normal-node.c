@@ -1066,10 +1066,10 @@ int main(int argc, char *argv[]) {
     uint32_t ul_port;
     struct hostent * host_addr;
     struct in_addr ** paddrs;
-    
+    printf("here\n");
     for(int i = 0; i < udp_table.size; i++) {
         sz_port1 = "1000";
-        sz_addr = "0.0.0.0";
+        sz_addr = "127.0.0.1";
         sz_port2 = "1001";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
