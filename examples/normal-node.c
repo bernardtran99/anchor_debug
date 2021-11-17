@@ -654,6 +654,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     int last_face = 0;
     bool found = false;
 
+    printf("1\n");
     for(int i = 0; i < 5; i++) {
         //maybe error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr;
