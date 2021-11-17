@@ -995,7 +995,7 @@ void *command_process(void *var) {
                 ndn_udp_face_t *face;
                 face = generate_udp_face("0.0.0.0", "7000", "8000");
                 break;
-
+                
             default:
                 printf("Invalid Input\n");
                 break;
