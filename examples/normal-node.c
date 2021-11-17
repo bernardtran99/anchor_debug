@@ -655,6 +655,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     bool found = false;
 
     for(int i = 0; i < 5; i++) {
+        printf("here\n");
         input = udp_table.faces[i]->remote_addr.sin_addr;
         printf("here\n");
         check_ip = inet_ntoa(input);
