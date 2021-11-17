@@ -1059,15 +1059,15 @@ int main(int argc, char *argv[]) {
     cs_table.size = 20;
     udp_table.size = 20;
 
-    ndn_udp_face_t *face;
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
     printf("here\n");
     for(int i = 0; i < udp_table.size; i++) {
+        ndn_udp_face_t *face;
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
         sz_port1 = "7000";
         sz_addr = "155.246.203.173";
         sz_port2 = "7001";
