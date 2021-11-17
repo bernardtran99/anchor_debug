@@ -1068,9 +1068,9 @@ int main(int argc, char *argv[]) {
     struct in_addr ** paddrs;
     printf("here\n");
     for(int i = 0; i < udp_table.size; i++) {
-        sz_port1 = "1000";
-        sz_addr = "127.0.0.1";
-        sz_port2 = "1001";
+        sz_port1 = "7000";
+        sz_addr = "155.246.203.173";
+        sz_port2 = "7001";
         host_addr = gethostbyname(sz_addr);
         paddrs = (struct in_addr **)host_addr->h_addr_list;
         server_ip = paddrs[0]->s_addr;
