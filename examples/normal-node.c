@@ -1107,14 +1107,10 @@ int main(int argc, char *argv[]) {
     bool found = false;
 
     for(int i = 0; i < 5; i++) {
-        printf("here\n");
-        //maybe error because of nothing in the table
+        //error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr;
-        printf("here\n");
         check_ip = inet_ntoa(input);
-        printf("here\n");
         printf("IP: %s, ", check_ip);
-        printf("here\n");
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
         sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
