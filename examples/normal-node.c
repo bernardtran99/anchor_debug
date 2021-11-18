@@ -79,6 +79,7 @@ typedef struct ip_table {
 
 typedef struct udp_face_table {
     int size;
+    int last_udp;
     ndn_udp_face_t *faces[20];
 } udp_face_table_t;
 
@@ -691,7 +692,8 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
         printf("Added face to table\n");
-        udp_table.faces[0] = face;
+        udp_table.faces[udp_table.last_udp] = face;
+        udp_table.last_udp++;
     }
 
     return face;
