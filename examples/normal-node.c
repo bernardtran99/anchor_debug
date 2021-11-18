@@ -1106,6 +1106,7 @@ int main(int argc, char *argv[]) {
     check_port_1[0] = 0;
     check_port_2 = malloc(40);
     check_port_2[0] = 0;
+    char buf[INET_ADDRSTRLEN];
 
     in_addr_t input;
     int last_face = 0;
