@@ -659,7 +659,9 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     for(int i = 0; i < 5; i++) {
         //maybe error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr;
+        printf("1\n");
         check_ip = inet_ntoa(input);
+        printf("1\n");
         printf("IP: %s, ", check_ip);
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
@@ -691,7 +693,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         ul_port = strtoul(sz_port2, NULL, 10);
         port2 = htons((uint16_t) ul_port);
         face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        printf("Added face to table\n");
+        printf("Added face to table at: %d\n", udp_table.last_udp);
         udp_table.faces[udp_table.last_udp] = face;
         udp_table.last_udp++;
     }
