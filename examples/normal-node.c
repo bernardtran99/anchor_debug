@@ -644,23 +644,24 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
-    char *check_ip = "";
-    char *check_port_1, *check_port_2;
-    check_port_1 = malloc(40); 
+    char *check_ip, *check_port_1, *check_port_2;
+    check_ip = malloc(40);
     check_port_1[0] = 0;
-    check_port_2 = malloc(40); 
+    check_port_1 = malloc(40);
+    check_port_1[0] = 0;
+    check_port_2 = malloc(40);
     check_port_2[0] = 0;
 
-    struct in_addr input;
+    in_addr_t input;
     int last_face = 0;
     bool found = false;
 
     printf("1\n");
     for(int i = 0; i < 5; i++) {
         //maybe error because of nothing in the table
-        input = udp_table.faces[i]->remote_addr.sin_addr;
+        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
         printf("1\n");
-        check_ip = inet_ntoa(input);
+        check_ip = inet_ntop(input);
         printf("1\n");
         printf("IP: %s, ", check_ip);
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
@@ -1098,21 +1099,22 @@ int main(int argc, char *argv[]) {
         udp_table.faces[i] = face;
     }
 
-    char *check_ip = "";
-    char *check_port_1, *check_port_2;
-    check_port_1 = malloc(40); 
+    char *check_ip, *check_port_1, *check_port_2;
+    check_ip = malloc(40);
+    check_ip[0] = 0;
+    check_port_1 = malloc(40);
     check_port_1[0] = 0;
-    check_port_2 = malloc(40); 
+    check_port_2 = malloc(40);
     check_port_2[0] = 0;
 
-    struct in_addr input;
+    in_addr_t input;
     int last_face = 0;
     bool found = false;
 
     for(int i = 0; i < 5; i++) {
         //error because of nothing in the table
-        input = udp_table.faces[i]->remote_addr.sin_addr;
-        check_ip = inet_ntoa(input);
+        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
+        check_ip = inet_ntop(input);
         printf("IP: %s, ", check_ip);
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
