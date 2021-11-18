@@ -661,7 +661,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
         //maybe error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
         printf("1\n");
-        check_ip = inet_ntop(input);
+        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
         printf("1\n");
         printf("IP: %s, ", check_ip);
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
@@ -1114,7 +1114,7 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < 5; i++) {
         //error because of nothing in the table
         input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
-        check_ip = inet_ntop(input);
+        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
         printf("IP: %s, ", check_ip);
         sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
         printf("PORT1: %s, ", check_port_1);
