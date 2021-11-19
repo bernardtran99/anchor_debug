@@ -187,6 +187,16 @@ int send_debug_message(char *input) {
     return 0;
 }
 
+int ndn_packet_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size)
+{
+    if (self->state != NDN_FACE_STATE_UP) {
+        printf("Uping Face\n");
+        self->up(self);
+    }
+    printf("Sending Face\n");
+    return self->send(self, packet, size);
+}
+
 void add_ip_table(char *input_num, char *input_ip) {
     int num;
     num = atoi(input_num);
@@ -990,7 +1000,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 printf("Here\n");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                ndn_packet_send(&face->intf, encoder.output_value, encoder.offset);
                 printf("Here\n");
                 printf("Layer 2 Data Forwarded\n");
 
