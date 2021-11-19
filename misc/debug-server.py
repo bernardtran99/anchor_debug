@@ -108,7 +108,7 @@ class EchoServerProtocol(asyncio.Protocol):
             node_sizes[0] = 1000
             node_colors[0] = 'red'
         
-        if "Layer 1 Data Sent" in message:
+        if "Clear Graph" in message:
             node_sizes[node_num-1] = 1000
             node_colors[node_num-1] = 'yellow'
             H.remove_edges_from(list(H.edges()))
