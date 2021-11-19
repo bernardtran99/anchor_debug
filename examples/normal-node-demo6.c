@@ -1044,6 +1044,10 @@ void *command_process(void *var) {
 
             case 2:
                 printf("Generate Data\n");
+                send_debug_message("Clear Graph");
+                clock_t timer = clock();
+                while (clock() < (timer + 5000000)) {
+                }
                 generate_data();
                 break;
 
