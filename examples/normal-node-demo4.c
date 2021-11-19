@@ -923,6 +923,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
+
+                    // clock_t timer = clock();
+                    // printf("Delay Time: %d seconds\n", 2);
+                    // while (clock() < (timer + 2000000)) {
+                    // }
                     
                     generate_layer_2_data(inputIP);
                     l2_interest_in = true;
@@ -957,6 +962,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char *ip_string;
                 ip_string = search_ip_table(reply[rand_num]);
 
+                // clock_t timer = clock();
+                // printf("Delay Time: %d seconds\n", 1);
+                // while (clock() < (timer + 1000000)) {
+                // }
+
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 char prefix_string[40] = "/l1data/1/";
@@ -986,36 +996,36 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        char change_num[20] = "";
-        sprintf(change_num, "%d", node_num);
-        char prefix_string[40] = "/l2data/1/";
-        strcat(prefix_string, change_num);
-        ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-        data.name = name_prefix;
-        encoder_init(&encoder, buf, 4096);
-        ndn_data_tlv_encode_digest_sign(&encoder, &data);
+        // char change_num[20] = "";
+        // sprintf(change_num, "%d", node_num);
+        // char prefix_string[40] = "/l2data/1/";
+        // strcat(prefix_string, change_num);
+        // ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+        // data.name = name_prefix;
+        // encoder_init(&encoder, buf, 4096);
+        // ndn_data_tlv_encode_digest_sign(&encoder, &data);
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             if(strcmp(check_string, "l2interest") == 0) {
-                ndn_udp_face_t *l2_face;
+                // ndn_udp_face_t *l2_face;
                 l2_face_index = i;
 
                 third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
-                //forward_layer_2_data(ip_string, data.content_value, data.content_size);
+                forward_layer_2_data(ip_string, data);
 
-                printf("Here\n");
-                l2_face = generate_udp_face(ip_string, "6000", "4000");
-                printf("Here\n");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                printf("Here\n");
-                printf("Layer 2 Data Forwarded\n");
+                // printf("Here\n");
+                // l2_face = generate_udp_face(ip_string, "6000", "4000");
+                // printf("Here\n");
+                // ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                // printf("Here\n");
+                // printf("Layer 2 Data Forwarded\n");
 
-                send_debug_message("Layer 2 Data Forwarded ; ");
+                // send_debug_message("Layer 2 Data Forwarded ; ");
                 l2_interest_in = true;
             }
         }
@@ -1025,8 +1035,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         }
     }
 }
-
-
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
