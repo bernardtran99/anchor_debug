@@ -134,8 +134,8 @@ class EchoServerProtocol(asyncio.Protocol):
                 G.add_edges_from([(selector, node_num)], color='b', weight = 2)
 
             if "l1data" in strings[i]:
-                node_sizes[3] = 1000
-                node_colors[3] = 'yellow'
+                node_sizes[9] = 1000
+                node_colors[9] = 'yellow'
                 dash_counter = 0
                 num_buffer = []
                 for e in range(len(chars)):
