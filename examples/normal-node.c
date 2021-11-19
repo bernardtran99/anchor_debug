@@ -866,14 +866,13 @@ void forward_layer_2_data(char *input_ip, ndn_data_t input_data) {
     char prefix_string[40] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
     data.name = prefix_name;
 
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
     face = generate_udp_face(input_ip, "6000", "4000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+    printf("Layer 2 Data Forwarded\n");
 
     send_debug_message("Layer 2 Data Forwarded ; ");
 }
