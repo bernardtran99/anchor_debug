@@ -125,13 +125,23 @@ ndn_face_up(ndn_face_intf_t* self)
  * @param[in] size The size of @c packet.
  * @return #NDN_SUCCESS if the call succeeded. The error code otherwise.
  */
-static inline int
+
+//bernardtran99
+//removing static inline for testing
+int
 ndn_face_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size)
 {
   if (self->state != NDN_FACE_STATE_UP)
     self->up(self);
   return self->send(self, packet, size);
 }
+// static inline int
+// ndn_face_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size)
+// {
+//   if (self->state != NDN_FACE_STATE_UP)
+//     self->up(self);
+//   return self->send(self, packet, size);
+// }
 
 /** Shutdown the face temporarily.
  * @param[in, out] self Input. The interface to turn off.

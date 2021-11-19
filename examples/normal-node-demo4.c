@@ -831,7 +831,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 void insert_content_store(ndn_data_t input_data) {
     for(int i = 0; i < cs_table.size; i++) {
         if(cs_table.entries[i].is_filled == false) {
-            printf("CONTENT STORE INSERT INDEX: %d", i);
+            printf("CONTENT STORE INSERT INDEX: %d\n", i);
             cs_table.entries[i].data_pkt = input_data;
             cs_table.entries[i].is_filled = true;
             break;
