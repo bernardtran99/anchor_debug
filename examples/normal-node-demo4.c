@@ -970,6 +970,16 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
+        char change_num[20] = "";
+        sprintf(change_num, "%d", node_num);
+        char prefix_string[40] = "/l2data/1/";
+        strcat(prefix_string, change_num);
+        ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+        data.name = name_prefix;
+
+        encoder_init(&encoder, buf, 4096);
+        ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
@@ -980,23 +990,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
-                // clock_t timer = clock();
-                // printf("Delay Time: %d seconds\n", 1);
-                // while (clock() < (timer + 1000000)) {
-                // }
-
-                char change_num[20] = "";
-                sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l2data/1/";
-                printf("Here\n");
-                strcat(prefix_string, change_num);
-                printf("Here\n");
-                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-                data.name = name_prefix;
-
-                printf("Here\n");
-                encoder_init(&encoder, buf, 4096);
-                ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 printf("Here\n");
