@@ -11,7 +11,8 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/tcp.h> 
+#include <netinet/tcp.h>
+#include <netinet/in.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -35,12 +36,12 @@
 #define NODE1 "155.246.44.89"
 #define NODE2 "155.246.215.95"
 #define NODE3 "155.246.202.140"
-#define NODE4 "155.246.216.85"
+#define NODE4 "155.246.216.124"
 #define NODE5 "155.246.203.173"
 #define NODE6 "155.246.216.114"
 #define NODE7 "155.246.202.144"
 #define NODE8 "155.246.212.94"
-#define NODE9 "155.246.213.66"
+#define NODE9 "155.246.213.124"
 #define NODE10 "155.246.210.80"
 #define DEBUG "155.246.182.138"
 
@@ -77,20 +78,29 @@ typedef struct ip_table {
     ip_table_entry_t entries[10];
 } ip_table_t;
 
+typedef struct udp_face_table_entry {
+    ndn_udp_face_t *face_entry;
+    bool is_filled;
+} udp_face_table_entry_t;
+
 typedef struct udp_face_table {
     int size;
-    int last_udp;
-    ndn_udp_face_t *faces[20];
+    udp_face_table_entry_t entries[20];
 } udp_face_table_t;
-
-typedef struct content_store {
-    int size;
-    ndn_data_t entries[20];
-} content_store_t;
 
 typedef struct bit_vector {
     int vector_num;
 } bit_vector_t;
+
+typedef struct content_store_entry {
+    ndn_data_t data_pkt;
+    bool is_filled;
+} content_store_entry_t;
+
+typedef struct content_store {
+    int size;
+    content_store_entry_t entries[20];
+} content_store_t;
 
 typedef struct delay_struct {
     int struct_selector;
@@ -644,6 +654,30 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     struct hostent * host_addr;
     struct in_addr ** paddrs;
 
+    sz_port1 = port_1;
+    sz_addr = input_ip;
+    sz_port2 = port_2;
+    host_addr = gethostbyname(sz_addr);
+    paddrs = (struct in_addr **)host_addr->h_addr_list;
+    server_ip = paddrs[0]->s_addr;
+    ul_port = strtoul(sz_port1, NULL, 10);
+    port1 = htons((uint16_t) ul_port);
+    ul_port = strtoul(sz_port2, NULL, 10);
+    port2 = htons((uint16_t) ul_port);
+    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    return face;
+
+    /*
+    ndn_udp_face_t *face;
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
     char *check_ip, *check_port_1, *check_port_2;
     check_ip = malloc(40);
     check_port_1[0] = 0;
@@ -652,7 +686,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     check_port_2 = malloc(40);
     check_port_2[0] = 0;
 
-    in_addr_t input;
+    struct in_addr_t input;
     int last_face = 0;
     bool found = false;
 
@@ -700,6 +734,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     }
 
     return face;
+    */
 }
 
 void register_interest_prefix(char *input_prefix) {
@@ -785,6 +820,17 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     }
     else {
         printf("Max Ancmt Fill Pit\n");
+    }
+}
+
+void insert_content_store(ndn_data_t input_data) {
+    for(int i = 0; i < cs_table.size; i++) {
+        if(cs_table.entries[i].is_filled == false) {
+            printf("CONTENT STORE INSERT INDEX: %d", i);
+            cs_table.entries[i].data_pkt = input_data;
+            cs_table.entries[i].is_filled = true;
+            break;
+        }
     }
 }
 
@@ -906,6 +952,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         printf("Layer 2 Data Recieved\n");
         int l2_face_index = 0;
         bool l2_interest_in = false;
+
+        insert_content_store(data);
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
@@ -1060,7 +1108,13 @@ int main(int argc, char *argv[]) {
         node_anchor_pit.slots[i].rand_flag = false;
     }
     cs_table.size = 20;
+    for(int i = 0; i < cs_table.size; i++) {
+        cs_table.entries[i].is_filled = false;
+    }
     udp_table.size = 20;
+    for(int i = 0; i < udp_table.size; i++) {
+        udp_table.entries[i].is_filled = false;
+    }
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
@@ -1077,6 +1131,7 @@ int main(int argc, char *argv[]) {
     ndn_lite_startup();
 
     //initializing face_table
+    /*
     for(int i = 0; i < udp_table.size; i++) {
         ndn_udp_face_t *face;
         in_port_t port1, port2;
@@ -1106,7 +1161,7 @@ int main(int argc, char *argv[]) {
     check_port_1[0] = 0;
     check_port_2 = malloc(40);
     check_port_2[0] = 0;
-    char buf[INET_ADDRSTRLEN];
+    //char buf[INET_ADDRSTRLEN];
 
     in_addr_t input;
     int last_face = 0;
@@ -1122,13 +1177,14 @@ int main(int argc, char *argv[]) {
         sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
         printf("PORT2: %s\n", check_port_2);
     }
+    */
 
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //DEMO: CHANGE
-    //populate_incoming_fib();
+    populate_incoming_fib();
     callback_insert(on_data, fill_pit);
 
     //signature init here
