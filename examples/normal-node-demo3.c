@@ -11,7 +11,8 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/tcp.h> 
+#include <netinet/tcp.h>
+#include <netinet/in.h>
 #include <ndn-lite.h>
 #include "ndn-lite.h"
 #include "ndn-lite/encode/name.h"
@@ -32,17 +33,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.61"
-#define NODE2 "155.246.215.66"
+#define NODE1 "155.246.44.89"
+#define NODE2 "155.246.215.95"
 #define NODE3 "155.246.202.140"
-#define NODE4 "155.246.216.85"
+#define NODE4 "155.246.216.124"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.92"
-#define NODE7 "155.246.202.141"
+#define NODE6 "155.246.216.114"
+#define NODE7 "155.246.202.144"
 #define NODE8 "155.246.212.94"
-#define NODE9 "155.246.213.66"
-#define NODE10 "155.246.210.83"
-#define DEBUG "155.246.182.47"
+#define NODE9 "155.246.213.124"
+#define NODE10 "155.246.210.80"
+#define DEBUG "155.246.182.138"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -64,19 +65,8 @@ typedef struct anchor_pit_entry {
 typedef struct anchor_pit {
     //change size to be more dynamic when iterating through array
     int mem;
-    anchor_pit_entry_t slots[10];
+    anchor_pit_entry_t slots[20];
 } anchor_pit_t;
-
-typedef struct udp_table_entry {
-    bool empty;
-    ndn_udp_face_t *face;
-} udp_table_entry_t;
-
-//for matching intf faces to udp faces to forward
-typedef struct udp_table {
-    int size;
-    udp_table_entry_t faces[50];
-} udp_table_t;
 
 typedef struct ip_table_entry {
     char *ip_address;
@@ -88,6 +78,30 @@ typedef struct ip_table {
     ip_table_entry_t entries[10];
 } ip_table_t;
 
+typedef struct udp_face_table_entry {
+    ndn_udp_face_t *face_entry;
+    bool is_filled;
+} udp_face_table_entry_t;
+
+typedef struct udp_face_table {
+    int size;
+    udp_face_table_entry_t entries[20];
+} udp_face_table_t;
+
+typedef struct bit_vector {
+    int vector_num;
+} bit_vector_t;
+
+typedef struct content_store_entry {
+    ndn_data_t data_pkt;
+    bool is_filled;
+} content_store_entry_t;
+
+typedef struct content_store {
+    int size;
+    content_store_entry_t entries[20];
+} content_store_t;
+
 typedef struct delay_struct {
     int struct_selector;
     ndn_interest_t interest;
@@ -95,14 +109,8 @@ typedef struct delay_struct {
 
 ip_table_t ip_list;
 anchor_pit_t node_anchor_pit;
-udp_table_t face_table;
-
-//intitialize pit and fib for layer 1
-// ndn_pit_t *layer1_pit;
-// ndn_fib_t *router_fib;
-// ndn_fib_t *layer1_fib;
-// ndn_forwarder_t *router;
-//char ip_address = "192.168.1.10";
+content_store_t cs_table;
+udp_face_table_t udp_table;
 
 //To start/stop main loop
 bool running;
@@ -195,30 +203,6 @@ char *search_ip_table(int input_num) {
     return return_var;
 }
 
-void add_face_entry(ndn_udp_face_t *input_face) {
-    printf("ADD FACE POINTER: %p\n", &input_face->intf);
-    for(int i = 0; i < face_table.size; i++) {
-        if(face_table.faces[i].empty == true) {
-            face_table.faces[i].face = input_face;
-            face_table.faces[i].empty == false;
-            return;
-        }
-        // else {
-        //     //empty
-        // }
-    }
-}
-
-ndn_udp_face_t *search_udp_face(ndn_face_intf_t *input_intf) {
-    for(int i = 0; i < face_table.size; i++) {
-        printf("INPUT INTF: %p\n", input_intf);
-        printf("UDP FACE INTF: %p\n", &face_table.faces[i].face->intf);
-        if(&face_table.faces[i].face->intf == input_intf) {
-            return face_table.faces[i].face;
-        }
-    }
-}
-
 //inet ntoa
 char *get_ip_address_string(ndn_udp_face_t *input_face) {
     char *output = "";
@@ -293,6 +277,9 @@ void flood(ndn_interest_t interest_pkt) {
 
     //DEMO: CHANGE
     face = generate_udp_face(NODE4, "3000", "5000");
+    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+    face = generate_udp_face(NODE6, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
@@ -680,6 +667,74 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     return face;
+
+    /*
+    ndn_udp_face_t *face;
+
+    in_port_t port1, port2;
+    in_addr_t server_ip;
+    char *sz_port1, *sz_port2, *sz_addr;
+    uint32_t ul_port;
+    struct hostent * host_addr;
+    struct in_addr ** paddrs;
+
+    char *check_ip, *check_port_1, *check_port_2;
+    check_ip = malloc(40);
+    check_port_1[0] = 0;
+    check_port_1 = malloc(40);
+    check_port_1[0] = 0;
+    check_port_2 = malloc(40);
+    check_port_2[0] = 0;
+
+    struct in_addr_t input;
+    int last_face = 0;
+    bool found = false;
+
+    printf("1\n");
+    for(int i = 0; i < 5; i++) {
+        //maybe error because of nothing in the table
+        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
+        printf("1\n");
+        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
+        printf("1\n");
+        printf("IP: %s, ", check_ip);
+        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
+        printf("PORT1: %s, ", check_port_1);
+        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
+        printf("PORT2: %s\n", check_port_2);
+        printf("CHECK IP: %s, CHECK PORT1: %s, CHECK PORT2: %s\n", input_ip, port_1, port_2);
+        if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) == 0 && strcmp(port_2, check_port_2) == 0) {
+            printf("Exiting\n");
+            found = true;
+            face = udp_table.faces[i];
+            break;
+        }
+    }
+
+    if(found == true) {
+        printf("Face already in udp_face_table.\n");
+    }
+
+    else {
+        printf("Face not in udp_face_table, creating new face\n");
+        sz_port1 = port_1;
+        sz_addr = input_ip;
+        sz_port2 = port_2;
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        printf("Added face to table at: %d\n", udp_table.last_udp);
+        udp_table.faces[udp_table.last_udp] = face;
+        udp_table.last_udp++;
+    }
+
+    return face;
+    */
 }
 
 void register_interest_prefix(char *input_prefix) {
@@ -702,8 +757,10 @@ void populate_incoming_fib() {
     //DEMO: CHANGE
     face = generate_udp_face(NODE1, "5000", "3000");
     face = generate_udp_face(NODE4, "6000", "4000");
+    face = generate_udp_face(NODE6, "6000", "4000");
     register_interest_prefix("/ancmt/1/1");
     register_interest_prefix("/l2interest/1/4");
+    register_interest_prefix("/l2interest/1/6");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -761,6 +818,17 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     }
     else {
         printf("Max Ancmt Fill Pit\n");
+    }
+}
+
+void insert_content_store(ndn_data_t input_data) {
+    for(int i = 0; i < cs_table.size; i++) {
+        if(cs_table.entries[i].is_filled == false) {
+            printf("CONTENT STORE INSERT INDEX: %d", i);
+            cs_table.entries[i].data_pkt = input_data;
+            cs_table.entries[i].is_filled = true;
+            break;
+        }
     }
 }
 
@@ -880,8 +948,10 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
-        int l2_face_index;
+        int l2_face_index = 0;
         bool l2_interest_in = false;
+
+        insert_content_store(data);
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
@@ -901,12 +971,16 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 char prefix_string[40] = "/l2data/1/";
+                printf("Here\n");
                 strcat(prefix_string, change_num);
+                printf("Here\n");
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
 
+                printf("Here\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
                 printf("Layer 2 Data Forwarded\n");
@@ -939,7 +1013,7 @@ void select_anchor() {
 
 //write to mongodb so that we can generate web server to view pit
 
-void forwarding_process(void *var) {
+void *forwarding_process(void *var) {
     running = true;
     while (running) {
         if(is_anchor && !ancmt_sent) {
@@ -953,20 +1027,26 @@ void forwarding_process(void *var) {
     }
 }
 
-void command_process(void *var) {
+void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face\n");
         scanf("%d", &select);
-        printf("SELECT: %d", select);
+        printf("SELECT: %d\n", select);
         switch (select) {
+            case 0:
+                printf("Exiting\n");
+                break;
+
             case 2:
                 printf("Generate Data\n");
                 generate_data();
                 break;
-            
-            case 0:
-                printf("Exiting\n");
+
+            case 3:
+                printf("Generating Face\n");
+                ndn_udp_face_t *face;
+                face = generate_udp_face("0.0.0.0", "7000", "8000");
                 break;
 
             default:
@@ -1020,14 +1100,18 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    node_anchor_pit.mem = 10;
+    node_anchor_pit.mem = 20;
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         node_anchor_pit.slots[i].prefix = "";
         node_anchor_pit.slots[i].rand_flag = false;
     }
-    face_table.size = 50;
-    for(int i = 0; i < face_table.size; i++) {
-        face_table.faces[i].empty = true;
+    cs_table.size = 20;
+    for(int i = 0; i < cs_table.size; i++) {
+        cs_table.entries[i].is_filled = false;
+    }
+    udp_table.size = 20;
+    for(int i = 0; i < udp_table.size; i++) {
+        udp_table.entries[i].is_filled = false;
     }
     
     //replace this later with node discovery
@@ -1043,6 +1127,55 @@ int main(int argc, char *argv[]) {
     add_ip_table("10",NODE10);
 
     ndn_lite_startup();
+
+    //initializing face_table
+    /*
+    for(int i = 0; i < udp_table.size; i++) {
+        ndn_udp_face_t *face;
+        in_port_t port1, port2;
+        in_addr_t server_ip;
+        char *sz_port1, *sz_port2, *sz_addr;
+        uint32_t ul_port;
+        struct hostent * host_addr;
+        struct in_addr ** paddrs;
+        sz_port1 = "1000";
+        sz_addr = "0.0.0.0";
+        sz_port2 = "1001";
+        host_addr = gethostbyname(sz_addr);
+        paddrs = (struct in_addr **)host_addr->h_addr_list;
+        server_ip = paddrs[0]->s_addr;
+        ul_port = strtoul(sz_port1, NULL, 10);
+        port1 = htons((uint16_t) ul_port);
+        ul_port = strtoul(sz_port2, NULL, 10);
+        port2 = htons((uint16_t) ul_port);
+        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+        udp_table.faces[i] = face;
+    }
+
+    char *check_ip, *check_port_1, *check_port_2;
+    check_ip = malloc(40);
+    check_ip[0] = 0;
+    check_port_1 = malloc(40);
+    check_port_1[0] = 0;
+    check_port_2 = malloc(40);
+    check_port_2[0] = 0;
+    //char buf[INET_ADDRSTRLEN];
+
+    in_addr_t input;
+    int last_face = 0;
+    bool found = false;
+
+    for(int i = 0; i < 5; i++) {
+        //error because of nothing in the table
+        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
+        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
+        printf("IP: %s, ", check_ip);
+        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
+        printf("PORT1: %s, ", check_port_1);
+        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
+        printf("PORT2: %s\n", check_port_2);
+    }
+    */
 
     last_interest = ndn_time_now_ms();
     
@@ -1061,20 +1194,22 @@ int main(int argc, char *argv[]) {
     }
 
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-    // pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
-    // pthread_create(&command_process_thread, NULL, command_process, NULL);
-    running = true;
-    while (running) {
-        if(is_anchor && !ancmt_sent) {
-            //printf("send ancmt called\n");
-            ndn_interest_t interest;
-            flood(interest);
-            ancmt_sent = true;
-        }
+    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    pthread_create(&command_process_thread, NULL, command_process, NULL);
+    pthread_join(forwarding_process_thread, NULL);
+    pthread_join(command_process_thread, NULL);
+    // running = true;
+    // while (running) {
+    //     if(is_anchor && !ancmt_sent) {
+    //         //printf("send ancmt called\n");
+    //         ndn_interest_t interest;
+    //         flood(interest);
+    //         ancmt_sent = true;
+    //     }
         
-        ndn_forwarder_process();
-        usleep(10000);
-    }
+    //     ndn_forwarder_process();
+    //     usleep(10000);
+    // }
 
     return 0;
 }
