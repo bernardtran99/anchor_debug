@@ -1000,7 +1000,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
                 printf("Here\n");
-                ndn_packet_send(&face->intf, encoder.output_value, encoder.offset);
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
                 printf("Here\n");
                 printf("Layer 2 Data Forwarded\n");
 
