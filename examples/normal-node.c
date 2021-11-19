@@ -80,11 +80,18 @@ typedef struct ip_table {
 
 typedef struct udp_face_table_entry {
     ndn_udp_face_t *face_entry;
+    //remote
+    char *ip_string;
+    //local
+    char *port1_string;
+    //remote
+    char *port2_string;
     bool is_filled;
 } udp_face_table_entry_t;
 
 typedef struct udp_face_table {
     int size;
+    int last_udp;
     udp_face_table_entry_t entries[20];
 } udp_face_table_t;
 
@@ -844,6 +851,33 @@ void insert_content_store(ndn_data_t input_data) {
     }
 }
 
+void forward_layer_2_data(char *input_ip, ndn_data_t input_data) {
+    printf("Forwarding Layer 2 Data\n");
+    ndn_data_t data;
+    data = input_data;
+    ndn_name_t prefix_name;
+    ndn_udp_face_t *face;
+    ndn_encoder_t encoder;
+    //char *str = "This is a Layer 2 Data Packet";
+    uint8_t buf[4096];
+
+    char change_num[20] = "";
+    sprintf(change_num, "%d", node_num);
+    char prefix_string[40] = "/l2data/1/";
+    strcat(prefix_string, change_num);
+    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
+    data.name = prefix_name;
+
+    encoder_init(&encoder, buf, 4096);
+    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
+    face = generate_udp_face(input_ip, "6000", "4000");
+    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+
+    send_debug_message("Layer 2 Data Forwarded ; ");
+}
+
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
@@ -965,34 +999,36 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        char change_num[20] = "";
-        sprintf(change_num, "%d", node_num);
-        char prefix_string[40] = "/l2data/1/";
-        strcat(prefix_string, change_num);
-        ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-        data.name = name_prefix;
-
-        encoder_init(&encoder, buf, 4096);
-        ndn_data_tlv_encode_digest_sign(&encoder, &data);
+        // char change_num[20] = "";
+        // sprintf(change_num, "%d", node_num);
+        // char prefix_string[40] = "/l2data/1/";
+        // strcat(prefix_string, change_num);
+        // ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+        // data.name = name_prefix;
+        // encoder_init(&encoder, buf, 4096);
+        // ndn_data_tlv_encode_digest_sign(&encoder, &data);
 
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             if(strcmp(check_string, "l2interest") == 0) {
+                // ndn_udp_face_t *l2_face;
                 l2_face_index = i;
 
                 third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
-                printf("Here\n");
-                face = generate_udp_face(ip_string, "6000", "4000");
-                printf("Here\n");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                printf("Here\n");
-                printf("Layer 2 Data Forwarded\n");
+                forward_layer_2_data(ip_string, data);
 
-                send_debug_message("Layer 2 Data Forwarded ; ");
+                // printf("Here\n");
+                // l2_face = generate_udp_face(ip_string, "6000", "4000");
+                // printf("Here\n");
+                // ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                // printf("Here\n");
+                // printf("Layer 2 Data Forwarded\n");
+
+                // send_debug_message("Layer 2 Data Forwarded ; ");
                 l2_interest_in = true;
             }
         }
@@ -1119,9 +1155,19 @@ int main(int argc, char *argv[]) {
         cs_table.entries[i].is_filled = false;
     }
     udp_table.size = 20;
-    for(int i = 0; i < udp_table.size; i++) {
-        udp_table.entries[i].is_filled = false;
-    }
+    udp_table.last_udp = 0;
+    // for(int i = 0; i < udp_table.size; i++) {
+    //     udp_table.entries[i].is_filled = false;
+    //     udp_table.entries[i].ip_string = malloc(40);
+    //     udp_table.entries[i].ip_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "0.0.0.0";
+    //     udp_table.entries[i].port1_string = malloc(40);
+    //     udp_table.entries[i].port1_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "1000";
+    //     udp_table.entries[i].port2_string = malloc(40);
+    //     udp_table.entries[i].port2_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "1001";
+    // }
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
