@@ -107,6 +107,11 @@ class EchoServerProtocol(asyncio.Protocol):
         if "Is Anchor" in message:
             node_sizes[0] = 1000
             node_colors[0] = 'red'
+        
+        if "Layer 1 Data Sent" in message:
+            node_sizes[node_num-1] = 1000
+            node_colors[node_num-1] = 'yellow'
+            H.remove_edges_from(list(H.edges()))
 
         #have to account for 10
         for i in range(len(strings)):
@@ -134,8 +139,6 @@ class EchoServerProtocol(asyncio.Protocol):
                 G.add_edges_from([(selector, node_num)], color='b', weight = 2)
 
             if "l1data" in strings[i]:
-                node_sizes[9] = 1000
-                node_colors[9] = 'yellow'
                 dash_counter = 0
                 num_buffer = []
                 for e in range(len(chars)):
