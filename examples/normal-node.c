@@ -176,6 +176,7 @@ struct sockaddr_in serv_addr;
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 int ancmt_num = 0;
+int num_gen_faces = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
@@ -663,6 +664,8 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
 //FACE_TABLE_MAX_SIZE = 10
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
+    num_gen_faces++;
+    printf("# of Generated Faces: %d", num_gen_faces);
     ndn_udp_face_t *face;
 
     in_port_t port1, port2;
@@ -993,15 +996,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        char change_num[20] = "";
-        sprintf(change_num, "%d", node_num);
-        char prefix_string[40] = "/l2data/1/";
-        strcat(prefix_string, change_num);
-        ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-        data.name = name_prefix;
-        encoder_init(&encoder, buf, 4096);
-        ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
@@ -1014,7 +1008,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 ip_string = search_ip_table(third_slot);
 
                 //forward_layer_2_data(ip_string, data.content_value, data.content_size);
-
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/1/";
+                printf("Here\n");
+                strcat(prefix_string, change_num);
+                printf("Here\n");
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+                
+                printf("Here\n");
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 printf("Here\n");
                 l2_face = generate_udp_face(ip_string, "6000", "4000");
                 printf("Here\n");
@@ -1150,6 +1155,7 @@ int main(int argc, char *argv[]) {
     }
     udp_table.size = 20;
     udp_table.last_udp = 0;
+
     // for(int i = 0; i < udp_table.size; i++) {
     //     udp_table.entries[i].is_filled = false;
     //     udp_table.entries[i].ip_string = malloc(40);

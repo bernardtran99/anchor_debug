@@ -80,11 +80,18 @@ typedef struct ip_table {
 
 typedef struct udp_face_table_entry {
     ndn_udp_face_t *face_entry;
+    //remote
+    char *ip_string;
+    //local
+    char *port1_string;
+    //remote
+    char *port2_string;
     bool is_filled;
 } udp_face_table_entry_t;
 
 typedef struct udp_face_table {
     int size;
+    int last_udp;
     udp_face_table_entry_t entries[20];
 } udp_face_table_t;
 
@@ -169,10 +176,11 @@ struct sockaddr_in serv_addr;
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 int ancmt_num = 0;
+int num_gen_faces = 0;
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
-int node_num = 6;
+int node_num = 1;
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -185,6 +193,16 @@ int send_debug_message(char *input) {
     //valread = read( sock , buffer, 1024);
     //printf("%s\n",buffer);
     return 0;
+}
+
+int ndn_packet_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size)
+{
+    if (self->state != NDN_FACE_STATE_UP) {
+        printf("Uping Face\n");
+        self->up(self);
+    }
+    printf("Sending Face\n");
+    return self->send(self, packet, size);
 }
 
 void add_ip_table(char *input_num, char *input_ip) {
@@ -276,10 +294,10 @@ void flood(ndn_interest_t interest_pkt) {
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE7, "3000", "5000");
+    face = generate_udp_face(NODE2, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE9, "3000", "5000");
+    face = generate_udp_face(NODE3, "3000", "5000");
     ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
@@ -644,7 +662,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
 
+//FACE_TABLE_MAX_SIZE = 10
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
+    num_gen_faces++;
+    printf("# of Generated Faces: %d", num_gen_faces);
     ndn_udp_face_t *face;
 
     in_port_t port1, port2;
@@ -755,14 +776,14 @@ void populate_incoming_fib() {
     //change NODE(NUM) and face(num)
     //only need to add face for layer 1 incoming
     //DEMO: CHANGE
+    face = generate_udp_face(NODE1, "5000", "3000");
+    face = generate_udp_face(NODE2, "5000", "3000");
     face = generate_udp_face(NODE3, "5000", "3000");
-    face = generate_udp_face(NODE4, "5000", "3000");
-    face = generate_udp_face(NODE7, "6000", "4000");
-    face = generate_udp_face(NODE9, "6000", "4000");
-    register_interest_prefix("/ancmt/1/3");
-    register_interest_prefix("/ancmt/1/4");
-    register_interest_prefix("/l2interest/1/7");
-    register_interest_prefix("/l2interest/1/9");
+    face = generate_udp_face(NODE3, "6000", "4000");
+    face = generate_udp_face(NODE3, "6000", "4000");
+    face = generate_udp_face(NODE3, "6000", "4000");
+    register_interest_prefix("/ancmt/1/1");
+    register_interest_prefix("/l2interest/1/2");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -834,25 +855,29 @@ void insert_content_store(ndn_data_t input_data) {
     }
 }
 
-void forward_layer_2_data(char *input_ip, ndn_data_t input_data) {
+void forward_layer_2_data(char *input_ip, uint8_t *input_content_value, uint32_t input_content_size) {
     printf("Forwarding Layer 2 Data\n");
     ndn_data_t data;
-    data = input_data;
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
-    //char *str = "This is a Layer 2 Data Packet";
+    char *str = "This is a Layer 2 Data Packet";
     uint8_t buf[4096];
 
+    //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
     char prefix_string[40] = "/l2data/1/";
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-    data.name = prefix_name;
 
+    data.name = prefix_name;
+    ndn_data_set_content(&data, input_content_value, input_content_size);
+    ndn_metainfo_init(&data.metainfo);
+    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
     ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
     face = generate_udp_face(input_ip, "6000", "4000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
     printf("Layer 2 Data Forwarded\n");
@@ -971,15 +996,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        char change_num[20] = "";
-        sprintf(change_num, "%d", node_num);
-        char prefix_string[40] = "/l2data/1/";
-        strcat(prefix_string, change_num);
-        ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-        data.name = name_prefix;
-        encoder_init(&encoder, buf, 4096);
-        ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
         for(int i = 0; i < node_anchor_pit.mem; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
@@ -992,7 +1008,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 ip_string = search_ip_table(third_slot);
 
                 //forward_layer_2_data(ip_string, data.content_value, data.content_size);
-
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/1/";
+                printf("Here\n");
+                strcat(prefix_string, change_num);
+                printf("Here\n");
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+                
+                printf("Here\n");
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 printf("Here\n");
                 l2_face = generate_udp_face(ip_string, "6000", "4000");
                 printf("Here\n");
@@ -1010,7 +1037,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         }
     }
 }
-
 
 //interest is saved in pit until put-Data is called
 /*
@@ -1115,6 +1141,8 @@ int main(int argc, char *argv[]) {
     // strcat(temp_message, temp_num);
     // send_debug_message(temp_message);
 
+    ndn_lite_startup();
+
     //init pit
     node_anchor_pit.mem = 20;
     for(int i = 0; i < node_anchor_pit.mem; i++) {
@@ -1126,9 +1154,20 @@ int main(int argc, char *argv[]) {
         cs_table.entries[i].is_filled = false;
     }
     udp_table.size = 20;
-    for(int i = 0; i < udp_table.size; i++) {
-        udp_table.entries[i].is_filled = false;
-    }
+    udp_table.last_udp = 0;
+
+    // for(int i = 0; i < udp_table.size; i++) {
+    //     udp_table.entries[i].is_filled = false;
+    //     udp_table.entries[i].ip_string = malloc(40);
+    //     udp_table.entries[i].ip_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "0.0.0.0";
+    //     udp_table.entries[i].port1_string = malloc(40);
+    //     udp_table.entries[i].port1_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "1000";
+    //     udp_table.entries[i].port2_string = malloc(40);
+    //     udp_table.entries[i].port2_string[0] = 0;
+    //     udp_table.entries[i].ip_string = "1001";
+    // }
     
     //replace this later with node discovery
     add_ip_table("1",NODE1);
@@ -1142,8 +1181,6 @@ int main(int argc, char *argv[]) {
     add_ip_table("9",NODE9);
     add_ip_table("10",NODE10);
 
-    ndn_lite_startup();
-
     //initializing face_table
     /*
     for(int i = 0; i < udp_table.size; i++) {
@@ -1154,6 +1191,7 @@ int main(int argc, char *argv[]) {
         uint32_t ul_port;
         struct hostent * host_addr;
         struct in_addr ** paddrs;
+
         sz_port1 = "1000";
         sz_addr = "0.0.0.0";
         sz_port2 = "1001";
