@@ -540,6 +540,9 @@ char *trimwhitespace(char *str) {
 //non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
+
+    //is prefix ancmt or l2interest
+
     pthread_t layer1;
     //pthread_t per_pub;
     ndn_interest_t interest_pkt;
@@ -824,6 +827,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 }
 
 void insert_content_store(ndn_data_t input_data) {
+    //insert content store checking here
     for(int i = 0; i < cs_table.size; i++) {
         if(cs_table.entries[i].is_filled == false) {
             printf("CONTENT STORE INSERT INDEX: %d\n", i);
@@ -1000,6 +1004,10 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     }
 }
 
+void add_neighbor(int num) {
+
+}
+
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
@@ -1135,6 +1143,10 @@ int main(int argc, char *argv[]) {
     add_ip_table("10",NODE10);
 
     ndn_lite_startup();
+
+    add_neighbor(2);
+    add_neighbor(3);
+    add_neighbor(4);
 
     //initializing face_table
     /*
