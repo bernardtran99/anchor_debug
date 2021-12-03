@@ -283,7 +283,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
-    ndn_udp_face_t *face;[]
+    ndn_udp_face_t *face;
 
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
