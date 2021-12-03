@@ -701,7 +701,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 printf("Already flooded\n");
             }
             else {
-                flood(interest_pkt, (parameters+1));
+                flood(interest_pkt, get_prefix_component(interets_pkt.name, 1));
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
                 if(is_anchor == false) {
