@@ -34,16 +34,16 @@
 
 #define PORT 8888
 #define NODE1 "155.246.44.89"
-#define NODE2 "155.246.215.95"
-#define NODE3 "155.246.202.140"
+#define NODE2 "155.246.215.22"
+#define NODE3 "155.246.202.37"
 #define NODE4 "155.246.216.124"
 #define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.114"
-#define NODE7 "155.246.202.144"
+#define NODE6 "155.246.216.23"
+#define NODE7 "155.246.202.38"
 #define NODE8 "155.246.212.94"
 #define NODE9 "155.246.213.124"
-#define NODE10 "155.246.210.80"
-#define DEBUG "155.246.182.138"
+#define NODE10 "155.246.210.37"
+#define DEBUG "155.246.182.58"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -130,6 +130,7 @@ int time_slice = 3;
 //uint8_t *selector_ptr = selector;
 
 bool stored_selectors[10];
+
 bool delay_start[10];
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
@@ -168,11 +169,18 @@ struct sockaddr_in serv_addr;
 
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
-int ancmt_num = 0;
+//for fill pit to see if max interfaces has been reached for that anchor
+int ancmt_num[10];
 
 //node_num future use for the third slot in prefix
 //DEMO: CHANGE
 int node_num = 1;
+
+//list of neighbor selectors to current node
+int neighbor_list[10];
+
+//list of neighbor nodes that will be flooded to from current node (ancmt only)
+int flood_list[10];
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -185,6 +193,14 @@ int send_debug_message(char *input) {
     //valread = read( sock , buffer, 1024);
     //printf("%s\n",buffer);
     return 0;
+}
+
+void add_neighbor(int neighbor_num) {
+    for(int i = 0; i < sizeof(neighbor_list); i++) {
+        if(neighbor_list[i] == 0) {
+            neighbor_list[i] = neighbor_num;
+        }
+    }
 }
 
 void add_ip_table(char *input_num, char *input_ip) {
@@ -263,7 +279,8 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 //TODO: also fix the fact that normal nodes flood
 
 //may have to use interest as a pointer
-void flood(ndn_interest_t interest_pkt) {
+//flood has to include the anchor prefix for second slot in ancmt packet
+void flood(ndn_interest_t interest_pkt, int received_ancmts[20]) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -271,16 +288,49 @@ void flood(ndn_interest_t interest_pkt) {
 
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char ancmt_string[20] = "/ancmt/1/";
-    strcat(ancmt_string, change_num);
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    //change this to available ancmt prefix
+    // char ancmt_string[20] = "/ancmt/1/";
+    // strcat(ancmt_string, change_num);
+    // ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    char ancmt_string[20] = "/ancmt/";
+
+    if(is_anchor == true) {
+        strcat(ancmt_string, change_num);
+        strcat(ancmt_string, "/");
+        strcat(ancmt_string, change_num);
+        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        
+        for(int i = 0; i < sizeof(neighbor_list); i++) {
+            if(neighbor_list[i] != 0) {
+                char *ip_string = "";
+                ip_string = search_ip_table(neighbor_list[i]);
+                face = generate_udp_face(ip_string, "3000", "5000");
+                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+            }
+        }
+    }
+
+    else {
+        strcat(ancmt_string, second_slot);
+        strcat(ancmt_string, "/");
+        strcat(ancmt_string, change_num);
+        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        for(int i = 0; i < sizeof(neighbor_list); i++) {
+            if(neighbor_list[i] != 0) {
+                char *ip_string = "";
+                ip_string = search_ip_table(neighbor_list[i]);
+                face = generate_udp_face(ip_string, "3000", "5000");
+                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+            }
+        }
+    }
 
     //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE2, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    face = generate_udp_face(NODE3, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // face = generate_udp_face(NODE3, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -801,6 +851,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
+    int anchor_num;
+    anchor_num = atoi(get_prefix_component(interest_pkt, 1););
 
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
         ancmt_num++;
@@ -1004,10 +1056,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     }
 }
 
-void add_neighbor(int num) {
-
-}
-
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
@@ -1144,9 +1192,11 @@ int main(int argc, char *argv[]) {
 
     ndn_lite_startup();
 
-    add_neighbor(2);
-    add_neighbor(3);
-    add_neighbor(4);
+    //This is for adding 2 way neighbors in network
+    //DEMO: CHANGE
+    // add_neighbor(2);
+    // add_neighbor(3);
+    // add_neighbor(4);
 
     //initializing face_table
     /*
@@ -1203,7 +1253,7 @@ int main(int argc, char *argv[]) {
     //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
     //DEMO: CHANGE
     populate_incoming_fib();
-    callback_insert(on_data, fill_pit);
+    callback_insert(on_interest, on_data, fill_pit);
 
     //signature init here
 

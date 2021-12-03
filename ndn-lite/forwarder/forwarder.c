@@ -87,11 +87,13 @@ ndn_forwarder_init(void)
 }
 
 //call once only
-void callback_insert(ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input) {
+void callback_insert(ndn_on_interest_func on_interest_input, ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input) {
   callback_holder_t *ptr = malloc(sizeof(callback_holder_t));
+  ptr->on_interest_func = malloc(sizeof(ndn_on_interest_func));
   ptr->on_data_func = malloc(sizeof(ndn_on_data_func));
   ptr->fill_pit_func = malloc(sizeof(ndn_fill_pit_func));
   holder = ptr;
+  holder->on_interest_func = on_interest_input;
   holder->on_data_func = on_data_input;
   holder->fill_pit_func = fill_pit_input;
 }
@@ -349,9 +351,10 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
   if (type == TLV_Interest) {
     ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
     holder->fill_pit_func(packet, length, input_face);
+    holder->on_interest_func(packet, length, NULL);
     if (ret != NDN_SUCCESS)
       return ret;
-    return fwd_on_incoming_interest(packet, length, &options, name, name_len, face_id);
+    return NDN_SUCCESS;
   }
   else if(type == TLV_Data) {
     ret = tlv_data_get_name(packet, length, &name, &name_len);

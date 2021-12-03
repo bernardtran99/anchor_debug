@@ -77,6 +77,7 @@ typedef void (*ndn_fill_pit_func)(const uint8_t* interest, uint32_t interest_siz
 
 //user added data structure to hold an on-data callback function
 typedef struct callback_holder {
+  ndn_on_interest_func on_interest_func;
   ndn_on_data_func on_data_func;
   ndn_fill_pit_func fill_pit_func;
 } callback_holder_t;
@@ -97,7 +98,7 @@ void
 ndn_forwarder_init(void);
 
 //user added fucntion (btran)
-void callback_insert(ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input);
+void callback_insert(ndn_on_interest_func on_interest_input, ndn_on_data_func on_data_input, ndn_fill_pit_func fill_pit_input);
 
 /** Returns the forwarder as a pointer
  */
