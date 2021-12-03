@@ -577,7 +577,7 @@ void *start_delay(void *arguments) {
     } 
     else {
         //fix this with new flood function
-        flood(args->interest);
+        flood(args->interest, get_prefix_component(args->interest.name, 1));
         did_flood[args->struct_selector] = true;
         if(is_anchor == false) {
             reply_ancmt(get_prefix_component(args->interest.name, 1));
