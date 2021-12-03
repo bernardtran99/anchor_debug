@@ -887,9 +887,9 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     int anchor_num;
     anchor_num = atoi(get_prefix_component(interest_pkt, 1););
 
-    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
-        ancmt_num++;
-        printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
+    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
+        ancmt_num[anchor_num]++;
+        printf("FILL PIT ANCMT NUM: %d\n", ancmt_num[anchor_num]);
 
         entry.face = input_face;
         entry.name_struct = interest_pkt.name;
