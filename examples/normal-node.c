@@ -318,7 +318,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         int received_ancmts[10];
         int next_index = 0;
 
-        for(int i = 0; i < siezof(node_anchor_pit.slots); i++) {
+        for(int i = 0; i < sizeof(node_anchor_pit.slots); i++) {
             char *check_ancmt = "";
             check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             char *second_prefix = "";
@@ -885,7 +885,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
     int anchor_num;
-    anchor_num = atoi(get_prefix_component(interest_pkt, 1););
+    anchor_num = atoi(get_prefix_component(interest_pkt, 1));
 
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
         ancmt_num[anchor_num]++;
