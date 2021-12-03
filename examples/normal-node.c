@@ -299,7 +299,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         strcat(ancmt_string, change_num);
         ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
         
-        for(int i = 0; i < (int)sizeof(neighbor_list); i++) {
+        for(size_t i = 0; i < sizeof(neighbor_list); i++) {
             if(neighbor_list[i] != 0) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
@@ -318,7 +318,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         int received_ancmts[10];
         int next_index = 0;
 
-        for(int i = 0; i < (int)sizeof(node_anchor_pit.slots); i++) {
+        for(size_t i = 0; i < sizeof(node_anchor_pit.slots); i++) {
             char *check_ancmt = "";
             check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             char *second_prefix = "";
@@ -331,9 +331,9 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         }
 
         //this is for flooding to all nodes that are
-        for(int i = 0; i < (int)sizeof(neighbor_list); i++) {
+        for(size_t i = 0; i < sizeof(neighbor_list); i++) {
             bool do_skip = false;
-            for(int j = 0; j < (int)sizeof(received_ancmts); j++) {
+            for(size_t j = 0; j < sizeof(received_ancmts); j++) {
                 if(neighbor_list[i] == received_ancmts[j]) {
                     do_skip = true;
                 }
