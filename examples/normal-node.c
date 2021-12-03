@@ -837,7 +837,7 @@ void populate_incoming_fib() {
     //face = generate(NODE2, "5000", "3000");
     //face = generate(NODE2, "4000", "6000");
     //face = generate(NODE2, "6000", "4000");
-    for(int i = 0; i < (int)sizeof(neighbor_list); i++) {
+    for(size_t i = 0; i < sizeof(neighbor_list); i++) {
         if(neighbor_list[i] != 0) {
             char *ip_num = "";
             search_ip_table(neighbor_list[i]);
