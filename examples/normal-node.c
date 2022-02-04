@@ -85,7 +85,7 @@ typedef struct udp_face_table_entry {
 
 typedef struct udp_face_table {
     int size;
-    udp_face_table_entry_t entries[20];
+    udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
 typedef struct bit_vector {
@@ -1133,7 +1133,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1151,9 +1151,12 @@ void *command_process(void *var) {
                 break;
 
             case 3:
-                printf("Generating Face\n");
-                ndn_udp_face_t *face;
-                face = generate_udp_face("0.0.0.0", "7000", "8000");
+                printf("Check Face Valid\n");
+                //ndn_udp_face_t *face;
+                //face = generate_udp_face("0.0.0.0", "7000", "8000");
+                if(udp_table.entries[30].face_entry == NULL) {
+                    printf("Entry is null\n");
+                }
                 break;
 
             default:
@@ -1216,9 +1219,10 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < cs_table.size; i++) {
         cs_table.entries[i].is_filled = false;
     }
-    udp_table.size = 20;
+    udp_table.size = 40;
     for(int i = 0; i < udp_table.size; i++) {
         udp_table.entries[i].is_filled = false;
+        udp_table.entries[i].face_entry = NULL;
     }
     
     //replace this later with node discovery
@@ -1241,6 +1245,41 @@ int main(int argc, char *argv[]) {
     add_neighbor(5);
     add_neighbor(7);
     add_neighbor(10);
+
+    last_interest = ndn_time_now_ms();
+    
+    //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
+    //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+    populate_incoming_fib();
+    callback_insert(on_interest, on_data, fill_pit);
+
+    //signature init here
+
+    //is_anchor = true;
+    if(is_anchor == true) {
+        send_debug_message("Is Anchor ; ");
+    }
+
+    //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
+    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    pthread_create(&command_process_thread, NULL, command_process, NULL);
+    pthread_join(forwarding_process_thread, NULL);
+    pthread_join(command_process_thread, NULL);
+    // running = true;
+    // while (running) {
+    //     if(is_anchor && !ancmt_sent) {
+    //         //printf("send ancmt called\n");
+    //         ndn_interest_t interest;
+    //         flood(interest);
+    //         ancmt_sent = true;
+    //     }
+        
+    //     ndn_forwarder_process();
+    //     usleep(10000);
+    // }
+
+    return 0;
+}
 
     //initializing face_table
     /*
@@ -1290,38 +1329,3 @@ int main(int argc, char *argv[]) {
         printf("PORT2: %s\n", check_port_2);
     }
     */
-
-    last_interest = ndn_time_now_ms();
-    
-    //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    populate_incoming_fib();
-    callback_insert(on_interest, on_data, fill_pit);
-
-    //signature init here
-
-    //is_anchor = true;
-    if(is_anchor == true) {
-        send_debug_message("Is Anchor ; ");
-    }
-
-    //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
-    pthread_create(&command_process_thread, NULL, command_process, NULL);
-    pthread_join(forwarding_process_thread, NULL);
-    pthread_join(command_process_thread, NULL);
-    // running = true;
-    // while (running) {
-    //     if(is_anchor && !ancmt_sent) {
-    //         //printf("send ancmt called\n");
-    //         ndn_interest_t interest;
-    //         flood(interest);
-    //         ancmt_sent = true;
-    //     }
-        
-    //     ndn_forwarder_process();
-    //     usleep(10000);
-    // }
-
-    return 0;
-}
