@@ -320,7 +320,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         int received_ancmts[10];
         int next_index = 0;
 
-        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0])
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
             char *check_ancmt = "";
             check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
