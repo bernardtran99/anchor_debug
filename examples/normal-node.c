@@ -195,7 +195,6 @@ int send_debug_message(char *input) {
 }
 
 void add_neighbor(int neighbor_num) {
-    //(int)sizeof(neighbor_list)
     size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
     for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] == 0) {
@@ -301,7 +300,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         strcat(ancmt_string, change_num);
         ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
         
-        for(size_t i = 0; i < sizeof(neighbor_list); i++) {
+        size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+        for(size_t i = 0; i < nl_size; i++) {
             if(neighbor_list[i] != 0) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
@@ -320,7 +320,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         int received_ancmts[10];
         int next_index = 0;
 
-        for(size_t i = 0; i < sizeof(node_anchor_pit.slots); i++) {
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0])
+        for(size_t i = 0; i < nap_size; i++) {
             char *check_ancmt = "";
             check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             char *second_prefix = "";
@@ -333,7 +334,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         }
 
         //this is for flooding to all nodes that are
-        for(size_t i = 0; i < sizeof(neighbor_list); i++) {
+        size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+        for(size_t i = 0; i < nl_size; i++) {
             bool do_skip = false;
             for(size_t j = 0; j < sizeof(received_ancmts); j++) {
                 if(neighbor_list[i] == received_ancmts[j]) {
@@ -839,7 +841,8 @@ void populate_incoming_fib() {
     //face = generate(NODE2, "5000", "3000");
     //face = generate(NODE2, "4000", "6000");
     //face = generate(NODE2, "6000", "4000");
-    for(size_t i = 0; i < sizeof(neighbor_list); i++) {
+    size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+    for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] != 0) {
             char *ip_num = "";
             search_ip_table(neighbor_list[i]);
