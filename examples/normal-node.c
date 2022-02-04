@@ -195,7 +195,7 @@ int send_debug_message(char *input) {
 }
 
 void add_neighbor(int neighbor_num) {
-    for(int i = 0; i < (int)sizeof(neighbor_list); i++) {
+    for(int i = 0; i < 10; i++) {
         if(neighbor_list[i] == 0) {
             neighbor_list[i] = neighbor_num;
         }
