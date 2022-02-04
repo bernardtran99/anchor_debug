@@ -656,6 +656,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //selector number
     prefix = get_prefix_component(interest_pkt.name, 1);
     prefix = trimwhitespace(prefix);
+    //parameters is second
     int parameters = (atoi(prefix) - 1);
     printf("SELECTOR: %d\n", parameters);
     printf("STORED SELECTOR: %d\n", stored_selectors[parameters]);
@@ -720,7 +721,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //if l2interest do nothing, fill pi is enough
     else if(strcmp(prefix, "l2interest") == 0) {
-
+        
     }
 
     last_interest = current_time;
@@ -960,9 +961,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
-    int third_slot;
+    
     char *second_slot_anchor = "";
     second_slot_anchor = get_prefix_component(data.name, 1);
+
+    int third_slot;
     
     if(strcmp(first_slot, "l1data") == 0) {
         if(is_anchor) {
