@@ -335,9 +335,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
 
         //this is for flooding to all nodes that are
         size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+        size_t ra_size = sizeof(received_ancmts)/sizeof(received_ancmts[0]);
         for(size_t i = 0; i < nl_size; i++) {
             bool do_skip = false;
-            for(size_t j = 0; j < sizeof(received_ancmts); j++) {
+            for(size_t j = 0; j < ra_size; j++) {
                 if(neighbor_list[i] == received_ancmts[j]) {
                     do_skip = true;
                 }
