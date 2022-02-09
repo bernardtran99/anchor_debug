@@ -521,6 +521,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot) {
 //sends data anchor direction (layer1)
 //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
+//prefix: 
 void generate_data() {
     printf("\nGenerate Layer 1 Data\n");
     ndn_data_t data;
