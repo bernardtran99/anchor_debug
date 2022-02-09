@@ -297,7 +297,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     //if(is_anchor == true) {
     int second_slot_num;
     second_slot_num = atoi(second_slot);
-    if(second_slot_num == anchor_num)
+    if(second_slot_num == anchor_num) {
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -573,6 +573,7 @@ void generate_data() {
 void *start_delay(void *arguments) {
     printf("\nDelay started\n");
     delay_struct_t *args = arguments;
+
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     printf("Delay Time: %d seconds\n", delay/1000000);
@@ -587,7 +588,8 @@ void *start_delay(void *arguments) {
         //fix this with new flood function
         flood(args->interest, get_prefix_component(args->interest.name, 1));
         did_flood[args->struct_selector] = true;
-        if(is_anchor == false) {
+        // if(is_anchor == false) {
+        if(atoi(get_prefix_component(args->interest.name, 1)) != node_num) {
             reply_ancmt(get_prefix_component(args->interest.name, 1));
         }
         //pthread_exit(NULL);
@@ -713,8 +715,9 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 flood(interest_pkt, get_prefix_component(interest_pkt.name, 1));
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                if(is_anchor == false) {
-                    prefix = get_prefix_component(interest_pkt.name, 1);
+                prefix = get_prefix_component(interest_pkt.name, 1);
+                // if(is_anchor == false) {
+                if(atoi(prefix) != node_num) {
                     reply_ancmt(prefix);
                 }
                 //pthread_exit(NULL);
