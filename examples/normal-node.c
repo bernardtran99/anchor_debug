@@ -34,16 +34,16 @@
 
 #define PORT 8888
 #define NODE1 "155.246.44.89"
-#define NODE2 "155.246.215.22"
+#define NODE2 "10.156.90.106"
 #define NODE3 "155.246.202.37"
 #define NODE4 "155.246.216.124"
-#define NODE5 "155.246.203.173"
+#define NODE5 "10.156.90.212"
 #define NODE6 "155.246.216.23"
-#define NODE7 "155.246.202.38"
-#define NODE8 "155.246.212.94"
+#define NODE7 "10.156.90.237"
+#define NODE8 "10.156.90.170"
 #define NODE9 "155.246.213.124"
 #define NODE10 "155.246.210.37"
-#define DEBUG "155.246.182.58"
+#define DEBUG "10.156.90.39"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -294,7 +294,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     // ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
     char ancmt_string[20] = "/ancmt/";
 
-    if(is_anchor == true) {
+    //if(is_anchor == true) {
+    int second_slot_num;
+    second_slot_num = atoi(second_slot);
+    if(second_slot_num == anchor_num)
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
