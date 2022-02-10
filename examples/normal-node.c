@@ -534,7 +534,7 @@ void generate_data() {
     int counter = 0;
     int num_of_anchors = 0;
 
-    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors
+    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors (find all "for(int i = 0; i < node_anchor_pit.mem;")
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
