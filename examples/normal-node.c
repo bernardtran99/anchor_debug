@@ -276,7 +276,6 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 
     return return_string;
 }
-//TODO: also fix the fact that normal nodes flood
 
 //may have to use interest as a pointer
 //flood has to include the anchor prefix for second slot in ancmt packet
@@ -390,7 +389,6 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
 //     //This creates the routes for the interest and sends to nodes
 //     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 //     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-//     //FIXED TODO: Segmentation Fault Here
 //     ndn_interest_from_name(&ancmt, &prefix_name);
 //     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
@@ -411,10 +409,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
 //     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
 //     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
 //     ndn_name_t *self_identity_ptr = storage->self_identity;
-//     //FIXED TODO: segmentation fault here
 //     ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
 //     // encoder_init(&encoder, interest_buf, 4096);
-//     // //FIXED TODO: Segmentation Fault Here
 //     // ndn_interest_tlv_encode(&encoder, &ancmt);
 
 //     //uncomment here to test flood
@@ -451,6 +447,7 @@ void reply_ancmt(char *second_slot) {
     int reply[10];
     int counter = 0;
 
+    //TODO: change all code when we iterate through pi to find ancmts, we aslo 
     for(int i = 0; i < node_anchor_pit.mem; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
@@ -521,7 +518,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot) {
 //sends data anchor direction (layer1)
 //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
-//prefix: 
+//prefix: /l1data/anchor_num/sender_num
 void generate_data() {
     printf("\nGenerate Layer 1 Data\n");
     ndn_data_t data;
@@ -532,6 +529,23 @@ void generate_data() {
     uint8_t buf[4096];
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
+    int reply[10];
+    int anchor_reply_list[10];
+    int counter = 0;
+    int num_of_anchors = 0;
+
+    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors
+    for(int i = 0; i < node_anchor_pit.mem; i++) {
+        char *check_ancmt = "";
+        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+        char *check_ancmt_anchor = "";
+        check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+        if(strcmp(check_ancmt, "ancmt") == 0) {
+            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+            counter++;
+        }
+    }
+
     char change_num[40] = "";
     sprintf(change_num, "%d", node_num);
     char prefix_string[20] = "/l1data/";
@@ -539,18 +553,6 @@ void generate_data() {
     strcat(prefix_string, "/");
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
-    int reply[10];
-    int counter = 0;
-
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
-        char *check_ancmt = "";
-        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        if(strcmp(check_ancmt, "ancmt") == 0){
-            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-            counter++;
-        }
-    }
 
     srand(time(0));
     int rand_num = rand() % counter;
@@ -680,7 +682,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
-    //TODO: fix time to coorespond to last ancmt timestamp, fix timestamp in general
+    //TODO: fix time to correspond to last ancmt timestamp, fix timestamp in general
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
 
     //should be first slot in prefix
