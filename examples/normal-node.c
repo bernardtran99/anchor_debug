@@ -58,7 +58,6 @@ typedef struct anchor_pit_entry {
     char *prefix;
     ndn_face_intf_t *face;
     ndn_udp_face_t *udp_face;
-    bool rand_flag;
 } anchor_pit_entry_t;
 
 //for linking prefixes to a specific face
@@ -83,7 +82,6 @@ typedef struct udp_face_table_entry {
 } udp_face_table_entry_t;
 
 typedef struct udp_face_table {
-    int size;
     udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
@@ -192,6 +190,7 @@ int send_debug_message(char *input) {
     return 0;
 }
 
+//used to add to neighbor_list
 void add_neighbor(int neighbor_num) {
     size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
     for(size_t i = 0; i < nl_size; i++) {
@@ -201,22 +200,27 @@ void add_neighbor(int neighbor_num) {
     }
 }
 
+//adds IP constants to table for search_ip_table
 void add_ip_table(char *input_num, char *input_ip) {
     int num;
     num = atoi(input_num);
+    //entries[0] = Node 1
     ip_list.entries[num-1].node_num = input_num;
     ip_list.entries[num-1].ip_address = input_ip;
 }
 
+//used to find ip linked to node number
 char *search_ip_table(int input_num) {
     printf("Search IP Table\n");
     char *return_var = "";
     printf("SEARCH INDEX: %d\n", input_num);
+    //does not have to search through arrat of ip_list.entries, index of array = node_num-1
     return_var = ip_list.entries[input_num-1].ip_address;
     printf("RETURN IP: %s\n", return_var);
     return return_var;
 }
 
+//not used
 //inet ntoa
 char *get_ip_address_string(ndn_udp_face_t *input_face) {
     char *output = "";
@@ -226,6 +230,7 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
     return output;
 }
 
+//gets first slot
 char *get_string_prefix(ndn_name_t input_name) {
     char *return_string;
     return_string = malloc(40); 
@@ -253,6 +258,7 @@ char *get_string_prefix(ndn_name_t input_name) {
     return return_string;
 }
 
+//gets prefix slot of input
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
     char *return_string;
@@ -294,7 +300,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     //if(is_anchor == true) {
     int second_slot_num;
     second_slot_num = atoi(second_slot);
-    if(second_slot_num == anchor_num) {
+    if(second_slot_num == node_num) {
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -446,6 +452,7 @@ void reply_ancmt(char *second_slot) {
     int counter = 0;
 
     //TODO: change all code when we iterate through pi to find ancmts
+    //change to only send ancmts from second_slot input
     size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
     for(size_t i = 0; i < nap_size; i++) {
         char *check_ancmt = "";
@@ -527,48 +534,53 @@ void generate_data() {
     char *str = "This is a Layer 1 Data Packet";
     uint8_t buf[4096];
 
-    //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    int reply[10];
-    int anchor_reply_list[10];
-    int counter = 0;
-    int num_of_anchors = 0;
+    //iterate through all anchors that sent ancmts
+    for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
+        if(ancmt_num[j] != 0) {
 
-    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors)
-    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
-    for(size_t i = 0; i < nap_size; i++) {
-        char *check_ancmt = "";
-        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        char *check_ancmt_anchor = "";
-        check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-        if(strcmp(check_ancmt, "ancmt") == 0) {
-            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-            counter++;
+            int reply[10];
+            int counter = 0;
+            //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
+
+            //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors)
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
+                char *check_ancmt = "";
+                check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
+                    reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                    counter++;
+                }
+            }
+
+            char change_num[40] = "";
+            sprintf(change_num, "%d", node_num);
+            char prefix_string[20] = "/l1data/";
+            strcat(prefix_string, change_num);
+            strcat(prefix_string, "/");
+            strcat(prefix_string, change_num);
+            ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
+            srand(time(0));
+            int rand_num = rand() % counter;
+
+            char *ip_string;
+            ip_string = search_ip_table(reply[rand_num]);
+
+            data.name = prefix_name;
+            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+            ndn_metainfo_init(&data.metainfo);
+            ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+            encoder_init(&encoder, buf, 4096);
+            ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
+            face = generate_udp_face(ip_string, "5000", "3000");
+            ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+
         }
     }
-
-    char change_num[40] = "";
-    sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l1data/";
-    strcat(prefix_string, change_num);
-    strcat(prefix_string, "/");
-    strcat(prefix_string, change_num);
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
-    srand(time(0));
-    int rand_num = rand() % counter;
-
-    char *ip_string;
-    ip_string = search_ip_table(reply[rand_num]);
-
-    data.name = prefix_name;
-    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-    ndn_metainfo_init(&data.metainfo);
-    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-    encoder_init(&encoder, buf, 4096);
-    ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
-    face = generate_udp_face(ip_string, "5000", "3000");
-    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
     send_debug_message("Layer 1 Data Sent ; ");
 }
@@ -614,18 +626,6 @@ char *trimwhitespace(char *str) {
 
     return str;
 }
-
-// void periodic_publish(int times) {
-//     int num_pub = 1;
-//     while(num_pub <= times) {
-//         clock_t timer = clock();
-//         while (clock() < (timer + 6000000)) {
-//         }
-//         //printf("Publish Times: %d", num_pub);
-//         generate_data();
-//         num_pub++;
-//     }
-// }
 
 //is this threaded, if so, then
 //non zero chance of flooding twice due to multithreading
@@ -872,6 +872,8 @@ void populate_incoming_fib() {
 //look at udp face code to see if we can change it 
 
 void insert_entry(anchor_pit_entry_t entry) {
+    //TODO: use static variable to store last index so that we do not have to search through array every single time we want to insert into array
+    //increment static variable by 1 every time we want to insert into array for next tie
     int entry_pos;
     size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
     for(size_t i = 0; i < nap_size; i++) {
@@ -902,7 +904,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
     int anchor_num;
-    anchor_num = atoi(get_prefix_component(interest_pkt.name, 1));
+    //node 1 = ancmt_num[0]
+    anchor_num = atoi(get_prefix_component(interest_pkt.name, 1)) - 1;
 
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
         ancmt_num[anchor_num]++;
@@ -1236,7 +1239,6 @@ int main(int argc, char *argv[]) {
     size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
     for(size_t i = 0; i < nap_size; i++) {
         node_anchor_pit.slots[i].prefix = "";
-        node_anchor_pit.slots[i].rand_flag = false;
     }
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
