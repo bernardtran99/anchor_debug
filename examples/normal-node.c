@@ -64,7 +64,6 @@ typedef struct anchor_pit_entry {
 //for linking prefixes to a specific face
 typedef struct anchor_pit {
     //change size to be more dynamic when iterating through array
-    int mem;
     anchor_pit_entry_t slots[20];
 } anchor_pit_t;
 
@@ -98,7 +97,6 @@ typedef struct content_store_entry {
 } content_store_entry_t;
 
 typedef struct content_store {
-    int size;
     content_store_entry_t entries[20];
 } content_store_t;
 
@@ -447,8 +445,9 @@ void reply_ancmt(char *second_slot) {
     int reply[10];
     int counter = 0;
 
-    //TODO: change all code when we iterate through pi to find ancmts, we aslo 
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    //TODO: change all code when we iterate through pi to find ancmts
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         if(strcmp(check_ancmt, "ancmt") == 0){
@@ -534,8 +533,9 @@ void generate_data() {
     int counter = 0;
     int num_of_anchors = 0;
 
-    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors (find all "for(int i = 0; i < node_anchor_pit.mem;")
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors)
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         char *check_ancmt_anchor = "";
@@ -873,7 +873,8 @@ void populate_incoming_fib() {
 
 void insert_entry(anchor_pit_entry_t entry) {
     int entry_pos;
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
             printf("Inserted Entry at POS: %d\n", i);
             entry_pos = i;
@@ -929,7 +930,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
 void insert_content_store(ndn_data_t input_data) {
     //insert content store checking here
-    for(int i = 0; i < cs_table.size; i++) {
+    size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
+    for(size_t i = 0; i < cs_size; i++) {
         if(cs_table.entries[i].is_filled == false) {
             printf("CONTENT STORE INSERT INDEX: %d\n", i);
             cs_table.entries[i].data_pkt = input_data;
@@ -982,7 +984,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             int l2_face_index;
             bool l2_interest_in = false;
 
-            for(int i = 0; i < node_anchor_pit.mem; i++) {
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
                 char *check_string = "";
                 check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 if(strcmp(check_string, "l2interest") == 0) {
@@ -1013,7 +1016,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             int counter = 0;
             bool ancmt_in = false;
 
-            for(int i = 0; i < node_anchor_pit.mem; i++) {
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
                 char *check_ancmt = "";
                 check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 if(strcmp(check_ancmt, "ancmt") == 0) {
@@ -1066,7 +1070,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        for(int i = 0; i < node_anchor_pit.mem; i++) {
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+        for(size_t i = 0; i < nap_size; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             if(strcmp(check_string, "l2interest") == 0) {
@@ -1228,17 +1233,17 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    node_anchor_pit.mem = 20;
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         node_anchor_pit.slots[i].prefix = "";
         node_anchor_pit.slots[i].rand_flag = false;
     }
-    cs_table.size = 20;
-    for(int i = 0; i < cs_table.size; i++) {
+    size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
+    for(size_t i = 0; i < cs_size; i++) {
         cs_table.entries[i].is_filled = false;
     }
-    udp_table.size = 40;
-    for(int i = 0; i < udp_table.size; i++) {
+    size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
+    for(size_t i = 0; i < udp_table_size; i++) {
         udp_table.entries[i].is_filled = false;
         udp_table.entries[i].face_entry = NULL;
     }
@@ -1258,7 +1263,7 @@ int main(int argc, char *argv[]) {
     ndn_lite_startup();
 
     //This is for adding 2 way neighbors in network
-    //DEMO: CHANGE
+    //DEMO: CHANGE  
     node_num = 1;
     add_neighbor(5);
     add_neighbor(7);
