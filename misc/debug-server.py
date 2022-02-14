@@ -104,77 +104,79 @@ class EchoServerProtocol(asyncio.Protocol):
         node_num = ipDict[node_ip]
         print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
-        if "Is Anchor" in message:
-            node_sizes[0] = 1000
-            node_colors[0] = 'red'
+        # if "Is Anchor" in message:
+        #     node_sizes[0] = 1000
+        #     node_colors[0] = 'red'
         
-        if "Clear Graph" in message:
-            node_sizes[node_num-1] = 1000
-            node_colors[node_num-1] = 'yellow'
-            H.remove_edges_from(list(H.edges()))
+        # if "Clear Graph" in message:
+        #     node_sizes[node_num-1] = 1000
+        #     node_colors[node_num-1] = 'yellow'
+        #     H.remove_edges_from(list(H.edges()))
 
-        #have to account for 10
-        for i in range(len(strings)):
-            chars = split_chars(strings[i])
-            if "ancmt" in strings[i]:
-                dash_counter = 0
-                num_buffer = []
-                for e in range(len(chars)):
-                    if dash_counter == 3:
-                        num_buffer.append(chars[e])
-                    if chars[e] == "/":
-                        dash_counter += 1
-                selector = int(''.join(num_buffer))
-                G.add_edges_from([(selector, node_num)], color='r', weight = 2)
+        # #have to account for 10
+        # for i in range(len(strings)):
+        #     chars = split_chars(strings[i])
+        #     if "ancmt" in strings[i]:
+        #         dash_counter = 0
+        #         num_buffer = []
+        #         for e in range(len(chars)):
+        #             if dash_counter == 3:
+        #                 num_buffer.append(chars[e])
+        #             if chars[e] == "/":
+        #                 dash_counter += 1
+        #         selector = int(''.join(num_buffer))
+        #         G.add_edges_from([(selector, node_num)], color='r', weight = 2)
                     
-            if "l2interest" in strings[i]:
-                dash_counter = 0
-                num_buffer = []
-                for e in range(len(chars)):
-                    if dash_counter == 3:
-                        num_buffer.append(chars[e])
-                    if chars[e] == "/":
-                        dash_counter += 1
-                selector = int(''.join(num_buffer))
-                G.add_edges_from([(selector, node_num)], color='b', weight = 2)
+        #     if "l2interest" in strings[i]:
+        #         dash_counter = 0
+        #         num_buffer = []
+        #         for e in range(len(chars)):
+        #             if dash_counter == 3:
+        #                 num_buffer.append(chars[e])
+        #             if chars[e] == "/":
+        #                 dash_counter += 1
+        #         selector = int(''.join(num_buffer))
+        #         G.add_edges_from([(selector, node_num)], color='b', weight = 2)
 
-            if "l1data" in strings[i]:
-                dash_counter = 0
-                num_buffer = []
-                for e in range(len(chars)):
-                    if dash_counter == 3:
-                        num_buffer.append(chars[e])
-                    if chars[e] == "/":
-                        dash_counter += 1
-                selector = int(''.join(num_buffer))
-                H.add_edges_from([(selector, node_num)], color='green', weight = 2)
+        #     if "l1data" in strings[i]:
+        #         dash_counter = 0
+        #         num_buffer = []
+        #         for e in range(len(chars)):
+        #             if dash_counter == 3:
+        #                 num_buffer.append(chars[e])
+        #             if chars[e] == "/":
+        #                 dash_counter += 1
+        #         selector = int(''.join(num_buffer))
+        #         H.add_edges_from([(selector, node_num)], color='green', weight = 2)
 
-            if "l2data" in strings[i]:
-                dash_counter = 0
-                num_buffer = []
-                for e in range(len(chars)):
-                    if dash_counter == 3:
-                        num_buffer.append(chars[e])
-                    if chars[e] == "/":
-                        dash_counter += 1
-                selector = int(''.join(num_buffer))
-                H.add_edges_from([(selector, node_num)], color='purple', weight = 2)
+        #     if "l2data" in strings[i]:
+        #         dash_counter = 0
+        #         num_buffer = []
+        #         for e in range(len(chars)):
+        #             if dash_counter == 3:
+        #                 num_buffer.append(chars[e])
+        #             if chars[e] == "/":
+        #                 dash_counter += 1
+        #         selector = int(''.join(num_buffer))
+        #         H.add_edges_from([(selector, node_num)], color='purple', weight = 2)
                 
-        #print(edges)
-        colors = list(nx.get_edge_attributes(G,'color').values())
-        weights = list(nx.get_edge_attributes(G,'weight').values())
-        colors_data = list(nx.get_edge_attributes(H,'color').values())
-        weights_data = list(nx.get_edge_attributes(H,'weight').values())
-        # print(colors)
-        # print(weights)
-        plt.clf()
-        plt.title(graph_title)
-        plt.figure(1)
-        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.figure(2)
-        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.show(block=False)
-        plt.pause(0.000001)
+        # #print(edges)
+        # colors = list(nx.get_edge_attributes(G,'color').values())
+        # weights = list(nx.get_edge_attributes(G,'weight').values())
+        # colors_data = list(nx.get_edge_attributes(H,'color').values())
+        # weights_data = list(nx.get_edge_attributes(H,'weight').values())
+        # # print(colors)
+        # # print(weights)
+        # plt.clf()
+        # plt.title(graph_title)
+        # plt.figure(1)
+        # nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.figure(2)
+        # nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.show(block=False)
+        # plt.pause(0.000001)
+
+        #-------------------------------------------------------------------------
         
         # if "Is Anchor" in message:
         #     node_sizes[0] = 1000
