@@ -460,7 +460,7 @@ void reply_ancmt(char *second_slot) {
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
         char *check_ancmt_anchor = "";
         check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-        if(strcmp(check_ancmt, "ancmt" && atoi(check_ancmt_anchor) == atoi(second_slot)) == 0) {
+        if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot)) {
             reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
             counter++;
         }
@@ -1030,7 +1030,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             for(size_t i = 0; i < nap_size; i++) {
                 char *check_ancmt = "";
                 check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                if(strcmp(check_ancmt, "ancmt") == 0) {
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot)) {
                     reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     counter++;
                     ancmt_in = true;
@@ -1084,7 +1086,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         for(size_t i = 0; i < nap_size; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-            if(strcmp(check_string, "l2interest") == 0) {
+            char *check_anchor = "";
+            check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+            if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
                 l2_face_index = i;
 
                 third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
