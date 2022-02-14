@@ -1154,16 +1154,16 @@ void select_anchor() {
 void *forwarding_process(void *var) {
     running = true;
     while (running) {
-        if(is_anchor && !ancmt_sent) {
-            //printf("send ancmt called\n");
-            ndn_interest_t interest;
-            char *temp_char;
-            temp_char = malloc(10);
-            temp_char[0] = 0;
-            sprintf(temp_char, "%d", node_num);
-            flood(interest, temp_char);
-            ancmt_sent = true;
-        }
+        // if(is_anchor && !ancmt_sent) {
+        //     //printf("send ancmt called\n");
+        //     ndn_interest_t interest;
+        //     char *temp_char;
+        //     temp_char = malloc(10);
+        //     temp_char[0] = 0;
+        //     sprintf(temp_char, "%d", node_num);
+        //     flood(interest, temp_char);
+        //     ancmt_sent = true;
+        // }
         ndn_forwarder_process();
         usleep(10000);
     }
@@ -1172,7 +1172,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n3: Flood To Neighbors\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1197,6 +1197,19 @@ void *command_process(void *var) {
                     printf("Entry is null\n");
                 }
                 break;
+
+            case 4:
+                printf("Anchor init flooding");
+                // if(is_anchor && !ancmt_sent) {
+                    //printf("send ancmt called\n");
+                    ndn_interest_t interest;
+                    char *temp_char;
+                    temp_char = malloc(10);
+                    temp_char[0] = 0;
+                    sprintf(temp_char, "%d", node_num);
+                    flood(interest, temp_char);
+                    // ancmt_sent = true;
+                // }
 
             default:
                 printf("Invalid Input\n");
@@ -1279,10 +1292,9 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE  
-    node_num = 7;
+    node_num = 1;
     add_neighbor(2);
     add_neighbor(8);
-
 
     last_interest = ndn_time_now_ms();
     
