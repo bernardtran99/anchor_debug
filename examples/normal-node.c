@@ -300,6 +300,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     //if(is_anchor == true) {
     int second_slot_num;
     second_slot_num = atoi(second_slot);
+
     if(second_slot_num == node_num) {
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
@@ -457,7 +458,9 @@ void reply_ancmt(char *second_slot) {
     for(size_t i = 0; i < nap_size; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        if(strcmp(check_ancmt, "ancmt") == 0){
+        char *check_ancmt_anchor = "";
+        check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+        if(strcmp(check_ancmt, "ancmt" && atoi(check_ancmt_anchor) == atoi(second_slot)) == 0) {
             reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
             counter++;
         }
@@ -555,12 +558,16 @@ void generate_data() {
                 }
             }
 
-            char change_num[40] = "";
-            sprintf(change_num, "%d", node_num);
+            char local_num[40] = "";
+            sprintf(local_num, "%d", node_num);
+            char dest_num[40] = "";
+            sprintf(dest_num, "%d", (j+1));
             char prefix_string[20] = "/l1data/";
-            strcat(prefix_string, change_num);
+            strcat(prefix_string, dest_num);
             strcat(prefix_string, "/");
-            strcat(prefix_string, change_num);
+            strcat(prefix_string, local_num);
+            strcat(prefix_string, "/");
+            strcat(prefix_string, local_num);
             ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
             srand(time(0));
