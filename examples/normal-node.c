@@ -989,7 +989,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     int third_slot;
     
     if(strcmp(first_slot, "l1data") == 0) {
-        if(is_anchor) {
+        if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
             int l2_face_index;
             bool l2_interest_in = false;
@@ -998,7 +998,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             for(size_t i = 0; i < nap_size; i++) {
                 char *check_string = "";
                 check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                if(strcmp(check_string, "l2interest") == 0) {
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_string, "l2interest") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot_anchor)) {
                     l2_face_index = i;
 
                     third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
@@ -1032,7 +1034,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
                 char *check_ancmt_anchor = "";
                 check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot)) {
+                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot_anchor)) {
                     reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     counter++;
                     ancmt_in = true;
