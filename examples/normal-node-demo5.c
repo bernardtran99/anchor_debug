@@ -196,6 +196,7 @@ void add_neighbor(int neighbor_num) {
     for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] == 0) {
             neighbor_list[i] = neighbor_num;
+            break;
         }
     }
 }
@@ -302,6 +303,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     second_slot_num = atoi(second_slot);
 
     if(second_slot_num == node_num) {
+        printf("Anchor Flood\n");
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -319,6 +321,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     }
 
     else {
+        printf("Normal Flood\n");
         strcat(ancmt_string, second_slot);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -1172,7 +1175,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n3: Flood To Neighbors\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {

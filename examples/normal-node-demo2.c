@@ -303,7 +303,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     second_slot_num = atoi(second_slot);
 
     if(second_slot_num == node_num) {
-        printf("Anchor flood\n");
+        printf("Anchor Flood\n");
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -312,7 +312,6 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
         for(size_t i = 0; i < nl_size; i++) {
             if(neighbor_list[i] != 0) {
-                printf("Iteration: %d\n",i);
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
                 face = generate_udp_face(ip_string, "3000", "5000");
@@ -322,7 +321,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     }
 
     else {
-        printf("Normal flood\n");
+        printf("Normal Flood\n");
         strcat(ancmt_string, second_slot);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -362,7 +361,6 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
             }
         }
     }
-    printf("exit loops\n");
 
     // face = generate_udp_face(NODE2, "3000", "5000");
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
@@ -1177,7 +1175,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n3: Flood To Neighbors\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
