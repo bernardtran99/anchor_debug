@@ -43,7 +43,7 @@
 #define NODE8 "10.156.90.170"
 #define NODE9 "155.246.213.124"
 #define NODE10 "155.246.210.37"
-#define DEBUG "10.156.69.121"
+#define DEBUG "10.156.83.194"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -1292,9 +1292,9 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE  
-    node_num = 1;
-    add_neighbor(2);
-    add_neighbor(8);
+    node_num = 8;
+    add_neighbor(5);
+    add_neighbor(7);
 
     last_interest = ndn_time_now_ms();
     

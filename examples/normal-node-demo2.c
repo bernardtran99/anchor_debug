@@ -43,7 +43,7 @@
 #define NODE8 "10.156.90.170"
 #define NODE9 "155.246.213.124"
 #define NODE10 "155.246.210.37"
-#define DEBUG "10.156.69.121"
+#define DEBUG "10.156.83.194"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -864,6 +864,7 @@ void populate_incoming_fib() {
         if(neighbor_list[i] != 0) {
             char *ip_num = "";
             search_ip_table(neighbor_list[i]);
+            printf("good\n");
             face = generate_udp_face(ip_num, "3000", "5000");
             face = generate_udp_face(ip_num, "5000", "3000");
             face = generate_udp_face(ip_num, "4000", "6000");
