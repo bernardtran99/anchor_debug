@@ -863,7 +863,7 @@ void populate_incoming_fib() {
     for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] != 0) {
             char *ip_num = "";
-            search_ip_table(neighbor_list[i]);
+            ip_num = search_ip_table(neighbor_list[i]);
             printf("good\n");
             face = generate_udp_face(ip_num, "3000", "5000");
             printf("good\n");
