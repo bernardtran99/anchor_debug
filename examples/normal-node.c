@@ -303,6 +303,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     second_slot_num = atoi(second_slot);
 
     if(second_slot_num == node_num) {
+        printf("Anchor Flood\n");
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
@@ -320,6 +321,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     }
 
     else {
+        printf("Normal Flood\n");
         strcat(ancmt_string, second_slot);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
