@@ -33,17 +33,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "155.246.44.89"
-#define NODE2 "155.246.215.95"
-#define NODE3 "155.246.202.140"
-#define NODE4 "155.246.216.124"
-#define NODE5 "155.246.203.173"
-#define NODE6 "155.246.216.114"
-#define NODE7 "155.246.202.144"
-#define NODE8 "155.246.212.94"
-#define NODE9 "155.246.213.124"
-#define NODE10 "155.246.210.80"
-#define DEBUG "155.246.182.138"
+#define NODE1 "10.156.89.148"
+#define NODE2 "10.156.90.106"
+#define NODE3 "10.156.91.124"
+#define NODE4 "10.156.91.214"
+#define NODE5 "10.156.90.212"
+#define NODE6 "10.156.91.246"
+#define NODE7 "10.156.90.237"
+#define NODE8 "10.156.90.170"
+#define NODE9 "10.156.92.6"
+#define NODE10 "10.156.91.67"
+#define DEBUG "10.156.84.156"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -58,13 +58,11 @@ typedef struct anchor_pit_entry {
     char *prefix;
     ndn_face_intf_t *face;
     ndn_udp_face_t *udp_face;
-    bool rand_flag;
 } anchor_pit_entry_t;
 
 //for linking prefixes to a specific face
 typedef struct anchor_pit {
     //change size to be more dynamic when iterating through array
-    int mem;
     anchor_pit_entry_t slots[20];
 } anchor_pit_t;
 
@@ -84,8 +82,7 @@ typedef struct udp_face_table_entry {
 } udp_face_table_entry_t;
 
 typedef struct udp_face_table {
-    int size;
-    udp_face_table_entry_t entries[20];
+    udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
 typedef struct bit_vector {
@@ -98,7 +95,6 @@ typedef struct content_store_entry {
 } content_store_entry_t;
 
 typedef struct content_store {
-    int size;
     content_store_entry_t entries[20];
 } content_store_t;
 
@@ -130,6 +126,7 @@ int time_slice = 3;
 //uint8_t *selector_ptr = selector;
 
 bool stored_selectors[10];
+
 bool delay_start[10];
 //set array for multiple anchors for anchor/selector 1 - 10
 int interface_num[10];
@@ -168,11 +165,17 @@ struct sockaddr_in serv_addr;
 
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
-int ancmt_num = 0;
+//for fill pit to see if max interfaces has been reached for that anchor
+int ancmt_num[10];
 
 //node_num future use for the third slot in prefix
-//DEMO: CHANGE
 int node_num = 1;
+
+//list of neighbor selectors to current node
+int neighbor_list[10];
+
+//list of neighbor nodes that will be flooded to from current node (ancmt only)
+int flood_list[10];
 
 int send_debug_message(char *input) {
     char *debug_message;
@@ -187,22 +190,38 @@ int send_debug_message(char *input) {
     return 0;
 }
 
+//used to add to neighbor_list
+void add_neighbor(int neighbor_num) {
+    size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+    for(size_t i = 0; i < nl_size; i++) {
+        if(neighbor_list[i] == 0) {
+            neighbor_list[i] = neighbor_num;
+            break;
+        }
+    }
+}
+
+//adds IP constants to table for search_ip_table
 void add_ip_table(char *input_num, char *input_ip) {
     int num;
     num = atoi(input_num);
+    //entries[0] = Node 1
     ip_list.entries[num-1].node_num = input_num;
     ip_list.entries[num-1].ip_address = input_ip;
 }
 
+//used to find ip linked to node number
 char *search_ip_table(int input_num) {
     printf("Search IP Table\n");
     char *return_var = "";
     printf("SEARCH INDEX: %d\n", input_num);
+    //does not have to search through arrat of ip_list.entries, index of array = node_num-1
     return_var = ip_list.entries[input_num-1].ip_address;
     printf("RETURN IP: %s\n", return_var);
     return return_var;
 }
 
+//not used
 //inet ntoa
 char *get_ip_address_string(ndn_udp_face_t *input_face) {
     char *output = "";
@@ -212,6 +231,7 @@ char *get_ip_address_string(ndn_udp_face_t *input_face) {
     return output;
 }
 
+//gets first slot
 char *get_string_prefix(ndn_name_t input_name) {
     char *return_string;
     return_string = malloc(40); 
@@ -239,6 +259,7 @@ char *get_string_prefix(ndn_name_t input_name) {
     return return_string;
 }
 
+//gets prefix slot of input
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
     printf("Get Prefix Component %d\n",num_input);
     char *return_string;
@@ -260,10 +281,10 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 
     return return_string;
 }
-//TODO: also fix the fact that normal nodes flood
 
 //may have to use interest as a pointer
-void flood(ndn_interest_t interest_pkt) {
+//flood has to include the anchor prefix for second slot in ancmt packet
+void flood(ndn_interest_t interest_pkt, char *second_slot) {
     printf("\nFlooding\n");
     ndn_interest_t interest;
     ndn_name_t prefix_name;
@@ -271,16 +292,81 @@ void flood(ndn_interest_t interest_pkt) {
 
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char ancmt_string[20] = "/ancmt/1/";
-    strcat(ancmt_string, change_num);
-    ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    //change this to available ancmt prefix
+    // char ancmt_string[20] = "/ancmt/1/";
+    // strcat(ancmt_string, change_num);
+    // ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    char ancmt_string[20] = "/ancmt/";
 
-    //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    //if(is_anchor == true) {
+    int second_slot_num;
+    second_slot_num = atoi(second_slot);
 
-    face = generate_udp_face(NODE3, "3000", "5000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    if(second_slot_num == node_num) {
+        printf("Anchor Flood\n");
+        strcat(ancmt_string, change_num);
+        strcat(ancmt_string, "/");
+        strcat(ancmt_string, change_num);
+        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        
+        size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+        for(size_t i = 0; i < nl_size; i++) {
+            if(neighbor_list[i] != 0) {
+                char *ip_string = "";
+                ip_string = search_ip_table(neighbor_list[i]);
+                face = generate_udp_face(ip_string, "3000", "5000");
+                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+            }
+        }
+    }
+
+    else {
+        printf("Normal Flood\n");
+        strcat(ancmt_string, second_slot);
+        strcat(ancmt_string, "/");
+        strcat(ancmt_string, change_num);
+        ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+
+        int received_ancmts[10];
+        int next_index = 0;
+
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+        for(size_t i = 0; i < nap_size; i++) {
+            char *check_ancmt = "";
+            check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+            char *second_prefix = "";
+            second_prefix = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+            //if pit prefix is ancmt and the entry has the same anchor selector as the function that is calling flood then add to recieved ancmts to flood
+            if(strcmp(check_ancmt, "ancmt") == 0 && strcmp(second_prefix, second_slot) == 0) {
+                received_ancmts[next_index] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                next_index++;
+            }
+        }
+
+        //this is for flooding to all nodes that are
+        size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+        size_t ra_size = sizeof(received_ancmts)/sizeof(received_ancmts[0]);
+        for(size_t i = 0; i < nl_size; i++) {
+            bool do_skip = false;
+            for(size_t j = 0; j < ra_size; j++) {
+                if(neighbor_list[i] == received_ancmts[j]) {
+                    do_skip = true;
+                }
+            }
+            if(do_skip == false) {
+                char *ip_string = "";
+                ip_string = search_ip_table(neighbor_list[i]);
+                face = generate_udp_face(ip_string, "3000", "5000");
+                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+            }
+        }
+    }
+
+    // face = generate_udp_face(NODE2, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+
+    // face = generate_udp_face(NODE3, "3000", "5000");
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     ndn_interest_from_name(&interest, &prefix_name);
     ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -311,7 +397,6 @@ void flood(ndn_interest_t interest_pkt) {
 //     //This creates the routes for the interest and sends to nodes
 //     //ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 //     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-//     //FIXED TODO: Segmentation Fault Here
 //     ndn_interest_from_name(&ancmt, &prefix_name);
 //     //ndn_forwarder_express_interest_struct(&interest, on_data, on_timeout, NULL);
 
@@ -332,10 +417,8 @@ void flood(ndn_interest_t interest_pkt) {
 //     ndn_ecc_prv_init(ecc_secp256r1_prv_key, secp256r1_prv_key_str, sizeof(secp256r1_prv_key_str), NDN_ECDSA_CURVE_SECP256R1, 0);
 //     ndn_key_storage_t *storage = ndn_key_storage_get_instance();
 //     ndn_name_t *self_identity_ptr = storage->self_identity;
-//     //FIXED TODO: segmentation fault here
 //     ndn_signed_interest_ecdsa_sign(&ancmt, self_identity_ptr, ecc_secp256r1_prv_key);
 //     // encoder_init(&encoder, interest_buf, 4096);
-//     // //FIXED TODO: Segmentation Fault Here
 //     // ndn_interest_tlv_encode(&encoder, &ancmt);
 
 //     //uncomment here to test flood
@@ -366,16 +449,21 @@ bool verify_interest(ndn_interest_t *interest) {
 
 //reply ancmt not used by anchor nodes so add if statement in flood statements to account for this
 //only reply acnmt if anchor when receiveing from another anchor in the network
-void reply_ancmt() {
+void reply_ancmt(char *second_slot) {
     //send_debug_message("Announcent Reply Sent");
     printf("\nReply Ancmt...\n");
     int reply[10];
     int counter = 0;
 
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    //TODO: change all code when we iterate through pi to find ancmts
+    //change to only send ancmts from second_slot input
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         char *check_ancmt = "";
         check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        if(strcmp(check_ancmt, "ancmt") == 0){
+        char *check_ancmt_anchor = "";
+        check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+        if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot)) {
             reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
             counter++;
         }
@@ -394,7 +482,9 @@ void reply_ancmt() {
 
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char ancmt_string[20] = "/l2interest/1/";
+    char ancmt_string[20] = "/l2interest/";
+    strcat(ancmt_string, second_slot);
+    strcat(ancmt_string, "/");
     strcat(ancmt_string, change_num);
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
 
@@ -406,7 +496,7 @@ void reply_ancmt() {
 }
 
 //input is name
-void generate_layer_2_data(char *input_ip) {
+void generate_layer_2_data(char *input_ip, char *second_slot) {
     printf("\nGenerate Layer 2 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
@@ -418,7 +508,9 @@ void generate_layer_2_data(char *input_ip) {
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
-    char prefix_string[40] = "/l2data/1/";
+    char prefix_string[40] = "/l2data/";
+    strcat(prefix_string, second_slot);
+    strcat(prefix_string, "/");
     strcat(prefix_string, change_num);
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
@@ -438,6 +530,7 @@ void generate_layer_2_data(char *input_ip) {
 //sends data anchor direction (layer1)
 //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
+//prefix: /l1data/anchor_num/sender_num
 void generate_data() {
     printf("\nGenerate Layer 1 Data\n");
     ndn_data_t data;
@@ -447,40 +540,57 @@ void generate_data() {
     char *str = "This is a Layer 1 Data Packet";
     uint8_t buf[4096];
 
-    //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
-    char change_num[40] = "";
-    sprintf(change_num, "%d", node_num);
-    char prefix_string[20] = "/l1data/1/";
-    strcat(prefix_string, change_num);
-    ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+    //iterate through all anchors that sent ancmts
+    for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
+        if(ancmt_num[j] != 0) {
 
-    int reply[10];
-    int counter = 0;
+            int reply[10];
+            int counter = 0;
+            //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
 
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
-        char *check_ancmt = "";
-        check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-        if(strcmp(check_ancmt, "ancmt") == 0){
-            reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-            counter++;
+            //TODO: need to distinguish ancmts inside reply to send # of replies based on number of anchors)
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
+                char *check_ancmt = "";
+                check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
+                    reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                    counter++;
+                }
+            }
+
+            char local_num[40] = "";
+            sprintf(local_num, "%d", node_num);
+            char dest_num[40] = "";
+            sprintf(dest_num, "%d", (j+1));
+            char prefix_string[20] = "/l1data/";
+            strcat(prefix_string, dest_num);
+            strcat(prefix_string, "/");
+            strcat(prefix_string, local_num);
+            strcat(prefix_string, "/");
+            strcat(prefix_string, local_num);
+            ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
+            srand(time(0));
+            int rand_num = rand() % counter;
+
+            char *ip_string;
+            ip_string = search_ip_table(reply[rand_num]);
+
+            data.name = prefix_name;
+            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+            ndn_metainfo_init(&data.metainfo);
+            ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+            encoder_init(&encoder, buf, 4096);
+            ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
+            face = generate_udp_face(ip_string, "5000", "3000");
+            ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+
         }
     }
-
-    srand(time(0));
-    int rand_num = rand() % counter;
-
-    char *ip_string;
-    ip_string = search_ip_table(reply[rand_num]);
-
-    data.name = prefix_name;
-    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-    ndn_metainfo_init(&data.metainfo);
-    ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-    encoder_init(&encoder, buf, 4096);
-    ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
-    face = generate_udp_face(ip_string, "5000", "3000");
-    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
     send_debug_message("Layer 1 Data Sent ; ");
 }
@@ -488,6 +598,7 @@ void generate_data() {
 void *start_delay(void *arguments) {
     printf("\nDelay started\n");
     delay_struct_t *args = arguments;
+
     //starts delay and adds onto max interfaces
     clock_t start_time = clock();
     printf("Delay Time: %d seconds\n", delay/1000000);
@@ -499,10 +610,12 @@ void *start_delay(void *arguments) {
         printf("Already flooded\n");
     } 
     else {
-        flood(args->interest);
+        //fix this with new flood function
+        flood(args->interest, get_prefix_component(args->interest.name, 1));
         did_flood[args->struct_selector] = true;
-        if(is_anchor == false) {
-            reply_ancmt();
+        // if(is_anchor == false) {
+        if(atoi(get_prefix_component(args->interest.name, 1)) != node_num) {
+            reply_ancmt(get_prefix_component(args->interest.name, 1));
         }
         //pthread_exit(NULL);
     }
@@ -524,22 +637,13 @@ char *trimwhitespace(char *str) {
     return str;
 }
 
-// void periodic_publish(int times) {
-//     int num_pub = 1;
-//     while(num_pub <= times) {
-//         clock_t timer = clock();
-//         while (clock() < (timer + 6000000)) {
-//         }
-//         //printf("Publish Times: %d", num_pub);
-//         generate_data();
-//         num_pub++;
-//     }
-// }
-
 //is this threaded, if so, then
 //non zero chance of flooding twice due to multithreading
 int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata) {
     printf("\nNormal-Node On Interest\n");
+
+    //is prefix ancmt or l2interest
+
     pthread_t layer1;
     //pthread_t per_pub;
     ndn_interest_t interest_pkt;
@@ -570,6 +674,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //selector number
     prefix = get_prefix_component(interest_pkt.name, 1);
     prefix = trimwhitespace(prefix);
+    //parameters is second
     int parameters = (atoi(prefix) - 1);
     printf("SELECTOR: %d\n", parameters);
     printf("STORED SELECTOR: %d\n", stored_selectors[parameters]);
@@ -587,7 +692,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //check ancmt, stored selectors, and timestamp(maybe)
     //timestamp + selector for new and old
-    //TODO: fix time to coorespond to last ancmt timestamp, fix timestamp in general
+    //TODO: fix time to correspond to last ancmt timestamp, fix timestamp in general
     //if((prefix == "ancmt") && stored_selectors[parameters] == false && (timestamp - last_interest) > 0) {
 
     //should be first slot in prefix
@@ -620,14 +725,14 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 printf("Already flooded\n");
             }
             else {
-                flood(interest_pkt);
+                flood(interest_pkt, get_prefix_component(interest_pkt.name, 1));
                 printf("Maximum Interfaces Reached\n");
                 did_flood[parameters] = true;
-                if(is_anchor == false) {
-                    reply_ancmt();
+                prefix = get_prefix_component(interest_pkt.name, 1);
+                // if(is_anchor == false) {
+                if(atoi(prefix) != node_num) {
+                    reply_ancmt(prefix);
                 }
-                //DEMO: CHANGE
-                //generate_data();
                 //pthread_exit(NULL);
             }
         }
@@ -635,7 +740,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
 
     //if l2interest do nothing, fill pi is enough
     else if(strcmp(prefix, "l2interest") == 0) {
-
+        
     }
 
     last_interest = current_time;
@@ -751,14 +856,25 @@ void populate_incoming_fib() {
     printf("\nIncoming FIB populated\nNOTE: all other nodes must be turned on and in the network, else SegFault \n");
     ndn_udp_face_t *face;
 
-    //remove youre own incoming interface
-    //change NODE(NUM) and face(num)
-    //only need to add face for layer 1 incoming
-    //DEMO: CHANGE
-    face = generate_udp_face(NODE2, "6000", "4000");
-    face = generate_udp_face(NODE3, "6000", "4000");
-    register_interest_prefix("/l2interest/1/2");
-    register_interest_prefix("/l2interest/1/3");
+    //generate_udp_face here, then, use udp face for all other processes by only using udp face table
+    //example neighbor(2):
+    //face = generate(NODE2, "3000", "5000");
+    //face = generate(NODE2, "5000", "3000");
+    //face = generate(NODE2, "4000", "6000");
+    //face = generate(NODE2, "6000", "4000");
+    size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
+    for(size_t i = 0; i < nl_size; i++) {
+        if(neighbor_list[i] != 0) {
+            char *ip_num = "";
+            ip_num = search_ip_table(neighbor_list[i]);
+            face = generate_udp_face(ip_num, "3000", "5000");
+            face = generate_udp_face(ip_num, "5000", "3000");
+            face = generate_udp_face(ip_num, "4000", "6000");
+            face = generate_udp_face(ip_num, "6000", "4000");
+        }
+    } 
+    // register_interest_prefix("/ancmt/1/1");
+    // register_interest_prefix("/l2interest/1/2");
 }
 
 //check adding to array to store face and check if pointers are different
@@ -766,8 +882,11 @@ void populate_incoming_fib() {
 //look at udp face code to see if we can change it 
 
 void insert_entry(anchor_pit_entry_t entry) {
+    //TODO: use static variable to store last index so that we do not have to search through array every single time we want to insert into array
+    //increment static variable by 1 every time we want to insert into array for next tie
     int entry_pos;
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         if(strcmp(node_anchor_pit.slots[i].prefix, "") == 0) {
             printf("Inserted Entry at POS: %d\n", i);
             entry_pos = i;
@@ -794,10 +913,13 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
+    int anchor_num;
+    //node 1 = ancmt_num[0]
+    anchor_num = atoi(get_prefix_component(interest_pkt.name, 1)) - 1;
 
-    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num < max_interfaces) {
-        ancmt_num++;
-        printf("FILL PIT ANCMT NUM: %d\n", ancmt_num);
+    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
+        ancmt_num[anchor_num]++;
+        printf("FILL PIT ANCMT NUM: %d\n", ancmt_num[anchor_num]);
 
         entry.face = input_face;
         entry.name_struct = interest_pkt.name;
@@ -820,7 +942,9 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 }
 
 void insert_content_store(ndn_data_t input_data) {
-    for(int i = 0; i < cs_table.size; i++) {
+    //insert content store checking here
+    size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
+    for(size_t i = 0; i < cs_size; i++) {
         if(cs_table.entries[i].is_filled == false) {
             printf("CONTENT STORE INSERT INDEX: %d\n", i);
             cs_table.entries[i].data_pkt = input_data;
@@ -861,18 +985,25 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
+    
+    char *second_slot_anchor = "";
+    second_slot_anchor = get_prefix_component(data.name, 1);
+
     int third_slot;
     
     if(strcmp(first_slot, "l1data") == 0) {
-        if(is_anchor) {
+        if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
             int l2_face_index;
             bool l2_interest_in = false;
 
-            for(int i = 0; i < node_anchor_pit.mem; i++) {
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
                 char *check_string = "";
                 check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                if(strcmp(check_string, "l2interest") == 0) {
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_string, "l2interest") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot_anchor)) {
                     l2_face_index = i;
 
                     third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
@@ -884,7 +1015,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     // while (clock() < (timer + 2000000)) {
                     // }
                     
-                    generate_layer_2_data(inputIP);
+                    generate_layer_2_data(inputIP, second_slot_anchor);
                     l2_interest_in = true;
                 }
             }
@@ -900,10 +1031,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             int counter = 0;
             bool ancmt_in = false;
 
-            for(int i = 0; i < node_anchor_pit.mem; i++) {
+            size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+            for(size_t i = 0; i < nap_size; i++) {
                 char *check_ancmt = "";
                 check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                if(strcmp(check_ancmt, "ancmt") == 0) {
+                char *check_ancmt_anchor = "";
+                check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot_anchor)) {
                     reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     counter++;
                     ancmt_in = true;
@@ -924,7 +1058,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l1data/1/";
+                char prefix_string[40] = "/l1data/";
+                strcat(prefix_string, second_slot_anchor);
+                strcat(prefix_string, "/");
                 strcat(prefix_string, change_num);
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
@@ -951,10 +1087,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         insert_content_store(data);
 
-        for(int i = 0; i < node_anchor_pit.mem; i++) {
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+        for(size_t i = 0; i < nap_size; i++) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-            if(strcmp(check_string, "l2interest") == 0) {
+            char *check_anchor = "";
+            check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+            if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
                 l2_face_index = i;
 
                 third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
@@ -968,7 +1107,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l2data/1/";
+                char prefix_string[40] = "/l2data/";
+                strcat(prefix_string, second_slot_anchor);
+                strcat(prefix_string, "/");
                 printf("Here\n");
                 strcat(prefix_string, change_num);
                 printf("Here\n");
@@ -1016,12 +1157,16 @@ void select_anchor() {
 void *forwarding_process(void *var) {
     running = true;
     while (running) {
-        if(is_anchor && !ancmt_sent) {
-            //printf("send ancmt called\n");
-            ndn_interest_t interest;
-            flood(interest);
-            ancmt_sent = true;
-        }
+        // if(is_anchor && !ancmt_sent) {
+        //     //printf("send ancmt called\n");
+        //     ndn_interest_t interest;
+        //     char *temp_char;
+        //     temp_char = malloc(10);
+        //     temp_char[0] = 0;
+        //     sprintf(temp_char, "%d", node_num);
+        //     flood(interest, temp_char);
+        //     ancmt_sent = true;
+        // }
         ndn_forwarder_process();
         usleep(10000);
     }
@@ -1030,7 +1175,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1048,10 +1193,26 @@ void *command_process(void *var) {
                 break;
 
             case 3:
-                printf("Generating Face\n");
-                ndn_udp_face_t *face;
-                face = generate_udp_face("0.0.0.0", "7000", "8000");
+                printf("Check Face Valid\n");
+                //ndn_udp_face_t *face;
+                //face = generate_udp_face("0.0.0.0", "7000", "8000");
+                if(udp_table.entries[30].face_entry == NULL) {
+                    printf("Entry is null\n");
+                }
                 break;
+
+            case 4:
+                printf("Anchor init flooding");
+                // if(is_anchor && !ancmt_sent) {
+                    //printf("send ancmt called\n");
+                    ndn_interest_t interest;
+                    char *temp_char;
+                    temp_char = malloc(10);
+                    temp_char[0] = 0;
+                    sprintf(temp_char, "%d", node_num);
+                    flood(interest, temp_char);
+                    // ancmt_sent = true;
+                // }
 
             default:
                 printf("Invalid Input\n");
@@ -1104,18 +1265,18 @@ int main(int argc, char *argv[]) {
     // send_debug_message(temp_message);
 
     //init pit
-    node_anchor_pit.mem = 20;
-    for(int i = 0; i < node_anchor_pit.mem; i++) {
+    size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+    for(size_t i = 0; i < nap_size; i++) {
         node_anchor_pit.slots[i].prefix = "";
-        node_anchor_pit.slots[i].rand_flag = false;
     }
-    cs_table.size = 20;
-    for(int i = 0; i < cs_table.size; i++) {
+    size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
+    for(size_t i = 0; i < cs_size; i++) {
         cs_table.entries[i].is_filled = false;
     }
-    udp_table.size = 20;
-    for(int i = 0; i < udp_table.size; i++) {
+    size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
+    for(size_t i = 0; i < udp_table_size; i++) {
         udp_table.entries[i].is_filled = false;
+        udp_table.entries[i].face_entry = NULL;
     }
     
     //replace this later with node discovery
@@ -1131,6 +1292,48 @@ int main(int argc, char *argv[]) {
     add_ip_table("10",NODE10);
 
     ndn_lite_startup();
+
+    //This is for adding 2 way neighbors in network
+    //DEMO: CHANGE  
+    node_num = 1;
+    add_neighbor(5);
+    add_neighbor(7);
+    add_neighbor(10);
+
+    last_interest = ndn_time_now_ms();
+    
+    //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
+    //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
+    populate_incoming_fib();
+    callback_insert(on_interest, on_data, fill_pit);
+
+    //signature init here
+
+    //is_anchor = true;
+    if(is_anchor == true) {
+        send_debug_message("Is Anchor ; ");
+    }
+
+    //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
+    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
+    pthread_create(&command_process_thread, NULL, command_process, NULL);
+    pthread_join(forwarding_process_thread, NULL);
+    pthread_join(command_process_thread, NULL);
+    // running = true;
+    // while (running) {
+    //     if(is_anchor && !ancmt_sent) {
+    //         //printf("send ancmt called\n");
+    //         ndn_interest_t interest;
+    //         flood(interest);
+    //         ancmt_sent = true;
+    //     }
+        
+    //     ndn_forwarder_process();
+    //     usleep(10000);
+    // }
+
+    return 0;
+}
 
     //initializing face_table
     /*
@@ -1180,40 +1383,3 @@ int main(int argc, char *argv[]) {
         printf("PORT2: %s\n", check_port_2);
     }
     */
-
-    last_interest = ndn_time_now_ms();
-    
-    //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
-    //registers ancmt prefix with the forwarder so when ndn_forwarder_process is called, it will call the function on_interest
-    //DEMO: CHANGE
-    populate_incoming_fib();
-    callback_insert(on_data, fill_pit);
-
-    //signature init here
-
-    //DEMO: CHANGE
-    is_anchor = true;
-    if(is_anchor == true) {
-        send_debug_message("Is Anchor ; ");
-    }
-
-    //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
-    pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
-    pthread_create(&command_process_thread, NULL, command_process, NULL);
-    pthread_join(forwarding_process_thread, NULL);
-    pthread_join(command_process_thread, NULL);
-    // running = true;
-    // while (running) {
-    //     if(is_anchor && !ancmt_sent) {
-    //         //printf("send ancmt called\n");
-    //         ndn_interest_t interest;
-    //         flood(interest);
-    //         ancmt_sent = true;
-    //     }
-        
-    //     ndn_forwarder_process();
-    //     usleep(10000);
-    // }
-
-    return 0;
-}
