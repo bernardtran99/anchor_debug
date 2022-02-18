@@ -354,9 +354,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
             
             else {
                 for(size_t j = 0; j < ra_size; j++) {
-                //Note: segmentation fault here if both neighbor_list[i] = 0 and received_ancmts[j] = 0, seacch ip_table of index 0
-                if(neighbor_list[i] == received_ancmts[j]) {
-                    do_skip = true;
+                    //Note: segmentation fault here if both neighbor_list[i] = 0 and received_ancmts[j] = 0, seacch ip_table of index 0
+                    if(neighbor_list[i] == received_ancmts[j]) {
+                        do_skip = true;
+                    }
                 }
             }
             

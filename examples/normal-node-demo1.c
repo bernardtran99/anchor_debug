@@ -348,11 +348,19 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         size_t ra_size = sizeof(received_ancmts)/sizeof(received_ancmts[0]);
         for(size_t i = 0; i < nl_size; i++) {
             bool do_skip = false;
-            for(size_t j = 0; j < ra_size; j++) {
-                if(neighbor_list[i] == received_ancmts[j]) {
-                    do_skip = true;
+            if(neighbor_list[i] == 0) {
+                do_skip = true;
+            }
+            
+            else {
+                for(size_t j = 0; j < ra_size; j++) {
+                    //Note: segmentation fault here if both neighbor_list[i] = 0 and received_ancmts[j] = 0, seacch ip_table of index 0
+                    if(neighbor_list[i] == received_ancmts[j]) {
+                        do_skip = true;
+                    }
                 }
             }
+            
             if(do_skip == false) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
