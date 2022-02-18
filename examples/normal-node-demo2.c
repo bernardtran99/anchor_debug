@@ -1092,7 +1092,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             char *check_string = "";
             check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
             char *check_anchor = "";
-            check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+            check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
             if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
                 l2_face_index = i;
 
