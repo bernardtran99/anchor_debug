@@ -960,6 +960,7 @@ void insert_content_store(ndn_data_t input_data) {
             break;
         }
     }
+    ndn_data_t temp_data = input_data;
 }
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
@@ -1118,20 +1119,20 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char prefix_string[40] = "/l2data/";
                 strcat(prefix_string, second_slot_anchor);
                 strcat(prefix_string, "/");
-                printf("Here\n");
+                //printf("Here\n");
                 strcat(prefix_string, change_num);
-                printf("Here\n");
+                //printf("Here\n");
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
 
-                printf("Here\n");
+                //printf("Here\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
-                printf("Here\n");
+                //printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
-                printf("Here\n");
+                //printf("Here\n");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                printf("Here\n");
+                //printf("Here\n");
                 printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
