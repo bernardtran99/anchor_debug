@@ -36,7 +36,7 @@ int main() {
     ndn_interest_t interest_packet;
     ndn_data_t data_packet;
 
-    printf("Size in Bytes");
+    printf("Size in Bytes\n");
     printf("Char: %lu\n", sizeof(char));
     printf("Int: %lu\n", sizeof(int));
     printf("Float: %lu\n", sizeof(float));
