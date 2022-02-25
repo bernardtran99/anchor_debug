@@ -190,6 +190,26 @@ int send_debug_message(char *input) {
     return 0;
 }
 
+char *timestamp() {
+    struct timeval tv;
+    struct timezone tz;
+    struct tm *today;
+    int zone;
+
+    //gettimeofday(&tv,&tz);
+    gettimeofday(&tv, &tz);
+    time_t timer = tv.tv_sec;
+    today = localtime(&timer);
+    //printf("TIME: %d:%0d:%0d.%d\n", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
+
+    char *return_string;
+    return_string = malloc(40); 
+    return_string[0] = 0;
+
+    sprintf(return_string, "Time: %d:%0d:%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
+    return return_string;
+}
+
 //used to add to neighbor_list
 void add_neighbor(int neighbor_num) {
     size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
@@ -504,14 +524,16 @@ void reply_ancmt(char *second_slot) {
 }
 
 //input is name
-void generate_layer_2_data(char *input_ip, char *second_slot) {
+void generate_layer_2_data(char *input_ip, char *second_slot, char *data_string) {
     printf("\nGenerate Layer 2 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
-    char *str = "This is a Layer 2 Data Packet";
     uint8_t buf[4096];
+
+    //fix for combination later
+    char *str = data_string;
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
@@ -532,7 +554,16 @@ void generate_layer_2_data(char *input_ip, char *second_slot) {
     face = generate_udp_face(input_ip, "6000", "4000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
-    send_debug_message("Layer 2 Data Sent ; ");
+    char *in = "";
+    in = timestamp();
+
+    char pub_message[100] = "";
+    strcat(pub_message, "Layer 2 Data Sent -> ");
+    // strcat(pub_message, data_string);
+    // strcat(pub_message, " -> ");
+    strcat(pub_message, in);
+    strcat(pub_message, " ; ");
+    send_debug_message(pub_message);
 }
 
 //sends data anchor direction (layer1)
@@ -545,8 +576,8 @@ void generate_data() {
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
-    char *str = "This is a Layer 1 Data Packet";
     uint8_t buf[4096];
+    char *str = "This is a Data Packet";
 
     //iterate through all anchors that sent ancmts
     for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
@@ -577,8 +608,6 @@ void generate_data() {
             strcat(prefix_string, dest_num);
             strcat(prefix_string, "/");
             strcat(prefix_string, local_num);
-            strcat(prefix_string, "/");
-            strcat(prefix_string, local_num);
             ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
             srand(time(0));
@@ -601,6 +630,84 @@ void generate_data() {
     }
 
     send_debug_message("Layer 1 Data Sent ; ");
+}
+
+void latency_test() {
+
+    for(int num_send = 0; num < 5; num_send++) {
+        clock_t timer = clock();
+        while (clock() < (timer + 200000)) {
+        }
+
+        ndn_data_t data;
+        ndn_name_t prefix_name;
+        ndn_udp_face_t *face;
+        ndn_encoder_t encoder;
+        uint8_t buf[4096];
+
+        char str[10] = "Data: ";
+        char num_send_char[10] = "";
+        sprintf(num_send_char, "%d", num_send+1);
+        strcat(str, num_send_char);
+
+        for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
+            if(ancmt_num[j] != 0) {
+                int reply[10];
+                int counter = 0;
+                size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+                for(size_t i = 0; i < nap_size; i++) {
+                    char *check_ancmt = "";
+                    check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+                    char *check_ancmt_anchor = "";
+                    check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                    if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
+                        reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                        counter++;
+                    }
+                }
+
+                char local_num[10] = "";
+                sprintf(local_num, "%d", node_num);
+                char dest_num[10] = "";
+                sprintf(dest_num, "%d", (j+1));
+                char prefix_string[20] = "/l1data/";
+                strcat(prefix_string, dest_num);
+                strcat(prefix_string, "/");
+                strcat(prefix_string, local_num);
+
+                ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+
+                srand(time(0));
+                int rand_num = rand() % counter;
+
+                char *ip_string;
+                ip_string = search_ip_table(reply[rand_num]);
+
+                data.name = prefix_name;
+                ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+                ndn_metainfo_init(&data.metainfo);
+                ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
+
+                face = generate_udp_face(ip_string, "5000", "3000");
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+
+            }
+        }
+        char *in = "";
+        in = timestamp();
+
+        char pub_message[100] = "";
+        strcat(pub_message, "Layer 1 Data Sent: ");
+        strcat(pub_message, num_send_char);
+        strcat(pub_message, " -> ");
+        strcat(pub_message, in);
+        strcat(pub_message, " ; ");
+        printf("pubmessage good\n");
+        send_debug_message(pub_message);
+    }
+    
 }
 
 void *start_delay(void *arguments) {
@@ -949,8 +1056,12 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     }
 }
 
-void insert_content_store(ndn_data_t input_data) {
+bool check_content_store(ndn_data_t input_data) {
     //insert content store checking here
+    //bit vector is included and needs a hash of the data as well
+    //question: how are we hashing the data?
+    //question: should anchors also put the data packet they send inside their content store
+    //bit vector length based on how many anchors there are 
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
         if(cs_table.entries[i].is_filled == false) {
@@ -960,6 +1071,10 @@ void insert_content_store(ndn_data_t input_data) {
             break;
         }
     }
+    //content value: 0 -  15= time slice, fullmessage after
+    //set a bit to 0 or 1 so we can easily determine if message is hash or full unadulterated message
+    //check in after
+    //need to determine if data is sent
     ndn_data_t temp_data = input_data;
 }
 
@@ -982,6 +1097,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
+
+    char *data_content_value = "";
+    data_content_value = data.content_value;
+    if(strcmp(data_content_value, "Data: 1")) {
+
+    }
 
     // prefix = get_prefix_component(data.name, 2);
     // prefix = trimwhitespace(prefix);
@@ -1094,7 +1215,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
-        insert_content_store(data);
+        //if true, then have an updated bit vector
+        //if false, then forward layer 2 data as normal
+        //bool check_cs = check_content_store(data);
 
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
@@ -1103,40 +1226,39 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             char *check_anchor = "";
             check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
             if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
-                l2_face_index = i;
+                //normal forward full message without updating bit vector
+                // if(!check_cs) {
+                    l2_face_index = i;
+                    third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                    char *ip_string = "";
+                    ip_string = search_ip_table(third_slot);
 
-                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-                char *ip_string = "";
-                ip_string = search_ip_table(third_slot);
+                    // clock_t timer = clock();
+                    // printf("Delay Time: %d seconds\n", 1);
+                    // while (clock() < (timer + 1000000)) {
+                    // }
 
-                // clock_t timer = clock();
-                // printf("Delay Time: %d seconds\n", 1);
-                // while (clock() < (timer + 1000000)) {
+                    char change_num[20] = "";
+                    sprintf(change_num, "%d", node_num);
+                    char prefix_string[40] = "/l2data/";
+                    strcat(prefix_string, second_slot_anchor);
+                    strcat(prefix_string, "/");
+                    strcat(prefix_string, change_num);
+                    ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                    data.name = name_prefix;
+
+                    encoder_init(&encoder, buf, 4096);
+                    ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                    face = generate_udp_face(ip_string, "6000", "4000");
+                    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                    printf("Layer 2 Data Forwarded\n");
+
+                    send_debug_message("Layer 2 Data Forwarded ; ");
+                    l2_interest_in = true;
                 // }
-
-                char change_num[20] = "";
-                sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l2data/";
-                strcat(prefix_string, second_slot_anchor);
-                strcat(prefix_string, "/");
-                //printf("Here\n");
-                strcat(prefix_string, change_num);
-                //printf("Here\n");
-                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-                data.name = name_prefix;
-
-                //printf("Here\n");
-                encoder_init(&encoder, buf, 4096);
-                ndn_data_tlv_encode_digest_sign(&encoder, &data);
-                //printf("Here\n");
-                face = generate_udp_face(ip_string, "6000", "4000");
-                //printf("Here\n");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                //printf("Here\n");
-                printf("Layer 2 Data Forwarded\n");
-
-                send_debug_message("Layer 2 Data Forwarded ; ");
-                l2_interest_in = true;
+                // else {
+                    
+                // }
             }
         }
 
@@ -1211,7 +1333,7 @@ void *command_process(void *var) {
                 break;
 
             case 4:
-                printf("Anchor init flooding");
+                printf("Anchor init flooding\n");
                 // if(is_anchor && !ancmt_sent) {
                     //printf("send ancmt called\n");
                     ndn_interest_t interest;
@@ -1222,6 +1344,15 @@ void *command_process(void *var) {
                     flood(interest, temp_char);
                     // ancmt_sent = true;
                 // }
+                break;
+
+            case 5:
+                printf("Latency Test\n");
+                clock_t timer = clock();
+                while (clock() < (timer + 5000000)) {
+                }
+                latency_test();
+                break;
 
             default:
                 printf("Invalid Input\n");
