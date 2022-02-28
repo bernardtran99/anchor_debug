@@ -94,8 +94,13 @@ typedef struct content_store_entry {
     bool is_filled;
 } content_store_entry_t;
 
+typedef struct cs_data1_index {
+    uint8_t data_value[1024];
+} cs_data1_index_t;
+
 typedef struct content_store {
     content_store_entry_t entries[20];
+    cs_data1_index_t indexes[20];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -1084,7 +1089,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     ndn_data_t data;
     ndn_encoder_t encoder;
     uint8_t buf[4096];
-
     char *ancmt_string;
     ndn_name_t name_prefix;
     ndn_udp_face_t *face;
@@ -1098,15 +1102,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    char *data_content_value = "";
+    char *data_content_value;
+    data_content_value = malloc(1024); 
+    data_content_value[0] = 0;
     data_content_value = data.content_value;
-    if(strcmp(data_content_value, "Data: 1")) {
 
-    }
+    
 
-    // prefix = get_prefix_component(data.name, 2);
-    // prefix = trimwhitespace(prefix);
-    // prefix = get_string_prefix(data.name);
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
@@ -1124,6 +1126,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
+
             int l2_face_index;
             bool l2_interest_in = false;
 
