@@ -85,24 +85,20 @@ typedef struct udp_face_table {
     udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
-typedef struct bit_vector {
-    int vector_num;
-} bit_vector_t;
-
 typedef struct content_store_entry {
     ndn_data_t data_pkt;
-    uint8_t int_vector;
-    
+    uint8_t vector_num;
     bool is_filled;
 } content_store_entry_t;
 
-typedef struct cs_data1_index {
-    uint8_t data_value[1024];
-} cs_data1_index_t;
+typedef struct cs_data_index {
+    //no more reserving bits for vectors, separated by "/" like the prefix
+    uint8_t *data_value;
+} cs_data_index_t;
 
 typedef struct content_store {
     content_store_entry_t entries[20];
-    cs_data1_index_t indexes[20];
+    cs_data_index_t data_indexes[20];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -303,6 +299,30 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
         }
     }
 
+    return return_string;
+}
+
+// DATA_CONTENT: /bit_vector/content/anchor_data_index
+char *get_data_component(ndn_data_t input_packet, int num_input) {
+    char *return_string;
+    return_string = malloc(100); 
+    return_string[0] = 0;
+
+    int delimiter_count = 0;
+    bool start_delim = false;
+    for (int j = 0; j < input_packet.content_size; j++) {
+        if(input_packet.content_value[j] == 47) {
+            delimiter_count++;
+        }
+
+        if(num_input == (delimiter_count-1)) {
+            if (input_packet.content_value[j] >= 33 && input_packet.content_value[j] < 126) {
+                char temp_char[1];
+                sprintf(temp_char, "%c", prefix_name.components[num_input].value[j]);
+                strcat(return_string, temp_char);
+            }
+        }
+    }
     return return_string;
 }
 
@@ -635,83 +655,82 @@ void generate_data() {
     send_debug_message("Layer 1 Data Sent ; ");
 }
 
-void latency_test() {
+// void latency_test() {
+//     for(int num_send = 0; num < 5; num_send++) {
+//         clock_t timer = clock();
+//         while (clock() < (timer + 200000)) {
+//         }
 
-    for(int num_send = 0; num < 5; num_send++) {
-        clock_t timer = clock();
-        while (clock() < (timer + 200000)) {
-        }
+//         ndn_data_t data;
+//         ndn_name_t prefix_name;
+//         ndn_udp_face_t *face;
+//         ndn_encoder_t encoder;
+//         uint8_t buf[4096];
 
-        ndn_data_t data;
-        ndn_name_t prefix_name;
-        ndn_udp_face_t *face;
-        ndn_encoder_t encoder;
-        uint8_t buf[4096];
+//         char str[10] = "Data: ";
+//         char num_send_char[10] = "";
+//         sprintf(num_send_char, "%d", num_send+1);
+//         strcat(str, num_send_char);
 
-        char str[10] = "Data: ";
-        char num_send_char[10] = "";
-        sprintf(num_send_char, "%d", num_send+1);
-        strcat(str, num_send_char);
+//         for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
+//             if(ancmt_num[j] != 0) {
+//                 int reply[10];
+//                 int counter = 0;
+//                 size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+//                 for(size_t i = 0; i < nap_size; i++) {
+//                     char *check_ancmt = "";
+//                     check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+//                     char *check_ancmt_anchor = "";
+//                     check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+//                     if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
+//                         reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+//                         counter++;
+//                     }
+//                 }
 
-        for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
-            if(ancmt_num[j] != 0) {
-                int reply[10];
-                int counter = 0;
-                size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
-                for(size_t i = 0; i < nap_size; i++) {
-                    char *check_ancmt = "";
-                    check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                    char *check_ancmt_anchor = "";
-                    check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-                    if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
-                        reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-                        counter++;
-                    }
-                }
+//                 char local_num[10] = "";
+//                 sprintf(local_num, "%d", node_num);
+//                 char dest_num[10] = "";
+//                 sprintf(dest_num, "%d", (j+1));
+//                 char prefix_string[20] = "/l1data/";
+//                 strcat(prefix_string, dest_num);
+//                 strcat(prefix_string, "/");
+//                 strcat(prefix_string, local_num);
 
-                char local_num[10] = "";
-                sprintf(local_num, "%d", node_num);
-                char dest_num[10] = "";
-                sprintf(dest_num, "%d", (j+1));
-                char prefix_string[20] = "/l1data/";
-                strcat(prefix_string, dest_num);
-                strcat(prefix_string, "/");
-                strcat(prefix_string, local_num);
+//                 ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
-                ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+//                 srand(time(0));
+//                 int rand_num = rand() % counter;
 
-                srand(time(0));
-                int rand_num = rand() % counter;
+//                 char *ip_string;
+//                 ip_string = search_ip_table(reply[rand_num]);
 
-                char *ip_string;
-                ip_string = search_ip_table(reply[rand_num]);
+//                 data.name = prefix_name;
+//                 ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+//                 ndn_metainfo_init(&data.metainfo);
+//                 ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+//                 encoder_init(&encoder, buf, 4096);
+//                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
 
-                data.name = prefix_name;
-                ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-                ndn_metainfo_init(&data.metainfo);
-                ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-                encoder_init(&encoder, buf, 4096);
-                ndn_data_tlv_encode_digest_sign(&encoder, &data);
+//                 face = generate_udp_face(ip_string, "5000", "3000");
+//                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
-                face = generate_udp_face(ip_string, "5000", "3000");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+//             }
+//         }
+//         char *in = "";
+//         in = timestamp();
 
-            }
-        }
-        char *in = "";
-        in = timestamp();
-
-        char pub_message[100] = "";
-        strcat(pub_message, "Layer 1 Data Sent: ");
-        strcat(pub_message, num_send_char);
-        strcat(pub_message, " -> ");
-        strcat(pub_message, in);
-        strcat(pub_message, " ; ");
-        printf("pubmessage good\n");
-        send_debug_message(pub_message);
-    }
+//         char pub_message[100] = "";
+//         strcat(pub_message, "Layer 1 Data Sent: ");
+//         strcat(pub_message, num_send_char);
+//         strcat(pub_message, " -> ");
+//         strcat(pub_message, in);
+//         strcat(pub_message, " ; ");
+//         printf("pubmessage good\n");
+//         send_debug_message(pub_message);
+//     }
     
-}
+// }
 
 void *start_delay(void *arguments) {
     printf("\nDelay started\n");
@@ -1124,6 +1143,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
+            //insert into anchor layer 1 data store with index
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1259,7 +1279,50 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     }
 
     else if(strcmp(first_slot, "vector") == 0) {
+        printf("Vector Packet Recieved\n");
+        int l2_face_index = 0;
+        bool l2_interest_in = false;
 
+        size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+        for(size_t i = 0; i < nap_size; i++) {
+            char *check_string = "";
+            check_string = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+            char *check_anchor = "";
+            check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+            if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
+                l2_face_index = i;
+                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                char *ip_string = "";
+                ip_string = search_ip_table(third_slot);
+
+                // clock_t timer = clock();
+                // printf("Delay Time: %d seconds\n", 1);
+                // while (clock() < (timer + 1000000)) {
+                // }
+
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/";
+                strcat(prefix_string, second_slot_anchor);
+                strcat(prefix_string, "/");
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                face = generate_udp_face(ip_string, "6000", "4000");
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 2 Data Forwarded\n");
+
+                send_debug_message("Layer 2 Data Forwarded ; ");
+                l2_interest_in = true;
+            }
+        }
+
+        if(l2_interest_in == false) {
+            printf("No layer 2 interest\n");
+        }
     }
 }
 
