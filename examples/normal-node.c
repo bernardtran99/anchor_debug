@@ -121,9 +121,6 @@ bool running;
 //To set whether this node is anchor
 bool is_anchor = false;
 
-//To set whether an announcement(interest) has been sent
-bool ancmt_sent = false;
-
 //Time Slice
 int time_slice = 3;
 
@@ -458,7 +455,6 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
 
 //     //uncomment here to test flood
 //     flood(ancmt);
-//     ancmt_sent = true;
 //     printf("Announcement sent.\n");
 //     //send_debug_message("Announcment Sent");
 // }
@@ -1078,6 +1074,8 @@ bool check_content_store(ndn_data_t input_data) {
             break;
         }
     }
+
+    uint8_t temp_vector = 0;
     //content value: 0 -  15= time slice, fullmessage after
     //set a bit to 0 or 1 so we can easily determine if message is hash or full unadulterated message
     //check in after
@@ -1108,8 +1106,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     data_content_value = malloc(1024); 
     data_content_value[0] = 0;
     data_content_value = data.content_value;
-
-    
 
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
@@ -1220,10 +1216,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
-        //if true, then have an updated bit vector
-        //if false, then forward layer 2 data as normal
-        //bool check_cs = check_content_store(data);
-
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
             char *check_string = "";
@@ -1231,39 +1223,33 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             char *check_anchor = "";
             check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
             if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
-                //normal forward full message without updating bit vector
-                // if(!check_cs) {
-                    l2_face_index = i;
-                    third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-                    char *ip_string = "";
-                    ip_string = search_ip_table(third_slot);
+                l2_face_index = i;
+                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                char *ip_string = "";
+                ip_string = search_ip_table(third_slot);
 
-                    // clock_t timer = clock();
-                    // printf("Delay Time: %d seconds\n", 1);
-                    // while (clock() < (timer + 1000000)) {
-                    // }
-
-                    char change_num[20] = "";
-                    sprintf(change_num, "%d", node_num);
-                    char prefix_string[40] = "/l2data/";
-                    strcat(prefix_string, second_slot_anchor);
-                    strcat(prefix_string, "/");
-                    strcat(prefix_string, change_num);
-                    ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
-                    data.name = name_prefix;
-
-                    encoder_init(&encoder, buf, 4096);
-                    ndn_data_tlv_encode_digest_sign(&encoder, &data);
-                    face = generate_udp_face(ip_string, "6000", "4000");
-                    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                    printf("Layer 2 Data Forwarded\n");
-
-                    send_debug_message("Layer 2 Data Forwarded ; ");
-                    l2_interest_in = true;
+                // clock_t timer = clock();
+                // printf("Delay Time: %d seconds\n", 1);
+                // while (clock() < (timer + 1000000)) {
                 // }
-                // else {
-                    
-                // }
+
+                char change_num[20] = "";
+                sprintf(change_num, "%d", node_num);
+                char prefix_string[40] = "/l2data/";
+                strcat(prefix_string, second_slot_anchor);
+                strcat(prefix_string, "/");
+                strcat(prefix_string, change_num);
+                ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
+                data.name = name_prefix;
+
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                face = generate_udp_face(ip_string, "6000", "4000");
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                printf("Layer 2 Data Forwarded\n");
+
+                send_debug_message("Layer 2 Data Forwarded ; ");
+                l2_interest_in = true;
             }
         }
 
@@ -1271,15 +1257,15 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             printf("No layer 2 interest\n");
         }
     }
+
+    else if(strcmp(first_slot, "vector") == 0) {
+
+    }
 }
 
 //interest is saved in pit until put-Data is called
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
-
-}
-
-bool check_CS(ndn_data_t *data_pkt) {
 
 }
 
@@ -1293,16 +1279,6 @@ void select_anchor() {
 void *forwarding_process(void *var) {
     running = true;
     while (running) {
-        // if(is_anchor && !ancmt_sent) {
-        //     //printf("send ancmt called\n");
-        //     ndn_interest_t interest;
-        //     char *temp_char;
-        //     temp_char = malloc(10);
-        //     temp_char[0] = 0;
-        //     sprintf(temp_char, "%d", node_num);
-        //     flood(interest, temp_char);
-        //     ancmt_sent = true;
-        // }
         ndn_forwarder_process();
         usleep(10000);
     }
@@ -1339,24 +1315,59 @@ void *command_process(void *var) {
 
             case 4:
                 printf("Anchor init flooding\n");
-                // if(is_anchor && !ancmt_sent) {
-                    //printf("send ancmt called\n");
-                    ndn_interest_t interest;
-                    char *temp_char;
-                    temp_char = malloc(10);
-                    temp_char[0] = 0;
-                    sprintf(temp_char, "%d", node_num);
-                    flood(interest, temp_char);
-                    // ancmt_sent = true;
-                // }
+                ndn_interest_t interest;
+                char *temp_char;
+                temp_char = malloc(10);
+                temp_char[0] = 0;
+                sprintf(temp_char, "%d", node_num);
+                flood(interest, temp_char);
                 break;
 
             case 5:
+                printf("Connecting to Debug Server\n");
+                //socket connection
+                // if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+                // {
+                //     printf("\n Socket creation error \n");
+                //     return -1;
+                // }
+
+                // // int flags = 1;
+                // // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+                // //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+                // //     exit(0); 
+                // // }
+            
+                // serv_addr.sin_family = AF_INET;
+                // serv_addr.sin_port = htons(PORT);
+
+                // if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
+                // {
+                //     printf("\nInvalid address/ Address not supported \n");
+                //     return -1;
+                // }
+            
+                // if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+                // {
+                //     printf("\nConnection Failed \n");
+                //     return -1;
+                // }
+                break;
+
+            case 6:
                 printf("Latency Test\n");
                 clock_t timer = clock();
                 while (clock() < (timer + 5000000)) {
                 }
                 latency_test();
+                break;
+
+            case 7:
+                printf("Find ad-hoc neighbors\n");  
+                break;
+
+            case 8:
+                printf("Populate FIB\n");
                 break;
 
             default:
@@ -1439,7 +1450,7 @@ int main(int argc, char *argv[]) {
     ndn_lite_startup();
 
     //This is for adding 2 way neighbors in network
-    //DEMO: CHANGE  
+    //DEMO: CHANGE
     node_num = 1;
     add_neighbor(5);
     add_neighbor(7);
