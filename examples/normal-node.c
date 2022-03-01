@@ -91,6 +91,8 @@ typedef struct bit_vector {
 
 typedef struct content_store_entry {
     ndn_data_t data_pkt;
+    uint8_t int_vector;
+    
     bool is_filled;
 } content_store_entry_t;
 
@@ -1064,7 +1066,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 bool check_content_store(ndn_data_t input_data) {
     //insert content store checking here
     //bit vector is included and needs a hash of the data as well
-    //question: how are we hashing the data?
+    //question: how are we hashing the data? ans: we are using data 1 index table instead of hash
     //question: should anchors also put the data packet they send inside their content store
     //bit vector length based on how many anchors there are 
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
