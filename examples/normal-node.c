@@ -547,7 +547,9 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     ndn_encoder_t encoder;
     uint8_t buf[4096];
 
-    //fix for combination later
+    //layer 2 data_string: /bit_vector(5)/data_index_new(2)/data content
+    //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix for current cs
+    //bit vector should include its own anchor node
     uint8_t *str = data_string;
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
@@ -1071,6 +1073,19 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     }
 }
 
+uint8_t *get_data_content(ndn_data_t input_packet, int start_index, int end_index) {
+    //end and start indexes are inclusive
+    //ex: start_index = 0, end_index = 4 ; means that we want content_value[0] -> content_value[4] and return array of size 5
+    int array_size = end_index - start_index + 1;
+    uint8_t return_array[array_size];
+    int j = 0;
+    for(int i = start_index; i <= end_index; i++) {
+        return_array[j] = input_packet.content_value[i];
+        j++; 
+    }
+    return return_array;
+}
+
 bool check_content_store(ndn_data_t input_data) {
     //insert content store checking here
     //bit vector is included and needs a hash of the data as well
@@ -1114,8 +1129,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    uint8_t data_content[1024] = data.content_value;
-
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
     strcat(temp_message, prefix);
@@ -1133,8 +1146,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
-            //insert into anchor layer 1 data store with index
             
+            //insert into anchor layer 1 data store with index
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1163,6 +1176,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         }
 
         else {
+            //no change for bit vector implementation
             printf("Node Layer 1 Data Received\n");
             int reply[10];
             int counter = 0;
@@ -1187,11 +1201,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
                 char *ip_string;
                 ip_string = search_ip_table(reply[rand_num]);
-
-                // clock_t timer = clock();
-                // printf("Delay Time: %d seconds\n", 1);
-                // while (clock() < (timer + 1000000)) {
-                // }
 
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
@@ -1219,6 +1228,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
+
+        //need to check cs if duplicate data has already been received before
+
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
@@ -1233,11 +1245,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
-
-                // clock_t timer = clock();
-                // printf("Delay Time: %d seconds\n", 1);
-                // while (clock() < (timer + 1000000)) {
-                // }
 
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
@@ -1266,6 +1273,10 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     else if(strcmp(first_slot, "vector") == 0) {
         printf("Vector Packet Recieved\n");
+
+        //update content store from bit vector and forward updated bitvector, bit vecotr recevieced should be bit vector sent
+        //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
+
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
@@ -1281,14 +1292,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
-                // clock_t timer = clock();
-                // printf("Delay Time: %d seconds\n", 1);
-                // while (clock() < (timer + 1000000)) {
-                // }
-
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l2data/";
+                char prefix_string[40] = "/vector/";
                 strcat(prefix_string, second_slot_anchor);
                 strcat(prefix_string, "/");
                 strcat(prefix_string, change_num);
@@ -1299,9 +1305,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
                 face = generate_udp_face(ip_string, "6000", "4000");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                printf("Layer 2 Data Forwarded\n");
+                printf("Vector Forwarded\n");
 
-                send_debug_message("Layer 2 Data Forwarded ; ");
+                send_debug_message("Vector Forwarded ; ");
                 l2_interest_in = true;
             }
         }
@@ -1313,6 +1319,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 }
 
 //interest is saved in pit until put-Data is called
+
 /*
 bool verify_data(ndn_data_t *data_pkt, const uint8_t* rawdata, uint32_t data_size) {
 
@@ -1514,28 +1521,11 @@ int main(int argc, char *argv[]) {
 
     //signature init here
 
-    //is_anchor = true;
-    if(is_anchor == true) {
-        send_debug_message("Is Anchor ; ");
-    }
-
     //when production wants to send data and recieve packets, do thread for while loop and thread for sending data when producer wants to
     pthread_create(&forwarding_process_thread, NULL, forwarding_process, NULL);
     pthread_create(&command_process_thread, NULL, command_process, NULL);
     pthread_join(forwarding_process_thread, NULL);
     pthread_join(command_process_thread, NULL);
-    // running = true;
-    // while (running) {
-    //     if(is_anchor && !ancmt_sent) {
-    //         //printf("send ancmt called\n");
-    //         ndn_interest_t interest;
-    //         flood(interest);
-    //         ancmt_sent = true;
-    //     }
-        
-    //     ndn_forwarder_process();
-    //     usleep(10000);
-    // }
 
     return 0;
 }
