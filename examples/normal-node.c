@@ -93,6 +93,7 @@ typedef struct content_store_entry {
 
 typedef struct cs_data_index {
     //no more reserving bits for vectors, separated by "/" like the prefix
+    //maybe not
     uint8_t *data_value;
 } cs_data_index_t;
 
@@ -302,26 +303,17 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
     return return_string;
 }
 
-// DATA_CONTENT: /bit_vector/content/anchor_data_index
-char *get_data_component(ndn_data_t input_packet, int num_input) {
+// DATA_CONTENT: bit_vector->content->anchor_data_index
+uint8_t get_bit_vector(ndn_data_t input_packet, int num_anchors) {
     char *return_string;
-    return_string = malloc(100); 
+    return_string = malloc(100);
     return_string[0] = 0;
 
     int delimiter_count = 0;
     bool start_delim = false;
+    //cant use forward slash delimiter because the bit vector miught equal the delimiter, we just have 
     for (int j = 0; j < input_packet.content_size; j++) {
-        if(input_packet.content_value[j] == 47) {
-            delimiter_count++;
-        }
-
-        if(num_input == (delimiter_count-1)) {
-            if (input_packet.content_value[j] >= 33 && input_packet.content_value[j] < 126) {
-                char temp_char[1];
-                sprintf(temp_char, "%c", prefix_name.components[num_input].value[j]);
-                strcat(return_string, temp_char);
-            }
-        }
+        
     }
     return return_string;
 }
@@ -547,7 +539,7 @@ void reply_ancmt(char *second_slot) {
 }
 
 //input is name
-void generate_layer_2_data(char *input_ip, char *second_slot, char *data_string) {
+void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_string) {
     printf("\nGenerate Layer 2 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
@@ -556,7 +548,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, char *data_string)
     uint8_t buf[4096];
 
     //fix for combination later
-    char *str = data_string;
+    uint8_t *str = data_string;
 
     //prefix string can be anything here because data_recieve bypasses prefix check in fwd_data_pipeline
     char change_num[20] = "";
@@ -568,7 +560,8 @@ void generate_layer_2_data(char *input_ip, char *second_slot, char *data_string)
     ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
     data.name = prefix_name;
-    ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+    //ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+    ndn_data_set_content(&data, str, sizeof(str));
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
@@ -600,7 +593,7 @@ void generate_data() {
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
     uint8_t buf[4096];
-    char *str = "This is a Data Packet";
+    char *str = "Data Packet Test 1";
 
     //iterate through all anchors that sent ancmts
     for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
@@ -1121,10 +1114,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
 
-    char *data_content_value;
-    data_content_value = malloc(1024); 
-    data_content_value[0] = 0;
-    data_content_value = data.content_value;
+    uint8_t data_content[1024] = data.content_value;
 
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
@@ -1144,6 +1134,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
             //insert into anchor layer 1 data store with index
+            
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1160,13 +1151,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
-
-                    // clock_t timer = clock();
-                    // printf("Delay Time: %d seconds\n", 2);
-                    // while (clock() < (timer + 2000000)) {
-                    // }
                     
-                    generate_layer_2_data(inputIP, second_slot_anchor);
+                    generate_layer_2_data(inputIP, second_slot_anchor, data.content_value);
                     l2_interest_in = true;
                 }
             }
