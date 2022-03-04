@@ -45,6 +45,17 @@
 #define NODE10 "10.156.91.67"
 #define DEBUG "10.156.84.156"
 
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
+
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
 //then make
@@ -87,19 +98,18 @@ typedef struct udp_face_table {
 
 typedef struct content_store_entry {
     ndn_data_t data_pkt;
-    uint8_t vector_num;
+    uint8_t vector_num[5];
     bool is_filled;
 } content_store_entry_t;
 
-typedef struct cs_data_index {
-    //no more reserving bits for vectors, separated by "/" like the prefix
-    //maybe not
+typedef struct cs_data1_index {
     uint8_t *data_value;
-} cs_data_index_t;
+    bool is_filled;
+} cs_data1_index_t;
 
 typedef struct content_store {
     content_store_entry_t entries[20];
-    cs_data_index_t data_indexes[20];
+    cs_data1_index_t data_indexes[20];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -595,7 +605,7 @@ void generate_data() {
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
     uint8_t buf[4096];
-    char *str = "Data Packet Test 1";
+    char *str = "ABC123";
 
     //iterate through all anchors that sent ancmts
     for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
@@ -1076,14 +1086,34 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
 uint8_t *get_data_content(ndn_data_t input_packet, int start_index, int end_index) {
     //end and start indexes are inclusive
     //ex: start_index = 0, end_index = 4 ; means that we want content_value[0] -> content_value[4] and return array of size 5
+    printf("Getting Data Content: %d to %d\n", start_index, end_index);
     int array_size = end_index - start_index + 1;
     uint8_t return_array[array_size];
     int j = 0;
     for(int i = start_index; i <= end_index; i++) {
         return_array[j] = input_packet.content_value[i];
-        j++; 
+        j++;
     }
     return return_array;
+}
+
+//is only called for anchors when assigning layer 1 data indexes
+int insert_data_index(ndn_data_t input_data) {
+    size_t cs_size = sizeof(cs_table.data_indexes)/sizeof(cs_table.data_indexes[0]);
+    for(size_t i = 0; i < cs_size; i++) {
+        //does not matter if data 1 has duplicate, bcause we want to send them anyway
+        if(cs_table.data_indexes[i].is_filled == false) {
+            printf("CONTENT STORE DATA INDEX: %d\n", i);
+            cs_table.data_indexes[i].data_value = input_data.content_value;
+            cs_table.data_indexes[i].is_filled = true;
+
+            //error check
+            if(i < INT_MAX) {
+                return (int)i;
+            }
+        }
+    }
+    return -1;
 }
 
 bool check_content_store(ndn_data_t input_data) {
@@ -1102,7 +1132,7 @@ bool check_content_store(ndn_data_t input_data) {
         }
     }
 
-    uint8_t temp_vector = 0;
+    uint8_t *temp_vector = 0;
     //content value: 0 -  15= time slice, fullmessage after
     //set a bit to 0 or 1 so we can easily determine if message is hash or full unadulterated message
     //check in after
@@ -1128,6 +1158,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
+    printf("SIZEOF CONTENT: %d\n", sizeof(data.content_value));
+    printf("CONTENT SIZE NDN: %d\n", sizeof(data.content_size));
 
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
@@ -1148,6 +1180,18 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             printf("Anchor Layer 1 Data Received\n");
             
             //insert into anchor layer 1 data store with index
+            int index_num = insert_data_index(data);
+            if(index_num == -1) {
+                printf("Data Index Error\n");
+            }
+
+            //each hex digit is 4 bits
+            uint8_t bit_index[1024];
+
+            //sets the index inside data
+            bit_index[5] = (index_num >> 8) & 0xff;
+            bit_index[6] = index_num & 0xff;
+            
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1371,6 +1415,7 @@ void *command_process(void *var) {
 
             case 4:
                 printf("Anchor init flooding\n");
+                is_anchor = true;
                 ndn_interest_t interest;
                 char *temp_char;
                 temp_char = malloc(10);
