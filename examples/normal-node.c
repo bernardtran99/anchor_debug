@@ -62,6 +62,8 @@
 //link.txt
 ///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
 
+//sizeof returns the size of a the type if getting size of pointer, if size of an array, then it prints out length of an array
+
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2);
 
 typedef struct anchor_pit_entry {
@@ -573,7 +575,8 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
 
     data.name = prefix_name;
     //ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-    ndn_data_set_content(&data, str, sizeof(str));
+    //cant use sizeof with pointer of char, must use strlen + 1 to account for null char at end of string
+    ndn_data_set_content(&data, str, strlen(str) + 1);
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
@@ -794,6 +797,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     char *prefix = "";
     prefix = get_string_prefix(interest_pkt.name);
     printf("PREFIX: %s\n", prefix);
+    printf("ON INTEREST LENGTH: %d\n", interest_size);
 
     //TODO: make this a function later
     //strcat requires an array of dedicated size
