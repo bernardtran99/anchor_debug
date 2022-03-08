@@ -350,7 +350,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
 
   if (type == TLV_Interest) {
     ret = tlv_interest_get_header(packet, length, &options, &name, &name_len);
-    holder->fill_pit_func(packet, length, input_face);
+    holder->fill_pit_func(packet, length);
     holder->on_interest_func(packet, length, NULL);
     if (ret != NDN_SUCCESS)
       return ret;

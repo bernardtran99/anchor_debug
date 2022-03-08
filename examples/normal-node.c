@@ -69,8 +69,6 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2);
 typedef struct anchor_pit_entry {
     ndn_name_t name_struct;
     char *prefix;
-    ndn_face_intf_t *face;
-    ndn_udp_face_t *udp_face;
 } anchor_pit_entry_t;
 
 //for linking prefixes to a specific face
@@ -1042,12 +1040,11 @@ void insert_entry(anchor_pit_entry_t entry) {
     }
 }
 
-void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *face) {
+void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     printf("\nFill Pit.\n");
     ndn_interest_t interest_pkt;
     anchor_pit_entry_t entry;
     char *insert_prefix = "";
-    ndn_face_intf_t *input_face = face;
 
     ndn_interest_from_block(&interest_pkt, interest, interest_size);
 
@@ -1066,8 +1063,6 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
         ancmt_num[anchor_num]++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num[anchor_num]);
-
-        entry.face = input_face;
         entry.name_struct = interest_pkt.name;
         entry.prefix = insert_prefix;
 
@@ -1076,7 +1071,6 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size, ndn_face_intf_t *
     }
     else if(strcmp(cmp_string, "l2interest") == 0) {
         printf("FILL PIT L2INTEREST\n");
-        entry.face = input_face;
         entry.name_struct = interest_pkt.name;
         entry.prefix = insert_prefix;
 
@@ -1164,6 +1158,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("DATA CONTENT: %s\n", data.content_value);
     printf("SIZEOF CONTENT: %d\n", sizeof(data.content_value));
     printf("CONTENT SIZE NDN: %d\n", sizeof(data.content_size));
+    printf("Paacket Size: %d\n", data_size);
 
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
