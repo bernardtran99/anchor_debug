@@ -96,20 +96,25 @@ typedef struct udp_face_table {
     udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
+typedef struct node_data1_index {
+    uint8_t index[2];
+} node_data1_index_t;
+
 typedef struct content_store_entry {
     ndn_data_t data_pkt;
     uint8_t vector_num[5];
+    node_data1_index_t data1_array[20];
     bool is_filled;
 } content_store_entry_t;
 
-typedef struct cs_data1_index {
+typedef struct anchor_data1_index {
     uint8_t *data_value;
     bool is_filled;
 } cs_data1_index_t;
 
 typedef struct content_store {
     content_store_entry_t entries[20];
-    cs_data1_index_t data_indexes[20];
+    anchor_data1_index_t data_indexes[20];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -213,6 +218,7 @@ char *timestamp() {
     today = localtime(&timer);
     //printf("TIME: %d:%0d:%0d.%d\n", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
 
+    //we set index 0 to be 0 to init
     char *return_string;
     return_string = malloc(40); 
     return_string[0] = 0;
@@ -1051,8 +1057,8 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     //we only care about ndn name, and we can search ip table during fill pit to put ip string inside of pit entry
     insert_prefix = get_string_prefix(interest_pkt.name);
     printf("PIT PREFIX: %s\n", insert_prefix);
-    //printf("FILL FACE: %p\n", input_face);
     ndn_name_print(&interest_pkt.name);
+    printf("FILL PIT PACKET SIZE: %d", interest_size);
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
@@ -1105,7 +1111,7 @@ int insert_data_index(ndn_data_t input_data) {
             cs_table.data_indexes[i].data_value = input_data.content_value;
             cs_table.data_indexes[i].is_filled = true;
 
-            //error check
+            //error check, then return index of the data inside cs
             if(i < INT_MAX) {
                 return (int)i;
             }
@@ -1116,26 +1122,35 @@ int insert_data_index(ndn_data_t input_data) {
 
 bool check_content_store(ndn_data_t input_data) {
     //insert content store checking here
-    //bit vector is included and needs a hash of the data as well
-    //question: how are we hashing the data? ans: we are using data 1 index table instead of hash
-    //question: should anchors also put the data packet they send inside their content store
-    //bit vector length based on how many anchors there are 
+
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
-        if(cs_table.entries[i].is_filled == false) {
-            printf("CONTENT STORE INSERT INDEX: %d\n", i);
-            cs_table.entries[i].data_pkt = input_data;
-            cs_table.entries[i].is_filled = true;
-            break;
+        if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
+            if(memcmp(input_data.content_value[7], cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
+                printf("DUPLICATE DATA FOUND IN CS\n");
+                //update bit vector and send with new data packet
+                //generate vector packet
+                return true;
+            }
+            else {
+                if(cs_table.entries[i].is_filled == false) {
+                    printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                    cs_table.entries[i].data_pkt = input_data;
+                    cs_table.entries[i].is_filled = true;
+                    return false; //change to return
+                }
+            }
+        }
+        else {
+            if(cs_table.entries[i].is_filled == false) {
+                printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                cs_table.entries[i].data_pkt = input_data;
+                cs_table.entries[i].is_filled = true;
+                return false; //change to return
+            }
         }
     }
 
-    uint8_t *temp_vector = 0;
-    //content value: 0 -  15= time slice, fullmessage after
-    //set a bit to 0 or 1 so we can easily determine if message is hash or full unadulterated message
-    //check in after
-    //need to determine if data is sent
-    ndn_data_t temp_data = input_data;
 }
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
@@ -1185,12 +1200,20 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             }
 
             //each hex digit is 4 bits
-            uint8_t bit_index[1024];
+            uint8_t data_buffer[7 + data.content_size] = {0};
+            int second_num = atoi(second_slot_anchor);
+            int insert_index = 4 - ((second_num-1) / 8);
+            int insert_bit = (second_num - 1) % 8;
+
+            //sets initial bit vector
+            data_buffer[insert_index] = (int)(pow(2,insert_bit) + 1e-9);
 
             //sets the index inside data
-            bit_index[5] = (index_num >> 8) & 0xff;
-            bit_index[6] = index_num & 0xff;
-            
+            data_buffer[5] = (index_num >> 8) & 0xff;
+            data_buffer[6] = index_num & 0xff;
+
+            //memcpy( &dst[dstIdx], &src[srcIdx], numElementsToCopy * sizeof( Element ) );
+            memcpy(&data_buffer[7], &data.content_value[0], data_size);
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1208,7 +1231,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
                     
-                    generate_layer_2_data(inputIP, second_slot_anchor, data.content_value);
+                    generate_layer_2_data(inputIP, second_slot_anchor, data_buffer);
                     l2_interest_in = true;
                 }
             }
@@ -1273,6 +1296,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         printf("Layer 2 Data Recieved\n");
 
         //need to check cs if duplicate data has already been received before
+        //need to add extra fields into cs: bit vector, data(content_value), data1 index array
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
@@ -1291,7 +1315,20 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
-                char prefix_string[40] = "/l2data/";
+                //char prefix_string[40] = "/l2data/";
+                char prefix_string[40] = "";
+
+                if(check_content_store == true) {
+                    prefix_string = "/vector/";
+                    //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
+                    
+                }
+
+                else {
+                    prefix_string = "/l2data/";
+                    //data content should be forwarded the same if data not in cs first
+                }
+
                 strcat(prefix_string, second_slot_anchor);
                 strcat(prefix_string, "/");
                 strcat(prefix_string, change_num);
@@ -1317,7 +1354,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     else if(strcmp(first_slot, "vector") == 0) {
         printf("Vector Packet Recieved\n");
 
-        //update content store from bit vector and forward updated bitvector, bit vecotr recevieced should be bit vector sent
+        //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
 
         int l2_face_index = 0;
