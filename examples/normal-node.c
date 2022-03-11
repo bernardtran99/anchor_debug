@@ -1470,8 +1470,8 @@ void *command_process(void *var) {
             case 2:
                 printf("Generate Data\n");
                 send_debug_message("Clear Graph");
-                clock_t timer = clock();
-                while (clock() < (timer + 5000000)) {
+                clock_t debug_timer = clock();
+                while (clock() < (debug_timer + 5000000)) {
                 }
                 generate_data();
                 break;
@@ -1529,8 +1529,8 @@ void *command_process(void *var) {
 
             case 6:
                 printf("Latency Test\n");
-                clock_t timer = clock();
-                while (clock() < (timer + 5000000)) {
+                clock_t latency_timer = clock();
+                while (clock() < (latency_timer + 5000000)) {
                 }
                 //latency_test();
                 break;
