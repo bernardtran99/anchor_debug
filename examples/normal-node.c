@@ -1532,7 +1532,7 @@ void *command_process(void *var) {
                 clock_t timer = clock();
                 while (clock() < (timer + 5000000)) {
                 }
-                latency_test();
+                //latency_test();
                 break;
 
             case 7:
