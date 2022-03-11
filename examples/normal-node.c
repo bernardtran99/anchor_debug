@@ -1352,16 +1352,16 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 //char prefix_string[40] = "/l2data/";
-                char prefix_string[40];
+                char prefix_string[40] = "";
 
                 if(check_content_store(data) = 0) {
-                    prefix_string = "/vector/";
+                    strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
                     
                 }
 
                 else {
-                    prefix_string = "/l2data/";
+                    strcat(prefix_string, "/l2data/");
                     //data content should be forwarded the same if data not in cs first
                 }
 
