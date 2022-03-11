@@ -1236,11 +1236,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             }
 
             //each hex digit is 4 bits
-            uint8_t data_buffer[7 + data.content_size] = {0};
+            uint8_t data_buffer[7 + data.content_size];
             int second_num = atoi(second_slot_anchor);
             int insert_index = 4 - ((second_num-1) / 8);
             int insert_bit = (second_num - 1) % 8;
-
+    
             //sets initial bit vector
             data_buffer[insert_index] = (int)(pow(2,insert_bit) + 1e-9);
 
@@ -1354,7 +1354,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 //char prefix_string[40] = "/l2data/";
                 char prefix_string[40] = "";
 
-                if(check_content_store(data) == 0) {
+                if(check_content_store(data) ==  0) {
                     strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
                     
