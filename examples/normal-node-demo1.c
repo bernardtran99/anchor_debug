@@ -181,8 +181,8 @@ int send_debug_message(char *input) {
     char *debug_message;
     //char buffer[1024] = {0};
     //int valread;
-    debug_message = input;
-    send(sock , debug_message, strlen(debug_message) , 0 );
+    //debug_message = input;
+    //send(sock , debug_message, strlen(debug_message) , 0 );
 
     //printf("Hello message sent\n");
     //valread = read( sock , buffer, 1024);
@@ -1239,33 +1239,33 @@ int main(int argc, char *argv[]) {
     pthread_t forwarding_process_thread;
     pthread_t command_process_thread;
 
-    //socket connection
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
+    // //socket connection
+    // if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    // {
+    //     printf("\n Socket creation error \n");
+    //     return -1;
+    // }
 
-    // int flags = 1;
-    // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
-    //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
-    //     exit(0); 
+    // // int flags = 1;
+    // // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+    // //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+    // //     exit(0); 
+    // // }
+   
+    // serv_addr.sin_family = AF_INET;
+    // serv_addr.sin_port = htons(PORT);
+
+    // if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
+    // {
+    //     printf("\nInvalid address/ Address not supported \n");
+    //     return -1;
     // }
    
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-
-    if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-   
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
+    // if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    // {
+    //     printf("\nConnection Failed \n");
+    //     return -1;
+    // }
 
     //TODO: make this a function later
     // char temp_message[80];
