@@ -960,7 +960,6 @@ void insert_content_store(ndn_data_t input_data) {
             break;
         }
     }
-    ndn_data_t temp_data = input_data;
 }
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
