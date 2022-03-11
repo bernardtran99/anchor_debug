@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <setjmp.h>
 #include <limits.h>
+#include <math.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
