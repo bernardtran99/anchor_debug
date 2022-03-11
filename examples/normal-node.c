@@ -102,6 +102,7 @@ typedef struct udp_face_table {
 
 typedef struct node_data1_index {
     uint8_t index[2];
+    bool is_filled;
 } node_data1_index_t;
 
 typedef struct content_store_entry {
@@ -1133,15 +1134,34 @@ int check_content_store(ndn_data_t input_data) {
             if(memcmp(input_data.content_value[7], cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
+                uint8_t temp_buffer[5] = {0};
+
+                //updating data1 indexes array
+                size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+                for(int j = 0; j < index_size; j++) {
+                    if(cs_table.entries[i].data1_array[j].is_filled == false) {
+                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                        cs_table.entries[i].data1_array[j].is_filled = true;
+                    }
+                }
+
                 //generate vector packet
-                return -1;
+                
             }
             else {
                 if(cs_table.entries[i].is_filled == false) {
                     printf("CONTENT STORE INSERT INDEX: %d\n", i);
                     cs_table.entries[i].data_pkt = input_data;
                     cs_table.entries[i].is_filled = true;
-                    return (int)i; //change to return
+                    memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
+                    size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+                    for(int j = 0; j < index_size; j++) {
+                        if(cs_table.entries[i].data1_array[j].is_filled == false) {
+                            memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                            cs_table.entries[i].data1_array[j].is_filled = true;
+                        }
+                    }
+                    return -1; //change to return
                 }
             }
         }
@@ -1150,12 +1170,22 @@ int check_content_store(ndn_data_t input_data) {
                 printf("CONTENT STORE INSERT INDEX: %d\n", i);
                 cs_table.entries[i].data_pkt = input_data;
                 cs_table.entries[i].is_filled = true;
-                return (int)i; //change to return
+                memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
+                size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+                for(int j = 0; j < index_size; j++) {
+                    if(cs_table.entries[i].data1_array[j].is_filled == false) {
+                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                        cs_table.entries[i].data1_array[j].is_filled = true;
+                    }
+                }
+                return -1; //change to return
             }
         }
     }
 
 }
+
+//https://stackoverflow.com/questions/1163624/memcpy-with-startindex
 
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
@@ -1217,7 +1247,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             data_buffer[6] = index_num & 0xff;
 
             //memcpy( &dst[dstIdx], &src[srcIdx], numElementsToCopy * sizeof( Element ) );
-            memcpy(&data_buffer[7], &data.content_value[0], data_size);
+            memcpy(&data_buffer[7], &data.content_value[0], data.content_size - 7);
 
             int l2_face_index;
             bool l2_interest_in = false;
