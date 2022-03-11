@@ -562,7 +562,7 @@ void reply_ancmt(char *second_slot) {
 }
 
 //input is name
-void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_string) {
+void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_string, uint32_t data_size) {
     printf("\nGenerate Layer 2 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
@@ -587,7 +587,8 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     data.name = prefix_name;
     //ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
     //cant use sizeof with pointer of char, must use strlen + 1 to account for null char at end of string
-    ndn_data_set_content(&data, str, strlen(str) + 1);
+    //add the plus one
+    ndn_data_set_content(&data, str, data_size + 7 + 1);
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
@@ -1236,11 +1237,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             }
 
             //each hex digit is 4 bits
-            uint8_t data_buffer[7 + data.content_size];
+            uint8_t data_buffer[1024] = {0};
             int second_num = atoi(second_slot_anchor);
             int insert_index = 4 - ((second_num-1) / 8);
             int insert_bit = (second_num - 1) % 8;
-    
+
             //sets initial bit vector
             data_buffer[insert_index] = (int)(pow(2,insert_bit) + 1e-9);
 
@@ -1267,7 +1268,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
                     
-                    generate_layer_2_data(inputIP, second_slot_anchor, data_buffer);
+                    generate_layer_2_data(inputIP, second_slot_anchor, data_buffer, data.content_size);
                     l2_interest_in = true;
                 }
             }
