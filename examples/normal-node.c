@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
+#include <limits.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -325,19 +326,19 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
 }
 
 // DATA_CONTENT: bit_vector->content->anchor_data_index
-uint8_t get_bit_vector(ndn_data_t input_packet, int num_anchors) {
-    char *return_string;
-    return_string = malloc(100);
-    return_string[0] = 0;
+// uint8_t get_bit_vector(ndn_data_t input_packet, int num_anchors) {
+//     char *return_string;
+//     return_string = malloc(100);
+//     return_string[0] = 0;
 
-    int delimiter_count = 0;
-    bool start_delim = false;
-    //cant use forward slash delimiter because the bit vector miught equal the delimiter, we just have 
-    for (int j = 0; j < input_packet.content_size; j++) {
+//     int delimiter_count = 0;
+//     bool start_delim = false;
+//     //cant use forward slash delimiter because the bit vector miught equal the delimiter, we just have 
+//     for (int j = 0; j < input_packet.content_size; j++) {
         
-    }
-    return return_string;
-}
+//     }
+//     return return_string;
+// }
 
 //may have to use interest as a pointer
 //flood has to include the anchor prefix for second slot in ancmt packet
@@ -1092,19 +1093,19 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     }
 }
 
-uint8_t *get_data_content(ndn_data_t input_packet, int start_index, int end_index) {
-    //end and start indexes are inclusive
-    //ex: start_index = 0, end_index = 4 ; means that we want content_value[0] -> content_value[4] and return array of size 5
-    printf("Getting Data Content: %d to %d\n", start_index, end_index);
-    int array_size = end_index - start_index + 1;
-    uint8_t return_array[array_size];
-    int j = 0;
-    for(int i = start_index; i <= end_index; i++) {
-        return_array[j] = input_packet.content_value[i];
-        j++;
-    }
-    return return_array;
-}
+// uint8_t *get_data_content(ndn_data_t input_packet, int start_index, int end_index) {
+//     //end and start indexes are inclusive
+//     //ex: start_index = 0, end_index = 4 ; means that we want content_value[0] -> content_value[4] and return array of size 5
+//     printf("Getting Data Content: %d to %d\n", start_index, end_index);
+//     int array_size = end_index - start_index + 1;
+//     uint8_t return_array[array_size];
+//     int j = 0;
+//     for(int i = start_index; i <= end_index; i++) {
+//         return_array[j] = input_packet.content_value[i];
+//         j++;
+//     }
+//     return return_array;
+// }
 
 //is only called for anchors when assigning layer 1 data indexes
 int insert_data_index(ndn_data_t input_data) {
@@ -1131,7 +1132,7 @@ int check_content_store(ndn_data_t input_data) {
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
         if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
-            if(memcmp(input_data.content_value[7], cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
+            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
                 uint8_t temp_buffer[5] = {0};
