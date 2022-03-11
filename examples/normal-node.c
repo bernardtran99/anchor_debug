@@ -981,9 +981,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
-    printf("SIZEOF CONTENT: %d\n", sizeof(data.content_value));
-    printf("CONTENT SIZE NDN: %d\n", sizeof(data.content_size));
-    printf("Paacket Size: %d\n", data_size);
+    printf("Packet Length: %d\n", data_size);
 
     // prefix = get_prefix_component(data.name, 2);
     // prefix = trimwhitespace(prefix);
