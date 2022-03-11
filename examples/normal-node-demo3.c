@@ -545,7 +545,7 @@ void generate_data() {
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
-    char *str = "This is a Layer 1 Data Packet";
+    char *str = "hello";
     uint8_t buf[4096];
 
     //iterate through all anchors that sent ancmts
