@@ -33,9 +33,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.89.148"
+#define NODE1 "10.156.82.137"
 #define NODE2 "10.156.90.106"
-#define NODE3 "10.156.91.124"
+#define NODE3 "10.156.70.34"
 #define NODE4 "10.156.91.214"
 #define NODE5 "10.156.90.212"
 #define NODE6 "10.156.91.246"
@@ -43,7 +43,7 @@
 #define NODE8 "10.156.90.170"
 #define NODE9 "10.156.92.6"
 #define NODE10 "10.156.91.67"
-#define DEBUG "10.156.84.156"
+#define DEBUG "10.156.87.83"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -261,7 +261,7 @@ char *get_string_prefix(ndn_name_t input_name) {
 
 //gets prefix slot of input
 char *get_prefix_component(ndn_name_t input_name, int num_input) {
-    printf("Get Prefix Component %d\n",num_input);
+    //printf("Get Prefix Component %d\n",num_input);
     char *return_string;
     return_string = malloc(40); 
     return_string[0] = 0;
@@ -981,6 +981,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
     printf("DATA CONTENT: %s\n", data.content_value);
+    printf("SIZEOF CONTENT: %d\n", sizeof(data.content_value));
+    printf("CONTENT SIZE NDN: %d\n", sizeof(data.content_size));
+    printf("Paacket Size: %d\n", data_size);
 
     // prefix = get_prefix_component(data.name, 2);
     // prefix = trimwhitespace(prefix);
@@ -1118,20 +1121,20 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char prefix_string[40] = "/l2data/";
                 strcat(prefix_string, second_slot_anchor);
                 strcat(prefix_string, "/");
-                printf("Here\n");
+                //printf("Here\n");
                 strcat(prefix_string, change_num);
-                printf("Here\n");
+                //printf("Here\n");
                 ndn_name_from_string(&name_prefix, prefix_string, strlen(prefix_string));
                 data.name = name_prefix;
 
-                printf("Here\n");
+                //printf("Here\n");
                 encoder_init(&encoder, buf, 4096);
                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
-                printf("Here\n");
+                //printf("Here\n");
                 face = generate_udp_face(ip_string, "6000", "4000");
-                printf("Here\n");
+                //printf("Here\n");
                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-                printf("Here\n");
+                //printf("Here\n");
                 printf("Layer 2 Data Forwarded\n");
 
                 send_debug_message("Layer 2 Data Forwarded ; ");
@@ -1305,8 +1308,6 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE  
     node_num = 3;
     add_neighbor(1);
-    add_neighbor(4);
-    add_neighbor(6);
 
     last_interest = ndn_time_now_ms();
     
