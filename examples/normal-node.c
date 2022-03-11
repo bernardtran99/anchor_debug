@@ -54,7 +54,11 @@
   (byte & 0x08 ? '1' : '0'), \
   (byte & 0x04 ? '1' : '0'), \
   (byte & 0x02 ? '1' : '0'), \
-  (byte & 0x01 ? '1' : '0') 
+  (byte & 0x01 ? '1' : '0')
+
+//backslash used for multiline macros
+//question mark is ternary operator ex: if (byte & 0x80), then 1 else 0
+//checks every bit, if bit in "byte" is 1, the "1", else "0"
 
 //in the build directory go to make files and normal node -change the link.txt
 //CMAKE again
@@ -1120,7 +1124,7 @@ int insert_data_index(ndn_data_t input_data) {
     return -1;
 }
 
-bool check_content_store(ndn_data_t input_data) {
+int check_content_store(ndn_data_t input_data) {
     //insert content store checking here
 
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
@@ -1130,14 +1134,14 @@ bool check_content_store(ndn_data_t input_data) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
                 //generate vector packet
-                return true;
+                return -1;
             }
             else {
                 if(cs_table.entries[i].is_filled == false) {
                     printf("CONTENT STORE INSERT INDEX: %d\n", i);
                     cs_table.entries[i].data_pkt = input_data;
                     cs_table.entries[i].is_filled = true;
-                    return false; //change to return
+                    return (int)i; //change to return
                 }
             }
         }
@@ -1146,7 +1150,7 @@ bool check_content_store(ndn_data_t input_data) {
                 printf("CONTENT STORE INSERT INDEX: %d\n", i);
                 cs_table.entries[i].data_pkt = input_data;
                 cs_table.entries[i].is_filled = true;
-                return false; //change to return
+                return (int)i; //change to return
             }
         }
     }
@@ -1318,7 +1322,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 //char prefix_string[40] = "/l2data/";
                 char prefix_string[40] = "";
 
-                if(check_content_store == true) {
+                if(check_content_store(data) = 0) {
                     prefix_string = "/vector/";
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
                     
