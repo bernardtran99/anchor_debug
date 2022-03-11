@@ -1352,7 +1352,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char change_num[20] = "";
                 sprintf(change_num, "%d", node_num);
                 //char prefix_string[40] = "/l2data/";
-                char prefix_string[40] = "";
+                char prefix_string[40];
 
                 if(check_content_store(data) = 0) {
                     prefix_string = "/vector/";
