@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
+#include <sys/time.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <setjmp.h>
@@ -115,7 +115,7 @@ typedef struct content_store_entry {
 typedef struct anchor_data1_index {
     uint8_t *data_value;
     bool is_filled;
-} cs_data1_index_t;
+} anchor_data1_index_t;
 
 typedef struct content_store {
     content_store_entry_t entries[20];
