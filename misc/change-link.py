@@ -1,7 +1,7 @@
 import fileinput
 import os
 
-insert_string = " -pthread"
+insert_string = " -pthread -lm"
 # print(os.getcwd())
 
 file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node.dir/link.txt"
