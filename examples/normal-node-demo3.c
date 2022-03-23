@@ -365,6 +365,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     //if(is_anchor == true) {
     int second_slot_num;
     second_slot_num = atoi(second_slot);
+    bool route_added = false;
 
     if(second_slot_num == node_num) {
         printf("Anchor Flood\n");
@@ -380,6 +381,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
                 ip_string = search_ip_table(neighbor_list[i]);
                 face = generate_udp_face(ip_string, "3000", "5000");
                 ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                route_added = true;
             }
         }
     }
@@ -430,6 +432,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
                 ip_string = search_ip_table(neighbor_list[i]);
                 face = generate_udp_face(ip_string, "3000", "5000");
                 ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                route_added = true;
             }
         }
     }
@@ -440,8 +443,13 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     // face = generate_udp_face(NODE3, "3000", "5000");
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
-    ndn_interest_from_name(&interest, &prefix_name);
-    ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    if(route_added == true) {
+        ndn_interest_from_name(&interest, &prefix_name);
+        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    }
+    else {
+        printf("Funtion Complete Without Sending\n")
+    }
 
     printf("Flooded Interest!\n");
     // send_debug_message("Flooded Interest ; ");
@@ -1071,7 +1079,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     insert_prefix = get_string_prefix(interest_pkt.name);
     printf("PIT PREFIX: %s\n", insert_prefix);
     ndn_name_print(&interest_pkt.name);
-    printf("FILL PIT PACKET SIZE: %d", interest_size);
+    printf("FILL PIT PACKET SIZE: %d\n", interest_size);
 
     char *cmp_string = "";
     cmp_string = get_prefix_component(interest_pkt.name, 0);
