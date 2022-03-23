@@ -35,9 +35,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.70.36"
+#define NODE1 "10.156.74.199"
 #define NODE2 "10.156.90.106"
-#define NODE3 "10.156.70.34"
+#define NODE3 "10.156.76.154"
 #define NODE4 "10.156.91.214"
 #define NODE5 "10.156.90.212"
 #define NODE6 "10.156.91.246"
@@ -137,6 +137,9 @@ udp_face_table_t udp_table;
 //To start/stop main loop
 bool running;
 
+//boolean to check if node is connected to debug server
+bool debug_connected;
+
 //To set whether this node is anchor
 bool is_anchor = false;
 
@@ -201,15 +204,17 @@ int neighbor_list[10];
 int flood_list[10];
 
 int send_debug_message(char *input) {
-    char *debug_message;
-    //char buffer[1024] = {0};
-    //int valread;
-    debug_message = input;
-    send(sock , debug_message, strlen(debug_message) , 0 );
+    if(debug_connected == true) {
+        char *debug_message;
+        //char buffer[1024] = {0};
+        //int valread;
+        debug_message = input;
+        send(sock , debug_message, strlen(debug_message) , 0 );
 
-    //printf("Hello message sent\n");
-    //valread = read( sock , buffer, 1024);
-    //printf("%s\n",buffer);
+        //printf("Hello message sent\n");
+        //valread = read( sock , buffer, 1024);
+        //printf("%s\n",buffer);
+    }
     return 0;
 }
 
@@ -1460,7 +1465,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1499,33 +1504,36 @@ void *command_process(void *var) {
 
             case 5:
                 printf("Connecting to Debug Server\n");
+
                 //socket connection
-                // if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-                // {
-                //     printf("\n Socket creation error \n");
-                //     return -1;
-                // }
+                if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+                {
+                    printf("\n Socket creation error \n");
+                    return -1;
+                }
 
-                // // int flags = 1;
-                // // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
-                // //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
-                // //     exit(0); 
-                // // }
-            
-                // serv_addr.sin_family = AF_INET;
-                // serv_addr.sin_port = htons(PORT);
-
-                // if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
-                // {
-                //     printf("\nInvalid address/ Address not supported \n");
-                //     return -1;
+                // int flags = 1;
+                // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+                //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+                //     exit(0); 
                 // }
             
-                // if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-                // {
-                //     printf("\nConnection Failed \n");
-                //     return -1;
-                // }
+                serv_addr.sin_family = AF_INET;
+                serv_addr.sin_port = htons(PORT);
+
+                if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
+                {
+                    printf("\nInvalid address/ Address not supported \n");
+                    return -1;
+                }
+            
+                if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+                {
+                    printf("\nConnection Failed \n");
+                    return -1;
+                }
+
+                debug_connected = true;
                 break;
 
             case 6:
@@ -1557,34 +1565,6 @@ int main(int argc, char *argv[]) {
 
     pthread_t forwarding_process_thread;
     pthread_t command_process_thread;
-
-    //socket connection
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Socket creation error \n");
-        return -1;
-    }
-
-    // int flags = 1;
-    // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
-    //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
-    //     exit(0); 
-    // }
-   
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-
-    if(inet_pton(AF_INET, DEBUG, &serv_addr.sin_addr)<=0) 
-    {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
-   
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
 
     //TODO: make this a function later
     // char temp_message[80];
