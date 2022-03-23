@@ -448,7 +448,7 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
     }
     else {
-        printf("Funtion Complete Without Sending\n")
+        printf("Function Complete Without Sending\n");
     }
 
     printf("Flooded Interest!\n");
