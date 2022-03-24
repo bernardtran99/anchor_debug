@@ -673,7 +673,7 @@ void generate_data() {
             ip_string = search_ip_table(reply[rand_num]);
 
             data.name = prefix_name;
-            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) );
             ndn_metainfo_init(&data.metainfo);
             ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
             encoder_init(&encoder, buf, 4096);
@@ -1610,7 +1610,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 3;
     add_neighbor(1);
-    
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
