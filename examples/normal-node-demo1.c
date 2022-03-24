@@ -673,7 +673,7 @@ void generate_data() {
             ip_string = search_ip_table(reply[rand_num]);
 
             data.name = prefix_name;
-            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) );
+            ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
             ndn_metainfo_init(&data.metainfo);
             ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
             encoder_init(&encoder, buf, 4096);
@@ -1221,6 +1221,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
     printf("DATA CONTENT: [%s]\n", data.content_value);
+    printf("Content Size Field: %d", data.content_size);
     printf("Packet Size: %d\n", data_size);
 
     char temp_message[80] = "";
