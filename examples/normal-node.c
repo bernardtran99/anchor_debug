@@ -1220,10 +1220,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     char *prefix = "";
     prefix = get_string_prefix(data.name);
     printf("%s\n", prefix); 
-    printf("DATA CONTENT: %s\n", data.content_value);
-    printf("SIZEOF CONTENT: %d\n", sizeof(data.content_value));
-    printf("CONTENT SIZE NDN: %d\n", sizeof(data.content_size));
-    printf("Paacket Size: %d\n", data_size);
+    printf("DATA CONTENT: [%s]\n", data.content_value);
+    printf("Packet Size: %d\n", data_size);
 
     char temp_message[80] = "";
     strcat(temp_message, "On Data: ");
