@@ -1227,6 +1227,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         printf(" ");
     }
     printf("\n");
+    for(int i = 0; i < data.content_size; i++) {
+        printf("%d",data.content_value[i]);
+        printf(" ");
+    }
+    printf("\n");
     printf("Packet Size: %d\n", data_size);
 
     char temp_message[80] = "";
