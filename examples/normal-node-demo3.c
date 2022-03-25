@@ -1489,13 +1489,13 @@ void *command_process(void *var) {
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
-            case 0:
+            case 0: {
                 printf("Exiting\n");
                 break;
-
-            case 2:
-                char *input_string;
-                input_string = "";
+            }
+                
+            case 2: {
+                char *input_string = "";
                 printf("Generate Data -> Please input data string:\n");
                 scanf("%s", input_string);
                 printf("Generate Data Text Input: %s\n");
@@ -1505,8 +1505,9 @@ void *command_process(void *var) {
                 }
                 generate_data(input_string);
                 break;
+            }
 
-            case 3:
+            case 3: {
                 printf("Check Face Valid\n");
                 //ndn_udp_face_t *face;
                 //face = generate_udp_face("0.0.0.0", "7000", "8000");
@@ -1514,8 +1515,9 @@ void *command_process(void *var) {
                     printf("Entry is null\n");
                 }
                 break;
+            }
 
-            case 4:
+            case 4: {
                 printf("Anchor init flooding\n");
                 is_anchor = true;
                 ndn_interest_t interest;
@@ -1525,8 +1527,9 @@ void *command_process(void *var) {
                 sprintf(temp_char, "%d", node_num);
                 flood(interest, temp_char);
                 break;
+            }
 
-            case 5:
+            case 5: {
                 printf("Connecting to Debug Server\n");
 
                 //socket connection
@@ -1556,26 +1559,31 @@ void *command_process(void *var) {
 
                 debug_connected = true;
                 break;
+            }
 
-            case 6:
+            case 6: {
                 printf("Latency Test\n");
                 clock_t latency_timer = clock();
                 while (clock() < (latency_timer + 5000000)) {
                 }
                 //latency_test();
                 break;
+            }
 
-            case 7:
+            case 7: {
                 printf("Find ad-hoc neighbors\n");  
                 break;
+            }
 
-            case 8:
+            case 8: {
                 printf("Populate FIB\n");
                 break;
+            }
 
-            default:
+            default: {
                 printf("Invalid Input\n");
                 break;
+            }
         }
     }
 }
