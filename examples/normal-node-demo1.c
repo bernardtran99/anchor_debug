@@ -1495,7 +1495,7 @@ void *command_process(void *var) {
             }
                 
             case 2: {
-                char *input_string = "";
+                char *input_string = malloc(40);
                 printf("Generate Data -> Please input data string:\n");
                 scanf("%s", input_string);
                 printf("Generate Data Text Input: %s\n");
