@@ -97,7 +97,7 @@ int main() {
 
     // printf("%d\n",a | b);
 
-    char *test_string;
+    uint8_t *test_string = "test\0";
     printf("%d\n", strlen(test_string));
     printf("done\n");
     return 0;

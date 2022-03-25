@@ -1124,9 +1124,11 @@ int insert_data_index(ndn_data_t input_data) {
             }
         }
         else {
-            if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) == 0) {
-                printf("Duplicate Data 1 at index: %d\n", i);
-                return -1;
+            if(strlen(cs_table.data_indexes[i].data_value) == strlen(input_data.content_value)) {
+                if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) == 0) {
+                    printf("Duplicate Data 1 at index: %d\n", i);
+                    return -1;
+                }
             }
         }
     }
@@ -1642,7 +1644,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 3;
     add_neighbor(1);
-
+    
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
