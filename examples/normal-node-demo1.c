@@ -1223,15 +1223,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("DATA CONTENT: [%s]\n", data.content_value);
     printf("Content Size Field: %d\n", data.content_size);
     for(int i = 0; i < data.content_size; i++) {
-        printf("%c", data.content_value[i]);
-    }
-    printf("\n");
-    for(int i = 0; i < data.content_size; i++) {
-        printf("%s", data.content_value[i]);
-    }
-    printf("\n");
-    for(int i = 0; i < data.content_size; i++) {
-        printf("%d", data.content_value[i]);
+        printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(data.content_value[i]));
     }
     printf("\n");
     printf("Packet Size: %d\n", data_size);
@@ -1274,7 +1266,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             data_buffer[6] = index_num & 0xff;
 
             //memcpy( &dst[dstIdx], &src[srcIdx], numElementsToCopy * sizeof( Element ) );
-            memcpy(&data_buffer[7], &data.content_value[0], data.content_size - 7);
+            memcpy(&data_buffer[7], &data.content_value[0], data.content_size);
 
             int l2_face_index;
             bool l2_interest_in = false;
@@ -1623,7 +1615,6 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 1;
     add_neighbor(3);
-
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT

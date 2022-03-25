@@ -1223,7 +1223,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("DATA CONTENT: [%s]\n", data.content_value);
     printf("Content Size Field: %d\n", data.content_size);
     for(int i = 0; i < data.content_size; i++) {
-         printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(data.content_value[i]));
+        printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(data.content_value[i]));
     }
     printf("\n");
     printf("Packet Size: %d\n", data_size);
