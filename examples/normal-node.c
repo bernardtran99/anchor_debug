@@ -331,21 +331,6 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
     return return_string;
 }
 
-// DATA_CONTENT: bit_vector->content->anchor_data_index
-// uint8_t get_bit_vector(ndn_data_t input_packet, int num_anchors) {
-//     char *return_string;
-//     return_string = malloc(100);
-//     return_string[0] = 0;
-
-//     int delimiter_count = 0;
-//     bool start_delim = false;
-//     //cant use forward slash delimiter because the bit vector miught equal the delimiter, we just have 
-//     for (int j = 0; j < input_packet.content_size; j++) {
-        
-//     }
-//     return return_string;
-// }
-
 //may have to use interest as a pointer
 //flood has to include the anchor prefix for second slot in ancmt packet
 void flood(ndn_interest_t interest_pkt, char *second_slot) {
@@ -1129,7 +1114,8 @@ int insert_data_index(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         //does not matter if data 1 has duplicate, bcause we want to send them anyway
         if(cs_table.data_indexes[i].is_filled == false) {
-            printf("CONTENT STORE DATA INDEX: %d\n", i);
+            //do error check
+            printf("ANCHOR DATA 1 INDEX: %d\n", i);
             cs_table.data_indexes[i].data_value = input_data.content_value;
             cs_table.data_indexes[i].is_filled = true;
 
@@ -1142,13 +1128,15 @@ int insert_data_index(ndn_data_t input_data) {
     return -1;
 }
 
+//only called if a data2 packet is received
 int check_content_store(ndn_data_t input_data) {
     //insert content store checking here
 
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
         if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
-            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
+            //if duplicate data
+            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], input_data.content_size - 7) == 0) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
                 uint8_t temp_buffer[5] = {0};
@@ -1167,7 +1155,7 @@ int check_content_store(ndn_data_t input_data) {
             }
             else {
                 if(cs_table.entries[i].is_filled == false) {
-                    printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                    printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
                     cs_table.entries[i].data_pkt = input_data;
                     cs_table.entries[i].is_filled = true;
                     memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
@@ -1182,9 +1170,10 @@ int check_content_store(ndn_data_t input_data) {
                 }
             }
         }
+        //if not duplicate data
         else {
             if(cs_table.entries[i].is_filled == false) {
-                printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
                 cs_table.entries[i].data_pkt = input_data;
                 cs_table.entries[i].is_filled = true;
                 memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
@@ -1200,6 +1189,10 @@ int check_content_store(ndn_data_t input_data) {
         }
     }
 
+}
+
+int vector_cs_store(ndn_data_t input_vector_packet) {
+    return 0;
 }
 
 //https://stackoverflow.com/questions/1163624/memcpy-with-startindex
@@ -1384,14 +1377,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char prefix_string[40] = "";
 
                 int cs_check = check_content_store(data);
-
                 //data is duplicated (OR the bit vector)
                 if(cs_check ==  0) {
                     strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
                     
                 }
-
                 //data is not duplicated
                 else {
                     strcat(prefix_string, "/l2data/");
