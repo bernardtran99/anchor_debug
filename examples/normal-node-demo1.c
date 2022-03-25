@@ -1114,16 +1114,19 @@ int insert_data_index(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         //does not matter if data 1 has duplicate, bcause we want to send them anyway
         if(cs_table.data_indexes[i].is_filled == false) {
-            //do error check
-            if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) != 0) {
-                printf("ANCHOR DATA 1 INDEX: %d\n", i);
-                cs_table.data_indexes[i].data_value = input_data.content_value;
-                cs_table.data_indexes[i].is_filled = true;
+            printf("ANCHOR DATA 1 INDEX: %d\n", i);
+            cs_table.data_indexes[i].data_value = input_data.content_value;
+            cs_table.data_indexes[i].is_filled = true;
 
-                //error check, then return index of the data inside cs
-                if(i < INT_MAX) {
-                    return (int)i;
-                }
+            //error check, then return index of the data inside cs
+            if(i < INT_MAX) {
+                return (int)i;
+            }
+        }
+        else {
+            if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) == 0) {
+                printf("Duplicate Data 1 at index: %d\n", i);
+                return -1;
             }
         }
     }
@@ -1254,7 +1257,9 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             //insert into anchor layer 1 data store with index (this is is only for anchors)
             int index_num = insert_data_index(data);
             if(index_num == -1) {
+                //if -1, then cs data index is full or duplicate found if so, then do not flood
                 printf("Data Index Error\n");
+                return;
             }
 
             //each hex digit is 4 bits
