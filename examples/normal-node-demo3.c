@@ -619,7 +619,7 @@ void generate_data(char *data_string) {
     ndn_udp_face_t *face;
     ndn_encoder_t encoder;
     uint8_t buf[4096];
-    char *str = "ABC123";
+    char *str = data_string;
 
     //iterate through all anchors that sent ancmts
     for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
@@ -1637,7 +1637,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 3;
     add_neighbor(1);
-    
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
