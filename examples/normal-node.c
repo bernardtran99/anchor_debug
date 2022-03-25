@@ -1494,7 +1494,8 @@ void *command_process(void *var) {
                 break;
 
             case 2:
-                char *input_string = "";
+                char *input_string;
+                input_string = "";
                 printf("Generate Data -> Please input data string:\n");
                 scanf("%s", input_string);
                 printf("Generate Data Text Input: %s\n");

@@ -1494,7 +1494,8 @@ void *command_process(void *var) {
                 break;
 
             case 2:
-                char *input_string = "";
+                char *input_string;
+                input_string = "";
                 printf("Generate Data -> Please input data string:\n");
                 scanf("%s", input_string);
                 printf("Generate Data Text Input: %s\n");
@@ -1625,8 +1626,10 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 3;
-    add_neighbor(1);
+    node_num = 1;
+    add_neighbor(5);
+    add_neighbor(7);
+    add_neighbor(10);
 
     last_interest = ndn_time_now_ms();
     
