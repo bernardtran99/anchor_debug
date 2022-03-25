@@ -1360,6 +1360,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
+        printf("DATA CONTENT (Layer 2 Data): [%s]\n", &data.content_value[7]);
+
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
             char *check_string = "";
