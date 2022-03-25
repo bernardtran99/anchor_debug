@@ -612,7 +612,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
 //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
 //prefix: /l1data/anchor_num/sender_num
-void generate_data() {
+void generate_data(char *data_string) {
     printf("\nGenerate Layer 1 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
@@ -1115,13 +1115,15 @@ int insert_data_index(ndn_data_t input_data) {
         //does not matter if data 1 has duplicate, bcause we want to send them anyway
         if(cs_table.data_indexes[i].is_filled == false) {
             //do error check
-            printf("ANCHOR DATA 1 INDEX: %d\n", i);
-            cs_table.data_indexes[i].data_value = input_data.content_value;
-            cs_table.data_indexes[i].is_filled = true;
+            if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) != 0) {
+                printf("ANCHOR DATA 1 INDEX: %d\n", i);
+                cs_table.data_indexes[i].data_value = input_data.content_value;
+                cs_table.data_indexes[i].is_filled = true;
 
-            //error check, then return index of the data inside cs
-            if(i < INT_MAX) {
-                return (int)i;
+                //error check, then return index of the data inside cs
+                if(i < INT_MAX) {
+                    return (int)i;
+                }
             }
         }
     }
@@ -1492,12 +1494,15 @@ void *command_process(void *var) {
                 break;
 
             case 2:
-                printf("Generate Data\n");
+                char *input_string = "";
+                printf("Generate Data -> Please input data string:\n");
+                scanf("%s", input_string);
+                printf("Generate Data Text Input: %s\n");
                 send_debug_message("Clear Graph");
                 clock_t debug_timer = clock();
                 while (clock() < (debug_timer + 5000000)) {
                 }
-                generate_data();
+                generate_data(input_string);
                 break;
 
             case 3:

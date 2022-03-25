@@ -331,21 +331,6 @@ char *get_prefix_component(ndn_name_t input_name, int num_input) {
     return return_string;
 }
 
-// DATA_CONTENT: bit_vector->content->anchor_data_index
-// uint8_t get_bit_vector(ndn_data_t input_packet, int num_anchors) {
-//     char *return_string;
-//     return_string = malloc(100);
-//     return_string[0] = 0;
-
-//     int delimiter_count = 0;
-//     bool start_delim = false;
-//     //cant use forward slash delimiter because the bit vector miught equal the delimiter, we just have 
-//     for (int j = 0; j < input_packet.content_size; j++) {
-        
-//     }
-//     return return_string;
-// }
-
 //may have to use interest as a pointer
 //flood has to include the anchor prefix for second slot in ancmt packet
 void flood(ndn_interest_t interest_pkt, char *second_slot) {
@@ -600,8 +585,9 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     data.name = prefix_name;
     //ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
     //cant use sizeof with pointer of char, must use strlen + 1 to account for null char at end of string
-    //add the plus one
-    ndn_data_set_content(&data, str, data_size + 7 + 1);
+    //no need to add plus 1 again because generate_data already added 1 for null character so no need to add on again
+    //0x00 is a null character denoting the end of a string in c
+    ndn_data_set_content(&data, str, data_size + 7);
     ndn_metainfo_init(&data.metainfo);
     ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
     encoder_init(&encoder, buf, 4096);
@@ -626,7 +612,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
 //using different port because dont know if prefix name will interfere with ndn_forwarder for sending data
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
 //prefix: /l1data/anchor_num/sender_num
-void generate_data() {
+void generate_data(char *data_string) {
     printf("\nGenerate Layer 1 Data\n");
     ndn_data_t data;
     ndn_name_t prefix_name;
@@ -1128,26 +1114,31 @@ int insert_data_index(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         //does not matter if data 1 has duplicate, bcause we want to send them anyway
         if(cs_table.data_indexes[i].is_filled == false) {
-            printf("CONTENT STORE DATA INDEX: %d\n", i);
-            cs_table.data_indexes[i].data_value = input_data.content_value;
-            cs_table.data_indexes[i].is_filled = true;
+            //do error check
+            if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size) != 0) {
+                printf("ANCHOR DATA 1 INDEX: %d\n", i);
+                cs_table.data_indexes[i].data_value = input_data.content_value;
+                cs_table.data_indexes[i].is_filled = true;
 
-            //error check, then return index of the data inside cs
-            if(i < INT_MAX) {
-                return (int)i;
+                //error check, then return index of the data inside cs
+                if(i < INT_MAX) {
+                    return (int)i;
+                }
             }
         }
     }
     return -1;
 }
 
+//only called if a data2 packet is received
 int check_content_store(ndn_data_t input_data) {
     //insert content store checking here
 
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
         if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
-            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], (input_data.content_size - 7)) == 0) {
+            //if duplicate data
+            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], input_data.content_size - 7) == 0) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
                 uint8_t temp_buffer[5] = {0};
@@ -1166,7 +1157,7 @@ int check_content_store(ndn_data_t input_data) {
             }
             else {
                 if(cs_table.entries[i].is_filled == false) {
-                    printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                    printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
                     cs_table.entries[i].data_pkt = input_data;
                     cs_table.entries[i].is_filled = true;
                     memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
@@ -1181,9 +1172,10 @@ int check_content_store(ndn_data_t input_data) {
                 }
             }
         }
+        //if not duplicate data
         else {
             if(cs_table.entries[i].is_filled == false) {
-                printf("CONTENT STORE INSERT INDEX: %d\n", i);
+                printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
                 cs_table.entries[i].data_pkt = input_data;
                 cs_table.entries[i].is_filled = true;
                 memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
@@ -1199,6 +1191,10 @@ int check_content_store(ndn_data_t input_data) {
         }
     }
 
+}
+
+int vector_cs_store(ndn_data_t input_vector_packet) {
+    return 0;
 }
 
 //https://stackoverflow.com/questions/1163624/memcpy-with-startindex
@@ -1219,14 +1215,17 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *prefix = "";
     prefix = get_string_prefix(data.name);
-    printf("%s\n", prefix); 
+    printf("%s\n", prefix);
+
     printf("DATA CONTENT: [%s]\n", data.content_value);
     printf("Content Size Field: %d\n", data.content_size);
+
     for(int i = 0; i < data.content_size; i++) {
         printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(data.content_value[i]));
         printf(" ");
     }
     printf("\n");
+
     for(int i = 0; i < data.content_size; i++) {
         printf("%d",data.content_value[i]);
         printf(" ");
@@ -1252,7 +1251,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
             
-            //insert into anchor layer 1 data store with index
+            //insert into anchor layer 1 data store with index (this is is only for anchors)
             int index_num = insert_data_index(data);
             if(index_num == -1) {
                 printf("Data Index Error\n");
@@ -1267,7 +1266,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             //sets initial bit vector
             data_buffer[insert_index] = (int)(pow(2,insert_bit) + 1e-9);
 
-            //sets the index inside data
+            //sets the data 1 index inside data buffer
             data_buffer[5] = (index_num >> 8) & 0xff;
             data_buffer[6] = index_num & 0xff;
 
@@ -1379,12 +1378,14 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 //char prefix_string[40] = "/l2data/";
                 char prefix_string[40] = "";
 
-                if(check_content_store(data) ==  0) {
+                int cs_check = check_content_store(data);
+                //data is duplicated (OR the bit vector)
+                if(cs_check ==  0) {
                     strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
                     
                 }
-
+                //data is not duplicated
                 else {
                     strcat(prefix_string, "/l2data/");
                     //data content should be forwarded the same if data not in cs first
@@ -1493,12 +1494,15 @@ void *command_process(void *var) {
                 break;
 
             case 2:
-                printf("Generate Data\n");
+                char *input_string = "";
+                printf("Generate Data -> Please input data string:\n");
+                scanf("%s", input_string);
+                printf("Generate Data Text Input: %s\n");
                 send_debug_message("Clear Graph");
                 clock_t debug_timer = clock();
                 while (clock() < (debug_timer + 5000000)) {
                 }
-                generate_data();
+                generate_data(input_string);
                 break;
 
             case 3:
