@@ -1499,7 +1499,7 @@ void *command_process(void *var) {
                 char *input_string = malloc(40);
                 printf("Generate Data -> Please input data string:\n");
                 scanf("%s", input_string);
-                printf("Generate Data Text Input: %s\n");
+                printf("Generate Data Text Input: %s\n", input_string);
                 send_debug_message("Clear Graph");
                 clock_t debug_timer = clock();
                 while (clock() < (debug_timer + 5000000)) {
