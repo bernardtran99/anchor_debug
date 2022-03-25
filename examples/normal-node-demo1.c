@@ -1224,6 +1224,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("Content Size Field: %d\n", data.content_size);
     for(int i = 0; i < data.content_size; i++) {
         printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(data.content_value[i]));
+        printf(" ");
     }
     printf("\n");
     printf("Packet Size: %d\n", data_size);
@@ -1615,6 +1616,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 1;
     add_neighbor(3);
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
