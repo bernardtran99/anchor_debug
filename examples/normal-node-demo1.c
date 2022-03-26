@@ -1122,9 +1122,9 @@ int insert_data_index(ndn_data_t input_data) {
                 }
             }
         }
-        else if(cs_table.data_indexes[i].is_filled == false) {
+        else {
             printf("ANCHOR DATA 1 INDEX: %d\n", i);
-            cs_table.data_indexes[i].data_value = input_data.content_value;
+            memcpy(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size);
             cs_table.data_indexes[i].is_filled = true;
 
             //error check, then return index of the data inside cs
