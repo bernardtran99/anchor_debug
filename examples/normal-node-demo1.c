@@ -1112,7 +1112,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
 int insert_data_index(ndn_data_t input_data) {
     size_t cs_size = sizeof(cs_table.data_indexes)/sizeof(cs_table.data_indexes[0]);
     for(size_t i = 0; i < cs_size; i++) {
-        if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
+        if(strcmp((const char *)cs_table.data_indexes[i].data_value, (const char *)input_data.content_value) == 0) {
             printf("Duplicate Data 1 at index: %d\n", i);
             return -1;
         }
