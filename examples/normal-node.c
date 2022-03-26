@@ -1114,10 +1114,11 @@ int insert_data_index(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         if(cs_table.data_indexes[i].is_filled == true) {
             if(strcmp((const char *)cs_table.data_indexes[i].data_value, (const char *)input_data.content_value) == 0) {
-            printf("Duplicate Data 1 at index: %d\n", i);
-            return -1;
+                printf("Duplicate Data 1 at index: %d\n", i);
+                return -1;
+            }
         }
-        
+
         else {
             if(cs_table.data_indexes[i].is_filled == false) {
                 printf("ANCHOR DATA 1 INDEX: %d\n", i);
