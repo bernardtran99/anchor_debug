@@ -1135,13 +1135,13 @@ int insert_data_index(ndn_data_t input_data) {
 
         if(cs_table.data_indexes[i].is_filled == false) {
             printf("ANCHOR DATA 1 INDEX: %d\n", i);
-            cs_table.data_indexes[i].data_value =  input_data.content_value;
+            cs_table.data_indexes[i].data_value = input_data.content_value;
             cs_table.data_indexes[i].is_filled = true;
             return (int)i;
         }
         
         if(cs_table.data_indexes[i].is_filled) {
-            if((memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, strlen(input_data.content_value))) == 0) {
+            if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
                 printf("Duplicate Data 1 at index: %d\n", i);
                 return -1;
             }
@@ -1659,7 +1659,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 3;
     add_neighbor(1);
-    
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
