@@ -245,7 +245,7 @@ void add_neighbor(int neighbor_num) {
     for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] == 0) {
             neighbor_list[i] = neighbor_num;
-            break;
+            return;
         }
     }
 }
