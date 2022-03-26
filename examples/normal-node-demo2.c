@@ -245,7 +245,7 @@ void add_neighbor(int neighbor_num) {
     for(size_t i = 0; i < nl_size; i++) {
         if(neighbor_list[i] == 0) {
             neighbor_list[i] = neighbor_num;
-            break;
+            return;
         }
     }
 }
@@ -1112,42 +1112,20 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
 int insert_data_index(ndn_data_t input_data) {
     size_t cs_size = sizeof(cs_table.data_indexes)/sizeof(cs_table.data_indexes[0]);
     for(size_t i = 0; i < cs_size; i++) {
-        // if(cs_table.data_indexes[i].is_filled == true) {
-        //     if(strlen(cs_table.data_indexes[i].data_value) == strlen(input_data.content_value)) {
-        //         printf("strlen check: %d, %d\n", strlen(cs_table.data_indexes[i].data_value), strlen(input_data.content_value));
-        //         printf("string check: [%s], [%s]\n", cs_table.data_indexes[i].data_value, input_data.content_value);
-        //         if(memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, strlen(input_data.content_value)) == 0) {
-        //             printf("Duplicate Data 1 at index: %d\n", i);
-        //             return -1;
-        //         }
-        //     }
-        // }
-        // else {
-        //     printf("ANCHOR DATA 1 INDEX: %d\n", i);
-        //     cs_table.data_indexes[i].data_value =  input_data.content_value;
-        //     cs_table.data_indexes[i].is_filled = true;
-
-        //     //error check, then return index of the data inside cs
-        //     if(i < INT_MAX) {
-        //         return (int)i;
-        //     }
-        // }
-
-        if(cs_table.data_indexes[i].is_filled == false) {
-            printf("ANCHOR DATA 1 INDEX: %d\n", i);
-            cs_table.data_indexes[i].data_value =  input_data.content_value;
-            cs_table.data_indexes[i].is_filled = true;
-            return (int)i;
+        if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
+            printf("Duplicate Data 1 at index: %d\n", i);
+            return -1;
         }
-        
-        if(cs_table.data_indexes[i].is_filled) {
-            if((memcmp(cs_table.data_indexes[i].data_value, input_data.content_value, strlen(input_data.content_value))) == 0) {
-                printf("Duplicate Data 1 at index: %d\n", i);
-                return -1;
+        else {
+            if(cs_table.data_indexes[i].is_filled == false) {
+                printf("ANCHOR DATA 1 INDEX: %d\n", i);
+                cs_table.data_indexes[i].data_value = input_data.content_value;
+                cs_table.data_indexes[i].is_filled = true;
+                return (int)i;
             }
         }
     }
-    return -1;
+    return -2;
 }
 
 //only called if a data2 packet is received
@@ -1158,6 +1136,7 @@ int check_content_store(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
             //if duplicate data
+            //use strcmp please memcmp sucks
             if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], input_data.content_size - 7) == 0) {
                 printf("DUPLICATE DATA FOUND IN CS\n");
                 //update bit vector and send with new data packet
