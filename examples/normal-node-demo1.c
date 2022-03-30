@@ -1113,10 +1113,8 @@ int insert_data_index(ndn_data_t input_data) {
     //intitialize all data values to 1024 and maybe call realloc(input_data.content_size)
     size_t cs_size = sizeof(cs_table.data_indexes)/sizeof(cs_table.data_indexes[0]);
     for(size_t i = 0; i < cs_size; i++) {
-        if (cs_table.data_indexes[i].is_filled = true) {
-            if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
-                return -1;
-            }
+        if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
+            return -1;
         }
         if (cs_table.data_indexes[i].is_filled == false) {
             printf("ANCHOR DATA 1 INDEX: %d\n", i);

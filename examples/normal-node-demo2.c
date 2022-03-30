@@ -35,9 +35,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.74.199"
+#define NODE1 "10.156.87.111"
 #define NODE2 "10.156.90.106"
-#define NODE3 "10.156.76.154"
+#define NODE3 "10.156.87.109"
 #define NODE4 "10.156.91.214"
 #define NODE5 "10.156.90.212"
 #define NODE6 "10.156.91.246"
@@ -115,7 +115,7 @@ typedef struct content_store_entry {
 } content_store_entry_t;
 
 typedef struct anchor_data1_index {
-    uint8_t *data_value;
+    uint8_t data_value[1024];
     bool is_filled;
 } anchor_data1_index_t;
 
@@ -1110,19 +1110,17 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
 
 //is only called for anchors when assigning layer 1 data indexes
 int insert_data_index(ndn_data_t input_data) {
+    //intitialize all data values to 1024 and maybe call realloc(input_data.content_size)
     size_t cs_size = sizeof(cs_table.data_indexes)/sizeof(cs_table.data_indexes[0]);
     for(size_t i = 0; i < cs_size; i++) {
         if(strcmp(cs_table.data_indexes[i].data_value, input_data.content_value) == 0) {
-            printf("Duplicate Data 1 at index: %d\n", i);
             return -1;
         }
-        else {
-            if(cs_table.data_indexes[i].is_filled == false) {
-                printf("ANCHOR DATA 1 INDEX: %d\n", i);
-                cs_table.data_indexes[i].data_value = input_data.content_value;
-                cs_table.data_indexes[i].is_filled = true;
-                return (int)i;
-            }
+        if (cs_table.data_indexes[i].is_filled == false) {
+            printf("ANCHOR DATA 1 INDEX: %d\n", i);
+            memcpy(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size);
+            cs_table.data_indexes[i].is_filled = true;
+            return (int)i;
         }
     }
     return -2;
@@ -1579,6 +1577,14 @@ void *command_process(void *var) {
 
             case 8: {
                 printf("Populate FIB\n");
+                break;
+            }
+
+            case 9: {
+                printf("Anchor Data Indexes Print\n");
+                for(int i = 0; i < 20; i++) {
+                    printf("%d: %s\n", i, cs_table.data_indexes[i].data_value);
+                }
                 break;
             }
 
