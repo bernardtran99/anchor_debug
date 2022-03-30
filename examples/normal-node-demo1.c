@@ -1576,6 +1576,14 @@ void *command_process(void *var) {
                 break;
             }
 
+            case 9: {
+                printf("Anchor Data Indexes Print\n");
+                for(int i = 0; i < 20; i++) {
+                    printf("%d: %s\n", i, cs_table.data_indexes[i].data_value);
+                }
+                break;
+            }
+
             default: {
                 printf("Invalid Input\n");
                 break;
@@ -1632,7 +1640,7 @@ int main(int argc, char *argv[]) {
     //DEMO: CHANGE
     node_num = 1;
     add_neighbor(3);
-
+    
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT

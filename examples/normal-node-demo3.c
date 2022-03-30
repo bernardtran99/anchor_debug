@@ -1576,6 +1576,14 @@ void *command_process(void *var) {
                 break;
             }
 
+            case 9: {
+                printf("Anchor Data Indexes Print\n");
+                for(int i = 0; i < 20; i++) {
+                    printf("%d: %s\n", i, cs_table.data_indexes[i].data_value);
+                }
+                break;
+            }
+
             default: {
                 printf("Invalid Input\n");
                 break;
