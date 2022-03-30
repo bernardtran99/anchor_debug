@@ -1114,7 +1114,7 @@ int insert_data_index(ndn_data_t input_data) {
     for(size_t i = 0; i < cs_size; i++) {
         if (cs_table.data_indexes[i].is_filled == false) {
             printf("ANCHOR DATA 1 INDEX: %d\n", i);
-            memcpy(cs_table.data_indexes[i].data_value, input_data.content_size, input_data.content_size);
+            memcpy(cs_table.data_indexes[i].data_value, input_data.content_value, input_data.content_size);
             cs_table.data_indexes[i].is_filled = true;
             return (int)i;
         }
