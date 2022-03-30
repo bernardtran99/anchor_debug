@@ -35,9 +35,9 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.74.199"
+#define NODE1 "10.156.87.111"
 #define NODE2 "10.156.90.106"
-#define NODE3 "10.156.76.154"
+#define NODE3 "10.156.87.109"
 #define NODE4 "10.156.91.214"
 #define NODE5 "10.156.90.212"
 #define NODE6 "10.156.91.246"
