@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 import pprint
 from IPython import display
 
-NODE1 = "10.156.89.148"
+#update node ips for new node nums
+NODE1 = "10.156.87.111"
 NODE2 = "10.156.90.106"
-NODE3 = "10.156.91.124"
-NODE4 = "10.156.91.214"
+NODE3 = "10.156.87.109"
+NODE4 = "10.156.88.193"
 NODE5 = "10.156.90.212"
 NODE6 = "10.156.91.246"
 NODE7 = "10.156.90.237"
