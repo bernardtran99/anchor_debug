@@ -103,6 +103,7 @@ typedef struct udp_face_table {
 } udp_face_table_t;
 
 typedef struct node_data1_index {
+    //ndn_udp_face_t outgoing fac
     uint8_t index[2];
     bool is_filled;
 } node_data1_index_t;
