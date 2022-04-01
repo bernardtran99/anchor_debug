@@ -45,7 +45,7 @@
 #define NODE8 "10.156.90.170"
 #define NODE9 "10.156.92.6"
 #define NODE10 "10.156.91.67"
-#define DEBUG "10.156.84.156"
+#define DEBUG "10.156.70.230"
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
