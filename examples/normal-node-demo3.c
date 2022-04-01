@@ -1355,6 +1355,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         //need to check cs if duplicate data has already been received before
         //need to add extra fields into cs: bit vector, data(content_value), data1 index array
 
+        
+
         int l2_face_index = 0;
         bool l2_interest_in = false;
 

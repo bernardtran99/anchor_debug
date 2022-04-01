@@ -38,7 +38,7 @@
 #define NODE1 "10.156.87.111"
 #define NODE2 "10.156.90.106"
 #define NODE3 "10.156.87.109"
-#define NODE4 "10.156.91.214"
+#define NODE4 "10.156.88.193"
 #define NODE5 "10.156.90.212"
 #define NODE6 "10.156.91.246"
 #define NODE7 "10.156.90.237"
@@ -66,7 +66,7 @@
 //CMAKE again
 //then make
 //link.txt
-///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -o examples/normal-node  libndn-lite.a
+///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -lm -o examples/normal-node  libndn-lite.a
 
 //sizeof returns the size of a the type if getting size of pointer, if size of an array, then it prints out length of an array
 
@@ -1127,48 +1127,34 @@ int insert_data_index(ndn_data_t input_data) {
 }
 
 //only called if a data2 packet is received
-int check_content_store(ndn_data_t input_data) {
+int check_content_store(ndn_data_t *input_data) {
     //insert content store checking here
+    //maybe use pointers for input data and then reuturn input_data
 
+    //recv:  /l2data/anchor/sender (with) [bit_vector][index_num][content]
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
-        if(input_data.content_size == cs_table.entries[i].data_pkt.content_size) {
-            //if duplicate data
-            //use strcmp please memcmp sucks
-            if(memcmp(&input_data.content_value[7], &cs_table.entries[i].data_pkt.content_value[7], input_data.content_size - 7) == 0) {
-                printf("DUPLICATE DATA FOUND IN CS\n");
-                //update bit vector and send with new data packet
-                uint8_t temp_buffer[5] = {0};
 
-                //updating data1 indexes array
-                size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
-                for(int j = 0; j < index_size; j++) {
-                    if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
-                        cs_table.entries[i].data1_array[j].is_filled = true;
-                    }
-                }
+        
+        //if duplicate data
+        if(strcmp(&input_data->content_value[7], &cs_table.entries[i].data_pkt.content_value[7]) == 0) {
+            printf("DUPLICATE DATA FOUND IN CS\n");
+            //update bit vector and send with new data packet
+            uint8_t temp_buffer[5] = {0};
 
-                //generate vector packet
-                
-            }
-            else {
-                if(cs_table.entries[i].is_filled == false) {
-                    printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
-                    cs_table.entries[i].data_pkt = input_data;
-                    cs_table.entries[i].is_filled = true;
-                    memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
-                    size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
-                    for(int j = 0; j < index_size; j++) {
-                        if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                            memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
-                            cs_table.entries[i].data1_array[j].is_filled = true;
-                        }
-                    }
-                    return -1; //change to return
+            //updating data1 indexes array
+            size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+            for(int j = 0; j < index_size; j++) {
+                if(cs_table.entries[i].data1_array[j].is_filled == false) {
+                    memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                    cs_table.entries[i].data1_array[j].is_filled = true;
                 }
             }
+
+            //generate vector packet
+            
         }
+
         //if not duplicate data
         else {
             if(cs_table.entries[i].is_filled == false) {
@@ -1238,11 +1224,11 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
-    
+
     char *second_slot_anchor = "";
     second_slot_anchor = get_prefix_component(data.name, 1);
 
-    int third_slot;
+    int third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
     
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
@@ -1284,7 +1270,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 if(strcmp(check_string, "l2interest") == 0 && atoi(check_ancmt_anchor) == atoi(second_slot_anchor)) {
                     l2_face_index = i;
 
-                    third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     char* inputIP = "";
                     inputIP = search_ip_table(third_slot);
                     
@@ -1368,7 +1353,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
             if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
                 l2_face_index = i;
-                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
@@ -1377,17 +1362,21 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 //char prefix_string[40] = "/l2data/";
                 char prefix_string[40] = "";
 
-                int cs_check = check_content_store(data);
+                //using &data as input to directly change the packet without having to return a packet
+                int cs_check = check_content_store(&data);
+
                 //data is duplicated (OR the bit vector)
                 if(cs_check ==  0) {
                     strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
-                    
+                    uint8_t vector_gen_buffer[1024] = {0}
+                    ndn_data_set_content();
                 }
                 //data is not duplicated
                 else {
                     strcat(prefix_string, "/l2data/");
                     //data content should be forwarded the same if data not in cs first
+                    //good after we strcat /l2data/ data_content forwarded should be the same
                 }
 
                 strcat(prefix_string, second_slot_anchor);
@@ -1415,11 +1404,13 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     else if(strcmp(first_slot, "vector") == 0) {
         printf("Vector Packet Recieved\n");
 
-        //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent
+        //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
+
+        int recv_vector = vector_cs_store(data);
 
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
@@ -1429,7 +1420,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             check_anchor = get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
             if(strcmp(check_string, "l2interest") == 0 && atoi(check_anchor) == atoi(second_slot_anchor)) {
                 l2_face_index = i;
-                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+
                 char *ip_string = "";
                 ip_string = search_ip_table(third_slot);
 
