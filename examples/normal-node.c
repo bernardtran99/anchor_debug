@@ -115,6 +115,7 @@ typedef struct content_store_entry {
     bool is_filled;
 } content_store_entry_t;
 
+//TODO
 typedef struct anchor_data1_index {
     uint8_t data_value[1024];
     bool is_filled;
@@ -1385,6 +1386,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         }
     }
 
+    //TODO: need to have 2 for loops for generation of bit vector to assign outgoing faces to index(old) for vector -> use array for all outgoing faces
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
 
