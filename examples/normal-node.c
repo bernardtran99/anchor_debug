@@ -1134,42 +1134,81 @@ int check_content_store(ndn_data_t *input_data) {
     //recv:  /l2data/anchor/sender (with) [bit_vector][index_num][content]
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
-
         
         //if duplicate data
         if(strcmp(&input_data->content_value[7], &cs_table.entries[i].data_pkt.content_value[7]) == 0) {
             printf("DUPLICATE DATA FOUND IN CS\n");
-            //update bit vector and send with new data packet
+            //update bit vector and send with new vector packet
             uint8_t temp_buffer[5] = {0};
+            uint8_t vector_gen_buffer[1024] = {0};
 
-            //updating data1 indexes array
+            //ex: index 0 is anchor 1
+            //put the data1 index from duplicate data2 packet into cstable.entries.data1_array
+            int anchor_num_vector = atoi(get_prefix_component(input_data->name, 1));
+            memcpy(&cs_table.entries[i].data1_array[anchor_num_vector-1].index[0], &input_data->content_value[5], 2);
+
+            //bitwise OR the bit vector from duplicate with the bit vector inside current entry
+            memcpy(&temp_buffer[0], &input_data->content_value[0], 5);
+            for(int j = 0; j < 5; j++) {
+                temp_buffer[j] = temp_buffer[j] | cs_table.entries[i].vector_num[j];
+            }
+            memcpy(&cs_table.entries[i].vector_num[0] ,&temp_buffer[0], 5);
+
+            //set content of vector packet with new information [bit_vector][anchor(old)][index(old)][index(new)]
+            memcpy(&vector_gen_buffer[0], &temp_buffer[0], 5);
             size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
-            for(int j = 0; j < index_size; j++) {
-                if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                    memcpy(cs_table.entries[i].data1_array[j].index, &input_data->content_value[5], 2);
-                    cs_table.entries[i].data1_array[j].is_filled = true;
+            for(size_t k = 0; k < index_size; k++) {
+                if(cs_table.entries[i].data1_array[k].is_filled == true) {
+                    // data_buffer[5] = (index_num >> 8) & 0xff;
+                    // data_buffer[6] = index_num & 0xff;
+                    vector_gen_buffer[5] = ((k+1) >> 8) & 0xff;
+                    vector_gen_buffer[6] = (k+1) & 0xff;
+                    memcpy(&vector_gen_buffer[7], &cs_table.entries[i].data1_array[k].index[0], 2);
+                    break;
                 }
             }
+            memcpy(&vector_gen_buffer[9], &input_data->content_value[5], 2);
 
-            //generate vector packet
-            
+            ndn_data_set_content(input_data, vector_gen_buffer, 11);
+
+            //updating data1 indexes array
+            // size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+            // for(int j = 0; j < index_size; j++) {
+            //     if(cs_table.entries[i].data1_array[j].is_filled == false) {
+            //         memcpy(cs_table.entries[i].data1_array[j].index, &input_data->content_value[5], 2);
+            //         cs_table.entries[i].data1_array[j].is_filled = true;
+            //     }
+            // }
+
+            //generate vector packet (modify input packet)
+            return 0;
         }
 
         //if not duplicate data
         else {
             if(cs_table.entries[i].is_filled == false) {
                 printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
+
+                //set data packet and the bit vector
                 cs_table.entries[i].data_pkt = *input_data;
                 cs_table.entries[i].is_filled = true;
-                memcpy(cs_table.entries[i].vector_num, input_data->content_value, 5);
-                size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
-                for(int j = 0; j < index_size; j++) {
-                    if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data->content_value[5], 2);
-                        cs_table.entries[i].data1_array[j].is_filled = true;
-                    }
-                }
-                return -1; //change to return
+                memcpy(&cs_table.entries[i].vector_num[0], &input_data->content_value[0], 5);
+
+                //ex: index 0 is anchor 1
+                //put the data1 index from data2 packet into cstable.entries.data1_array
+                int anchor_num_data2 = atoi(get_prefix_component(input_data->name, 1));
+                memcpy(&cs_table.entries[i].data1_array[anchor_num_data2-1].index[0], &input_data->content_value[5], 2);
+                cs_table.entries[i].data1_array[anchor_num_data2-1].is_filled = true;
+
+                // size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
+                // for(size_t j = 0; j < index_size; j++) {
+                //     if(cs_table.entries[i].data1_array[j].is_filled == false) {
+                //         memcpy(&cs_table.entries[i].data1_array[j].index[0], &input_data->content_value[5], 2);
+                //         cs_table.entries[i].data1_array[j].is_filled = true;
+                //     }
+                // }
+
+                return -1;
             }
         }
     }
@@ -1371,8 +1410,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 if(cs_check ==  0) {
                     strcat(prefix_string, "/vector/");
                     //vector: bit_vector(5)->anchor_num_old(2)->data_index_old(2)->data_index_new(2) and then associate data_index_new with the second slot anchor prefix to udpate cs index array
-                    uint8_t vector_gen_buffer[1024] = {0}
-                    ndn_data_set_content();
+
                 }
                 //data is not duplicated
                 else {
