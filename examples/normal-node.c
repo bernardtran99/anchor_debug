@@ -1217,11 +1217,13 @@ int check_content_store(ndn_data_t *input_data) {
 }
 
 int vector_cs_store(ndn_data_t input_vector_packet) {
+    printf("Vector CS updating\n");
     size_t cs_size = sizeof(cs_table.entries)/sizeof(cs_table.entries[0]);
     for(size_t i = 0; i < cs_size; i++) {
         //maybe instead of having 2 for loops, have a field inside entries that stores a set anchor(old) and a set index(old) so we dont have to search entire cs_table
         size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
         for(size_t j = 0; j < index_size; j++) {
+            //find correct entry and update bit vector and update index(new) and anchor(new) in cs_table.entries.data1_array
         }
     }
     return 0;
