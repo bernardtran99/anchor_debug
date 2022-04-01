@@ -1212,6 +1212,7 @@ int check_content_store(ndn_data_t *input_data) {
             }
         }
     }
+    //only goes here if no duplicate and cs_table.entries is full
 
 }
 
