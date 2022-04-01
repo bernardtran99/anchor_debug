@@ -1146,7 +1146,7 @@ int check_content_store(ndn_data_t *input_data) {
             size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
             for(int j = 0; j < index_size; j++) {
                 if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                    memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                    memcpy(cs_table.entries[i].data1_array[j].index, &input_data->content_value[5], 2);
                     cs_table.entries[i].data1_array[j].is_filled = true;
                 }
             }
@@ -1159,13 +1159,13 @@ int check_content_store(ndn_data_t *input_data) {
         else {
             if(cs_table.entries[i].is_filled == false) {
                 printf("CONTENT STORE DATA 2 INSERT INDEX: %d\n", i);
-                cs_table.entries[i].data_pkt = input_data;
+                cs_table.entries[i].data_pkt = *input_data;
                 cs_table.entries[i].is_filled = true;
-                memcpy(cs_table.entries[i].vector_num, input_data.content_value, 5);
+                memcpy(cs_table.entries[i].vector_num, input_data->content_value, 5);
                 size_t index_size = sizeof(cs_table.entries[0].data1_array)/sizeof(cs_table.entries[0].data1_array[0]);
                 for(int j = 0; j < index_size; j++) {
                     if(cs_table.entries[i].data1_array[j].is_filled == false) {
-                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data.content_value[5], 2);
+                        memcpy(cs_table.entries[i].data1_array[j].index, &input_data->content_value[5], 2);
                         cs_table.entries[i].data1_array[j].is_filled = true;
                     }
                 }
