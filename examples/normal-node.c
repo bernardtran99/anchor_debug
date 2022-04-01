@@ -1228,7 +1228,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     char *second_slot_anchor = "";
     second_slot_anchor = get_prefix_component(data.name, 1);
 
-    int third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+    int third_slot = 0;
     
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
@@ -1271,6 +1271,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                     l2_face_index = i;
 
                     char* inputIP = "";
+                    third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                     inputIP = search_ip_table(third_slot);
                     
                     generate_layer_2_data(inputIP, second_slot_anchor, data_buffer, data.content_size);
@@ -1355,6 +1356,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 l2_face_index = i;
 
                 char *ip_string = "";
+                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 ip_string = search_ip_table(third_slot);
 
                 char change_num[20] = "";
@@ -1422,6 +1424,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 l2_face_index = i;
 
                 char *ip_string = "";
+                third_slot = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
                 ip_string = search_ip_table(third_slot);
 
                 char change_num[20] = "";
