@@ -39,10 +39,10 @@
 #define NODE2 "10.156.90.106"
 #define NODE3 "10.156.87.109"
 #define NODE4 "10.156.88.193"
-#define NODE5 "10.156.90.212"
+#define NODE5 "10.156.81.213"
 #define NODE6 "10.156.91.246"
 #define NODE7 "10.156.90.237"
-#define NODE8 "10.156.90.170"
+#define NODE8 "10.156.81.221"
 #define NODE9 "10.156.92.6"
 #define NODE10 "10.156.91.67"
 #define DEBUG "10.156.70.230"
@@ -102,22 +102,31 @@ typedef struct udp_face_table {
     udp_face_table_entry_t entries[40];
 } udp_face_table_t;
 
+//-----------------------------
+
 typedef struct node_data1_index {
     uint8_t index[2];
+    //outgoing_array will never have a valid 0 due to there being non-zero node num only
+    int outgoing_array[20];
     bool is_filled;
 } node_data1_index_t;
 
 typedef struct content_store_entry {
     ndn_data_t data_pkt;
     uint8_t vector_num[5];
+    //data1_array[0] = anchor 1
     node_data1_index_t data1_array[20];
     bool is_filled;
 } content_store_entry_t;
+
+//-----------------------------
 
 typedef struct anchor_data1_index {
     uint8_t data_value[1024];
     bool is_filled;
 } anchor_data1_index_t;
+
+//-----------------------------
 
 typedef struct content_store {
     content_store_entry_t entries[20];
@@ -606,6 +615,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     strcat(pub_message, in);
     strcat(pub_message, " ; ");
     send_debug_message(pub_message);
+    //send_debug_message("Layer 2 Data Sent ; ")
 }
 
 //sends data anchor direction (layer1)
@@ -671,85 +681,96 @@ void generate_data(char *data_string) {
         }
     }
 
-    send_debug_message("Layer 1 Data Sent ; ");
+    char *in = "";
+    in = timestamp();
+
+    char pub_message[100] = "";
+    strcat(pub_message, "Layer 1 Data Sent -> ");
+    // strcat(pub_message, data_string);
+    // strcat(pub_message, " -> ");
+    strcat(pub_message, in);
+    strcat(pub_message, " ; ");
+    send_debug_message(pub_message);
+
+    // send_debug_message("Layer 1 Data Sent ; ");
 }
 
-// void latency_test() {
-//     for(int num_send = 0; num < 5; num_send++) {
-//         clock_t timer = clock();
-//         while (clock() < (timer + 200000)) {
-//         }
+void latency_test() {
+    // for(int num_send = 0; num < 5; num_send++) {
+        clock_t timer = clock();
+        while (clock() < (timer + 200000)) {
+        }
 
-//         ndn_data_t data;
-//         ndn_name_t prefix_name;
-//         ndn_udp_face_t *face;
-//         ndn_encoder_t encoder;
-//         uint8_t buf[4096];
+        ndn_data_t data;
+        ndn_name_t prefix_name;
+        ndn_udp_face_t *face;
+        ndn_encoder_t encoder;
+        uint8_t buf[4096];
 
-//         char str[10] = "Data: ";
-//         char num_send_char[10] = "";
-//         sprintf(num_send_char, "%d", num_send+1);
-//         strcat(str, num_send_char);
+        char str[10] = "Data: ";
+        char num_send_char[10] = "";
+        //sprintf(num_send_char, "%d", num_send+1);
+        strcat(str, num_send_char);
 
-//         for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
-//             if(ancmt_num[j] != 0) {
-//                 int reply[10];
-//                 int counter = 0;
-//                 size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
-//                 for(size_t i = 0; i < nap_size; i++) {
-//                     char *check_ancmt = "";
-//                     check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-//                     char *check_ancmt_anchor = "";
-//                     check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-//                     if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
-//                         reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-//                         counter++;
-//                     }
-//                 }
+        for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
+            if(ancmt_num[j] != 0) {
+                int reply[10];
+                int counter = 0;
+                size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
+                for(size_t i = 0; i < nap_size; i++) {
+                    char *check_ancmt = "";
+                    check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
+                    char *check_ancmt_anchor = "";
+                    check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
+                    if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
+                        reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
+                        counter++;
+                    }
+                }
 
-//                 char local_num[10] = "";
-//                 sprintf(local_num, "%d", node_num);
-//                 char dest_num[10] = "";
-//                 sprintf(dest_num, "%d", (j+1));
-//                 char prefix_string[20] = "/l1data/";
-//                 strcat(prefix_string, dest_num);
-//                 strcat(prefix_string, "/");
-//                 strcat(prefix_string, local_num);
+                char local_num[10] = "";
+                sprintf(local_num, "%d", node_num);
+                char dest_num[10] = "";
+                sprintf(dest_num, "%d", (j+1));
+                char prefix_string[20] = "/l1data/";
+                strcat(prefix_string, dest_num);
+                strcat(prefix_string, "/");
+                strcat(prefix_string, local_num);
 
-//                 ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
+                ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
 
-//                 srand(time(0));
-//                 int rand_num = rand() % counter;
+                srand(time(0));
+                int rand_num = rand() % counter;
 
-//                 char *ip_string;
-//                 ip_string = search_ip_table(reply[rand_num]);
+                char *ip_string;
+                ip_string = search_ip_table(reply[rand_num]);
 
-//                 data.name = prefix_name;
-//                 ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-//                 ndn_metainfo_init(&data.metainfo);
-//                 ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-//                 encoder_init(&encoder, buf, 4096);
-//                 ndn_data_tlv_encode_digest_sign(&encoder, &data);
+                data.name = prefix_name;
+                ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
+                ndn_metainfo_init(&data.metainfo);
+                ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
+                encoder_init(&encoder, buf, 4096);
+                ndn_data_tlv_encode_digest_sign(&encoder, &data);
 
-//                 face = generate_udp_face(ip_string, "5000", "3000");
-//                 ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+                face = generate_udp_face(ip_string, "5000", "3000");
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
-//             }
-//         }
-//         char *in = "";
-//         in = timestamp();
+            }
+        }
+        char *in = "";
+        in = timestamp();
 
-//         char pub_message[100] = "";
-//         strcat(pub_message, "Layer 1 Data Sent: ");
-//         strcat(pub_message, num_send_char);
-//         strcat(pub_message, " -> ");
-//         strcat(pub_message, in);
-//         strcat(pub_message, " ; ");
-//         printf("pubmessage good\n");
-//         send_debug_message(pub_message);
-//     }
+        char pub_message[100] = "";
+        strcat(pub_message, "Layer 1 Data Sent: ");
+        strcat(pub_message, num_send_char);
+        strcat(pub_message, " -> ");
+        strcat(pub_message, in);
+        strcat(pub_message, " ; ");
+        printf("pubmessage good\n");
+        send_debug_message(pub_message);
+    // }
     
-// }
+}
 
 void *start_delay(void *arguments) {
     printf("\nDelay started\n");
@@ -1127,7 +1148,7 @@ int insert_data_index(ndn_data_t input_data) {
 }
 
 //only called if a data2 packet is received
-int check_content_store(ndn_data_t *input_data) {
+int check_content_store(ndn_data_t *input_data, int outgoing_num) {
     //insert content store checking here
     //maybe use pointers for input data and then reuturn input_data
 
@@ -1141,6 +1162,8 @@ int check_content_store(ndn_data_t *input_data) {
             //update bit vector and send with new vector packet
             uint8_t temp_buffer[5] = {0};
             uint8_t vector_gen_buffer[1024] = {0};
+
+            //link outgoing num to anchornum and index
 
             //ex: index 0 is anchor 1
             //put the data1 index from duplicate data2 packet into cstable.entries.data1_array
@@ -1384,8 +1407,19 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         }
     }
 
+    //TODO: need to have 2 for loops for generation of bit vector to assign outgoing faces to index(old) for vector -> use array for all outgoing faces
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
+
+        char *in = "";
+        in = timestamp();
+
+        char pub_message[100] = "";
+        strcat(pub_message, "Layer 2 Data Received -> ");
+        strcat(pub_message, in);
+        strcat(pub_message, " ; ");
+        send_debug_message(pub_message);
+
 
         //need to check cs if duplicate data has already been received before
         //need to add extra fields into cs: bit vector, data(content_value), data1 index array
@@ -1414,7 +1448,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 char prefix_string[40] = "";
 
                 //using &data as input to directly change the packet without having to return a packet
-                int cs_check = check_content_store(&data);
+                //include third slot here as the outgoing face node num
+                int cs_check = check_content_store(&data, third_slot);
 
                 //data is duplicated (OR the bit vector)
                 if(cs_check ==  0) {
@@ -1608,7 +1643,7 @@ void *command_process(void *var) {
                 clock_t latency_timer = clock();
                 while (clock() < (latency_timer + 5000000)) {
                 }
-                //latency_test();
+                latency_test();
                 break;
             }
 
@@ -1684,8 +1719,10 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 4;
-    add_neighbor(3);
+    node_num = 1;
+    add_neighbor(5);
+    add_neighbor(7);
+    add_neighbor(10);
 
     last_interest = ndn_time_now_ms();
     
