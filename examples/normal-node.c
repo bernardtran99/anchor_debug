@@ -709,7 +709,7 @@ void latency_test() {
 
         char str[10] = "Data: ";
         char num_send_char[10] = "";
-        sprintf(num_send_char, "%d", num_send+1);
+        //sprintf(num_send_char, "%d", num_send+1);
         strcat(str, num_send_char);
 
         for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
