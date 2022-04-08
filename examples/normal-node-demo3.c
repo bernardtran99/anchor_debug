@@ -608,14 +608,14 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     char *in = "";
     in = timestamp();
 
-    char pub_message[100] = "";
-    strcat(pub_message, "Layer 2 Data Sent -> ");
-    // strcat(pub_message, data_string);
-    // strcat(pub_message, " -> ");
-    strcat(pub_message, in);
-    strcat(pub_message, " ; ");
-    send_debug_message(pub_message);
-    //send_debug_message("Layer 2 Data Sent ; ")
+    // char pub_message[100] = "";
+    // strcat(pub_message, "Layer 2 Data Sent -> ");
+    // // strcat(pub_message, data_string);
+    // // strcat(pub_message, " -> ");
+    // strcat(pub_message, in);
+    // strcat(pub_message, " ; ");
+    // send_debug_message(pub_message);
+    send_debug_message("Layer 2 Data Sent ; ")
 }
 
 //sends data anchor direction (layer1)
@@ -1491,6 +1491,15 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
+
+        char *in = "";
+        in = timestamp();
+
+        char pub_message[100] = "";
+        strcat(pub_message, "Vector Data Received -> ");
+        strcat(pub_message, in);
+        strcat(pub_message, " ; ");
+        send_debug_message(pub_message);
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
