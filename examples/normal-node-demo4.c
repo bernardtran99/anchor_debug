@@ -615,7 +615,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     // strcat(pub_message, in);
     // strcat(pub_message, " ; ");
     // send_debug_message(pub_message);
-    send_debug_message("Layer 2 Data Sent ; ")
+    send_debug_message("Layer 2 Data Sent ; ");
 }
 
 //sends data anchor direction (layer1)
