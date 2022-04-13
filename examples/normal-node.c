@@ -244,7 +244,7 @@ char *timestamp() {
     return_string = malloc(40); 
     return_string[0] = 0;
 
-    sprintf(return_string, "Time: %d:%0d:%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
+    sprintf(return_string, "Time: %d.%0d.%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
     return return_string;
 }
 
