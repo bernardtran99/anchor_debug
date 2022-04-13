@@ -10,16 +10,16 @@ import pprint
 from IPython import display
 
 #update node ips for new node nums
-NODE1 = "10.156.87.111"
-NODE2 = "10.156.90.106"
-NODE3 = "10.156.87.109"
-NODE4 = "10.156.88.193"
-NODE5 = "10.156.81.213"
-NODE6 = "10.156.91.246"
-NODE7 = "10.156.90.237"
-NODE8 = "10.156.81.221"
-NODE9 = "10.156.92.6"
-NODE10 = "10.156.91.67"
+NODE1 = "10.156.73.46"
+NODE2 = "10.156.73.118"
+NODE3 = "10.156.73.45"
+NODE4 = "10.156.73.125"
+NODE5 = "10.156.73.117"
+NODE6 = "10.156.73.122"
+NODE7 = "10.156.73.121"
+NODE8 = "10.156.73.120"
+NODE9 = "10.156.73.126"
+NODE10 = "10.156.73.47"
 
 #ip lookup dictionary
 ipDict = {
@@ -105,8 +105,14 @@ class EchoServerProtocol(asyncio.Protocol):
         node_num = ipDict[node_ip]
         print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
+        if "Clear Graph" in message:
+            node_sizes[node_num-1] = 1000
+            node_colors[node_num-1] = 'yellow'
+            H.remove_edges_from(list(H.edges()))
+
         for i in range(len(strings)):
             chars = split_chars(strings[i])
+
             if "l2interest" in strings[i]:
                 dash_counter = 0
                 num_buffer = []
@@ -116,9 +122,30 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                G.add_edges_from([(selector, node_num)], color='b', weight = 2)
+                G.add_edges_from([(selector, node_num)], color='red', weight = 2)
 
-        #print(edges)
+            if "l2data" in strings[i]:
+                dash_counter = 0
+                num_buffer = []
+                for e in range(len(chars)):
+                    if dash_counter == 3:
+                        num_buffer.append(chars[e])
+                    if chars[e] == "/":
+                        dash_counter += 1
+                selector = int(''.join(num_buffer))
+                H.add_edges_from([(selector, node_num)], color='blue', weight = 2)
+
+            if "vector" in strings[i]:
+                dash_counter = 0
+                num_buffer = []
+                for e in range(len(chars)):
+                    if dash_counter == 3:
+                        num_buffer.append(chars[e])
+                    if chars[e] == "/":
+                        dash_counter += 1
+                selector = int(''.join(num_buffer))
+                H.add_edges_from([(selector, node_num)], color='yellow', weight = 2)  
+
         colors = list(nx.get_edge_attributes(G,'color').values())
         weights = list(nx.get_edge_attributes(G,'weight').values())
         colors_data = list(nx.get_edge_attributes(H,'color').values())
@@ -129,8 +156,8 @@ class EchoServerProtocol(asyncio.Protocol):
         plt.title(graph_title)
         plt.figure(1)
         nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        # plt.figure(2)
-        # nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.figure(2)
+        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
         plt.show(block=False)
         plt.pause(0.000001)
 

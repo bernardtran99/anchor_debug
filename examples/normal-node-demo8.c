@@ -35,17 +35,17 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.87.111"
-#define NODE2 "10.156.90.106"
-#define NODE3 "10.156.87.109"
-#define NODE4 "10.156.88.193"
-#define NODE5 "10.156.81.213"
-#define NODE6 "10.156.91.246"
-#define NODE7 "10.156.90.237"
-#define NODE8 "10.156.81.221"
-#define NODE9 "10.156.92.6"
-#define NODE10 "10.156.91.67"
-#define DEBUG "10.156.70.230"
+#define NODE1 "10.156.73.46"
+#define NODE2 "10.156.73.118"
+#define NODE3 "10.156.73.45"
+#define NODE4 "10.156.73.125"
+#define NODE5 "10.156.73.117"
+#define NODE6 "10.156.73.122"
+#define NODE7 "10.156.73.121"
+#define NODE8 "10.156.73.120"
+#define NODE9 "10.156.73.126"
+#define NODE10 "10.156.73.47"
+#define DEBUG "10.156.72.38"
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
@@ -244,7 +244,7 @@ char *timestamp() {
     return_string = malloc(40); 
     return_string[0] = 0;
 
-    sprintf(return_string, "Time: %d:%0d:%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
+    sprintf(return_string, "Time: %d.%0d.%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
     return return_string;
 }
 
@@ -1728,7 +1728,7 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 8;
+    node_num = 1;
     add_neighbor(5);
     add_neighbor(7);
     add_neighbor(10);
