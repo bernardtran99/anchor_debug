@@ -1427,7 +1427,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         char pub_message[100] = "";
         strcat(pub_message, "2:");
-        strcat(pub_message, in + "_");
+        strcat(pub_message, in);
+        strcat(pub_message, "_");
         strcat(pub_message, &data.content_value[7]);
         strcat(pub_message, " ; ");
         send_debug_message(pub_message);
