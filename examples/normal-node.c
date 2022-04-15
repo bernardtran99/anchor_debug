@@ -1672,9 +1672,9 @@ void *command_process(void *var) {
                 printf("Latency Test\n");
                 clock_t latency_timer = clock();
 
-                char *test_message[20] = "";
+                char test_message[20] = "";
                 strcat(test_message, "test");
-                char *test_num[10] = ""; 
+                char test_num[10] = ""; 
 
                 while (clock() < (latency_timer + 5000000)) {
                 }
