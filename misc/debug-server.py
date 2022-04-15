@@ -110,7 +110,7 @@ def calc_average():
     overall_avg = 0
     global lat_dict
 
-    if len(lat_dict) > 0:
+    if len(lat_dict) > 1:
         for i in lat_dict:
             total_hour = total_minute = total_sec = total_milsec = 0
 
