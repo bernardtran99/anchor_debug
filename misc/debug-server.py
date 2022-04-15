@@ -106,8 +106,6 @@ class EchoServerProtocol(asyncio.Protocol):
         print('{} FROM: Node {!r} MESSAGE: {!r}'.format(now, node_num, message))
 
         if "Clear Graph" in message:
-            node_sizes[node_num-1] = 1000
-            node_colors[node_num-1] = 'yellow'
             H.remove_edges_from(list(H.edges()))
 
         for i in range(len(strings)):
