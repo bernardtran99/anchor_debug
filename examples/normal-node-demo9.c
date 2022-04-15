@@ -244,7 +244,7 @@ char *timestamp() {
     return_string = malloc(40); 
     return_string[0] = 0;
 
-    sprintf(return_string, "Time: %d.%0d.%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
+    sprintf(return_string, "%d.%0d.%0d.%d", today->tm_hour, today->tm_min, today->tm_sec, tv.tv_usec);
     return return_string;
 }
 
@@ -605,8 +605,8 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     face = generate_udp_face(input_ip, "6000", "4000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
-    char *in = "";
-    in = timestamp();
+    // char *in = "";
+    // in = timestamp();
 
     // char pub_message[100] = "";
     // strcat(pub_message, "Layer 2 Data Sent -> ");
@@ -685,10 +685,10 @@ void generate_data(char *data_string) {
     in = timestamp();
 
     char pub_message[100] = "";
-    strcat(pub_message, "Layer 1 Data Sent -> ");
-    // strcat(pub_message, data_string);
-    // strcat(pub_message, " -> ");
+    strcat(pub_message, "1:");
     strcat(pub_message, in);
+    strcat(pub_message, "_");
+    strcat(pub_message, str);
     strcat(pub_message, " ; ");
     send_debug_message(pub_message);
 
@@ -1305,6 +1305,17 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
+
+            char *in = "";
+            in = timestamp();
+
+            char pub_message[100] = "";
+            strcat(pub_message, "2:");
+            strcat(pub_message, in);
+            strcat(pub_message, "_");
+            strcat(pub_message, &data.content_value[0]);
+            strcat(pub_message, " ; ");
+            send_debug_message(pub_message);
             
             //insert into anchor layer 1 data store with index (this is is only for anchors)
             int index_num = insert_data_index(data);
@@ -1410,17 +1421,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     //TODO: need to have 2 for loops for generation of bit vector to assign outgoing faces to index(old) for vector -> use array for all outgoing faces
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
-
-        char *in = "";
-        in = timestamp();
-
-        char pub_message[100] = "";
-        strcat(pub_message, "Layer 2 Data Received -> ");
-        strcat(pub_message, in);
-        strcat(pub_message, " ; ");
-        send_debug_message(pub_message);
-
-
         //need to check cs if duplicate data has already been received before
         //need to add extra fields into cs: bit vector, data(content_value), data1 index array
 
@@ -1428,6 +1428,19 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         bool l2_interest_in = false;
 
         printf("DATA CONTENT (Layer 2 Data): [%s]\n", &data.content_value[7]);
+
+        char *in = "";
+        in = timestamp();
+
+        char pub_message[100] = "";
+        strcat(pub_message, "2:");
+        strcat(pub_message, in);
+        strcat(pub_message, "_");
+        strcat(pub_message, &data.content_value[7]);
+        strcat(pub_message, " ; ");
+        send_debug_message(pub_message);
+
+        int cs_check = check_content_store(&data, 0);
 
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
@@ -1449,7 +1462,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
                 //using &data as input to directly change the packet without having to return a packet
                 //include third slot here as the outgoing face node num
-                int cs_check = check_content_store(&data, third_slot);
+                //TODO: move this outside of the for loop and add link index old with outgoing faces
+                //int cs_check = check_content_store(&data, third_slot);
 
                 //data is duplicated (OR the bit vector)
                 if(cs_check ==  0) {
@@ -1492,14 +1506,14 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
 
-        char *in = "";
-        in = timestamp();
+        // char *in = "";
+        // in = timestamp();
 
-        char pub_message[100] = "";
-        strcat(pub_message, "Vector Data Received -> ");
-        strcat(pub_message, in);
-        strcat(pub_message, " ; ");
-        send_debug_message(pub_message);
+        // char pub_message[100] = "";
+        // strcat(pub_message, "Vector Data Received -> ");
+        // strcat(pub_message, in);
+        // strcat(pub_message, " ; ");
+        // send_debug_message(pub_message);
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
@@ -1570,7 +1584,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n6: Latency Test\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1648,11 +1662,40 @@ void *command_process(void *var) {
             }
 
             case 6: {
+                // char *input_string = malloc(40);
+                // printf("Generate Data -> Please input data string:\n");
+                // scanf("%s", input_string);
+                // printf("Generate Data Text Input: %s\n", input_string);
+                // send_debug_message("Clear Graph");
+                // clock_t debug_timer = clock();
+                // while (clock() < (debug_timer + 5000000)) {
+                // }
+                // generate_data(input_string);
+                // break;
+
+                // char pub_message[100] = "";
+                // strcat(pub_message, "Layer 2 Data Sent -> ");
+                // // strcat(pub_message, data_string);
+                // // strcat(pub_message, " -> ");
+                // strcat(pub_message, in);
+                // strcat(pub_message, " ; ");
+                // send_debug_message(pub_message);
+
                 printf("Latency Test\n");
                 clock_t latency_timer = clock();
+
+                char test_message[20] = "";
+                strcat(test_message, "test");
+                char test_num[10] = ""; 
+
                 while (clock() < (latency_timer + 5000000)) {
                 }
-                latency_test();
+
+                for (int i = 0; i < 20; i++) {
+                    sprintf(test_num, "%d", i);
+                    strcat(test_message, test_num);
+                    generate_data(test_message);
+                }
                 break;
             }
 

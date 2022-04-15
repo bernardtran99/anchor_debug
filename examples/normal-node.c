@@ -686,8 +686,6 @@ void generate_data(char *data_string) {
 
     char pub_message[100] = "";
     strcat(pub_message, "1:");
-    // strcat(pub_message, data_string);
-    // strcat(pub_message, " -> ");
     strcat(pub_message, in);
     strcat(pub_message, "_");
     strcat(pub_message, str);
@@ -1307,6 +1305,17 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     if(strcmp(first_slot, "l1data") == 0) {
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
+
+            char *in = "";
+            in = timestamp();
+
+            char pub_message[100] = "";
+            strcat(pub_message, "2:");
+            strcat(pub_message, in);
+            strcat(pub_message, "_");
+            strcat(pub_message, &data.content_value[0]);
+            strcat(pub_message, " ; ");
+            send_debug_message(pub_message);
             
             //insert into anchor layer 1 data store with index (this is is only for anchors)
             int index_num = insert_data_index(data);

@@ -6,7 +6,6 @@ from datetime import datetime
 import os
 import pprint
 import re
-from decimal import Decimal
 
 #time_entry = time_struct(10, 12, 23, 132771)
 #SHA encoding has bitstream output, if we convert bitstream to base64 then base64 does not include "_" char
@@ -52,6 +51,7 @@ def pop_lat(string_input):
 
 def calc_average():
     overall_avg = 0
+    global lat_dict
 
     for i in lat_dict:
         total_hour = total_minute = total_sec = total_milsec = 0

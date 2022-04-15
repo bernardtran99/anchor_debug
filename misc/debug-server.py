@@ -8,6 +8,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pprint
 from IPython import display
+import re
 
 #update node ips for new node nums
 NODE1 = "10.156.73.46"
@@ -72,15 +73,72 @@ input_l2interest_list = []
 
 firstInterest = {}
 data_received_bool = 0
-node8_list = []
-node9_list = []
-prev_node8 = 0
-prev_node9 = 0
+# node8_list = []
+# node9_list = []
+# prev_node8 = 0
+# prev_node9 = 0
 colors = 0
+
+lat_dict = {}
 #create a global module later
 
 def split_chars(word):
     return list(word)
+
+def pop_lat(string_input):
+    global lat_dict
+    strings = string_input.split()
+    for i in range(len(strings)):
+        if "1:" in strings[i]:
+            result = (re.search("1:(.*)_",strings[i])).group(1).split(".")
+            time_entry = time_struct(int(result[0]),int(result[1]),int(result[2]),int(result[3]))
+            data = (re.search("_(.*)",strings[i])).group(1)
+            if data not in lat_dict:
+                lat_dict[data] = [time_entry]
+            else:
+                lat_dict[data][0] = time_entry
+        
+        if "2:" in strings[i]:
+            result = (re.search("2:(.*)_",strings[i])).group(1).split(".")
+            time_entry = time_struct(int(result[0]),int(result[1]),int(result[2]),int(result[3]))
+            data = (re.search("_(.*)",strings[i])).group(1)
+            if data not in lat_dict:
+                lat_dict[data] = [0]
+            lat_dict[data].append(time_entry)
+
+def calc_average():
+    overall_avg = 0
+    global lat_dict
+
+    for i in lat_dict:
+        total_hour = total_minute = total_sec = total_milsec = 0
+
+        for j in (lat_dict[i])[1:]:
+            total_hour += j.hour - lat_dict[i][0].hour
+            total_minute += j.minute - lat_dict[i][0].minute
+            total_sec += j.sec - lat_dict[i][0].sec
+            total_milsec += j.milsec - lat_dict[i][0].milsec
+
+        avg_hour = (total_hour / (len(lat_dict[i]) - 1)) * 3600
+        avg_minute = (total_minute / (len(lat_dict[i]) - 1)) * 60
+        avg_sec = (total_sec / (len(lat_dict[i]) - 1))
+        avg_milsec = (total_milsec / (len(lat_dict[i]) - 1)) * (0.000001)
+
+        total_avg = avg_hour + avg_minute + avg_sec + avg_milsec
+        overall_avg += total_avg
+        print(i + ":" , lat_dict[i], str(round(total_avg,6)) + " seconds")
+
+    print("Overall Average:", round((overall_avg/len(lat_dict)),6))
+
+class time_struct:
+    def __init__(self, hour, minute, sec, milsec):
+        self.hour = hour
+        self.minute = minute
+        self.sec = sec
+        self.milsec = milsec
+
+    def __repr__(self):
+        return str(self.hour) + "." + str(self.minute) + "." + str(self.sec) + "." + str(self.milsec)
 
 class EchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
@@ -96,6 +154,7 @@ class EchoServerProtocol(asyncio.Protocol):
         global input_l2interest_list
         global G
         global H
+        global lat_dict
 
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
@@ -110,6 +169,23 @@ class EchoServerProtocol(asyncio.Protocol):
 
         for i in range(len(strings)):
             chars = split_chars(strings[i])
+
+            if "1:" in strings[i]:
+                result = (re.search("1:(.*)_",strings[i])).group(1).split(".")
+                time_entry = time_struct(int(result[0]),int(result[1]),int(result[2]),int(result[3]))
+                data = (re.search("_(.*)",strings[i])).group(1)
+                if data not in lat_dict:
+                    lat_dict[data] = [time_entry]
+                else:
+                    lat_dict[data][0] = time_entry
+        
+            if "2:" in strings[i]:
+                result = (re.search("2:(.*)_",strings[i])).group(1).split(".")
+                time_entry = time_struct(int(result[0]),int(result[1]),int(result[2]),int(result[3]))
+                data = (re.search("_(.*)",strings[i])).group(1)
+                if data not in lat_dict:
+                    lat_dict[data] = [0]
+                lat_dict[data].append(time_entry)
 
             if "l2interest" in strings[i]:
                 dash_counter = 0
@@ -142,7 +218,11 @@ class EchoServerProtocol(asyncio.Protocol):
                     if chars[e] == "/":
                         dash_counter += 1
                 selector = int(''.join(num_buffer))
-                H.add_edges_from([(selector, node_num)], color='yellow', weight = 2)  
+                H.add_edges_from([(selector, node_num)], color='yellow', weight = 2)
+
+        print("------------------------------------")
+        calc_average()
+        print("------------------------------------")
 
         colors = list(nx.get_edge_attributes(G,'color').values())
         weights = list(nx.get_edge_attributes(G,'weight').values())
