@@ -1682,16 +1682,17 @@ void *command_process(void *var) {
                 // send_debug_message(pub_message);
 
                 printf("Latency Test\n");
-                clock_t latency_timer = clock();
-
-                char test_message[20] = "";
-                strcat(test_message, "test");
-                char test_num[10] = ""; 
-
-                while (clock() < (latency_timer + 5000000)) {
-                }
 
                 for (int i = 0; i < 20; i++) {
+                    clock_t latency_timer = clock();
+
+                    char test_message[20] = "";
+                    strcat(test_message, "test");
+                    char test_num[10] = ""; 
+
+                    while (clock() < (latency_timer + 5000000)) {
+                    }
+                    
                     sprintf(test_num, "%d", i);
                     strcat(test_message, test_num);
                     generate_data(test_message);
