@@ -130,7 +130,8 @@ def calc_average():
                 total_avg = avg_hour + avg_minute + avg_sec + avg_milsec
                 overall_avg += total_avg
                 print(i + ":" , lat_dict[i], str(round(total_avg,6)) + " seconds")
-        print("Overall Average:", round((overall_avg / counter),6))
+        if(counter > 0):
+            print("Overall Average:", round((overall_avg / counter),6))
 
 class time_struct:
     def __init__(self, hour, minute, sec, milsec):
