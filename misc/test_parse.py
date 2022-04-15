@@ -49,29 +49,37 @@ def pop_lat(string_input):
             lat_dict[data].append(time_entry)
             # print(lat_dict[data])
 
+    # for i in lat_dict:
+    #     print(i + ":" , lat_dict[i])
+    
+    print("-------------------------------------")
+
 def calc_average():
     overall_avg = 0
     global lat_dict
+    counter = 0
+    if len(lat_dict) > 0:
+        for i in lat_dict:
+            if (len(lat_dict[i]) > 1) and lat_dict[i][0] != 0:
+                counter += 1
+                total_hour = total_minute = total_sec = total_milsec = 0
 
-    for i in lat_dict:
-        total_hour = total_minute = total_sec = total_milsec = 0
+                for j in (lat_dict[i])[1:]:
+                    total_hour += ((j.hour) - (lat_dict[i][0].hour))
+                    total_minute += ((j.minute) - (lat_dict[i][0].minute))
+                    total_sec += ((j.sec) - (lat_dict[i][0].sec))
+                    total_milsec += ((j.milsec) - (lat_dict[i][0].milsec))
 
-        for j in (lat_dict[i])[1:]:
-            total_hour += j.hour - lat_dict[i][0].hour
-            total_minute += j.minute - lat_dict[i][0].minute
-            total_sec += j.sec - lat_dict[i][0].sec
-            total_milsec += j.milsec - lat_dict[i][0].milsec
+                avg_hour = (total_hour / (len(lat_dict[i]) - 1)) * 3600
+                avg_minute = (total_minute / (len(lat_dict[i]) - 1)) * 60
+                avg_sec = (total_sec / (len(lat_dict[i]) - 1))
+                avg_milsec = (total_milsec / (len(lat_dict[i]) - 1)) * (0.000001)
 
-        avg_hour = (total_hour / (len(lat_dict[i]) - 1)) * 3600
-        avg_minute = (total_minute / (len(lat_dict[i]) - 1)) * 60
-        avg_sec = (total_sec / (len(lat_dict[i]) - 1))
-        avg_milsec = (total_milsec / (len(lat_dict[i]) - 1)) * (0.000001)
-
-        total_avg = avg_hour + avg_minute + avg_sec + avg_milsec
-        overall_avg += total_avg
-        print(i + ":" , lat_dict[i], str(round(total_avg,6)) + " seconds")
-
-    print("Overall Average:", round((overall_avg/len(lat_dict)),6))
+                total_avg = avg_hour + avg_minute + avg_sec + avg_milsec
+                overall_avg += total_avg
+                print(i + ":" , lat_dict[i], str(round(total_avg,6)) + " seconds")
+        # print("Overall Average:", round((overall_avg / len(lat_dict)),6))
+        print("Overall Average:", round((overall_avg / counter),6))
 
 class time_struct:
     def __init__(self, hour, minute, sec, milsec):
@@ -84,7 +92,8 @@ class time_struct:
         return str(self.hour) + "." + str(self.minute) + "." + str(self.sec) + "." + str(self.milsec)
 
 pop_lat(data1string)
+calc_average()
 pop_lat(data2string)
+calc_average()
 pop_lat(data3string)
-
 calc_average()
