@@ -1412,8 +1412,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     //TODO: need to have 2 for loops for generation of bit vector to assign outgoing faces to index(old) for vector -> use array for all outgoing faces
     else if(strcmp(first_slot, "l2data") == 0) {
         printf("Layer 2 Data Recieved\n");
-
-
         //need to check cs if duplicate data has already been received before
         //need to add extra fields into cs: bit vector, data(content_value), data1 index array
 
@@ -1432,6 +1430,8 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         strcat(pub_message, &data.content_value[7]);
         strcat(pub_message, " ; ");
         send_debug_message(pub_message);
+
+        int cs_check = check_content_store(&data, 0);
 
         size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
         for(size_t i = 0; i < nap_size; i++) {
@@ -1454,7 +1454,7 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
                 //using &data as input to directly change the packet without having to return a packet
                 //include third slot here as the outgoing face node num
                 //TODO: move this outside of the for loop and add link index old with outgoing faces
-                int cs_check = check_content_store(&data, third_slot);
+                //int cs_check = check_content_store(&data, third_slot);
 
                 //data is duplicated (OR the bit vector)
                 if(cs_check ==  0) {
@@ -1497,14 +1497,14 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
 
-        char *in = "";
-        in = timestamp();
+        // char *in = "";
+        // in = timestamp();
 
-        char pub_message[100] = "";
-        strcat(pub_message, "Vector Data Received -> ");
-        strcat(pub_message, in);
-        strcat(pub_message, " ; ");
-        send_debug_message(pub_message);
+        // char pub_message[100] = "";
+        // strcat(pub_message, "Vector Data Received -> ");
+        // strcat(pub_message, in);
+        // strcat(pub_message, " ; ");
+        // send_debug_message(pub_message);
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
