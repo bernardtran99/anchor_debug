@@ -688,7 +688,9 @@ void generate_data(char *data_string) {
     strcat(pub_message, "1:");
     // strcat(pub_message, data_string);
     // strcat(pub_message, " -> ");
-    strcat(pub_message, in + "_" + str);
+    strcat(pub_message, in);
+    strcat(pub_message, "_");
+    strcat(pub_message, str);
     strcat(pub_message, " ; ");
     send_debug_message(pub_message);
 
