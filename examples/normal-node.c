@@ -1572,12 +1572,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n
-        2: Generate Layer 1 Data\n
-        3: Generate UDP Face(Check Face Valid)\n
-        4: Flood To Neighbors\n
-        5: Connect to debug server\n
-        6: Latency Test\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n6: Latency Test\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
