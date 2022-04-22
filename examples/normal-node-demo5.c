@@ -444,8 +444,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     if(route_added == true) {
+        printf("Route Added");
         ndn_interest_from_name(&interest, &prefix_name);
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        printf("Route Added done");
     }
     else {
         printf("Function Complete Without Sending\n");
