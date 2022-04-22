@@ -135,3 +135,51 @@ with open(file, 'r+') as fd:
     fd.seek(0)
     fd.writelines(string)
     print("Written to normal-node-demo10.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo11.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo12.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo13.dir")
+
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+with open(file, 'r+') as fd:
+    contents = fd.readlines()
+    print(contents)
+    string = contents[0].split()
+    string.insert(8, insert_string)
+    string = ' '.join(string)
+    print(string)
+    fd.seek(0)
+    fd.writelines(string)
+    print("Written to normal-node-demo14.dir")
