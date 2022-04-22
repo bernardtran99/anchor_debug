@@ -136,7 +136,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo10.dir")
 
-file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo11.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -148,7 +148,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo11.dir")
 
-file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo12.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -160,7 +160,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo12.dir")
 
-file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo13.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
@@ -172,7 +172,7 @@ with open(file, 'r+') as fd:
     fd.writelines(string)
     print("Written to normal-node-demo13.dir")
 
-file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo10.dir/link.txt"
+file = "/home/pi/Documents/anchor_debug/build/CMakeFiles/normal-node-demo14.dir/link.txt"
 with open(file, 'r+') as fd:
     contents = fd.readlines()
     print(contents)
