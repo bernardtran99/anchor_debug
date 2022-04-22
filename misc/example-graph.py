@@ -25,10 +25,10 @@ G.add_node(11, pos=(6, 18))
 G.add_node(12, pos=(10, 18))
 G.add_node(13, pos=(6, 2))
 G.add_node(14, pos=(10, 2))
-pos = nx.get_node_attributes(G, 'pos')
 
-node_sizes = [500] * 10
-node_colors = ['green'] * 10
+pos = nx.get_node_attributes(G,'pos')
+node_sizes = [500]*10
+node_colors = ['green']*10
 
 # def node():
     #fig = plt.figure()
@@ -94,4 +94,4 @@ plt.clf()
 plt.title("POS TEST")
 nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
 plt.show(block=False)
-plt.pause(0.000001)
+plt.pause(1)
