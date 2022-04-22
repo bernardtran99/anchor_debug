@@ -35,17 +35,21 @@
 #include "ndn-lite/forwarder/face.h"
 
 #define PORT 8888
-#define NODE1 "10.156.73.46"
-#define NODE2 "10.156.73.118"
-#define NODE3 "10.156.73.45"
-#define NODE4 "10.156.73.125"
-#define NODE5 "10.156.73.117"
-#define NODE6 "10.156.73.122"
-#define NODE7 "10.156.73.121"
-#define NODE8 "10.156.73.120"
-#define NODE9 "10.156.73.126"
-#define NODE10 "10.156.73.47"
-#define DEBUG "10.156.72.38"
+#define NODE1 "10.156.74.51"
+#define NODE2 "10.156.74.56"
+#define NODE3 "10.156.74.50"
+#define NODE4 "10.156.74.58"
+#define NODE5 "10.156.74.54"
+#define NODE6 "10.156.79.212"
+#define NODE7 "10.156.79.213"
+#define NODE8 "10.156.74.57"
+#define NODE9 "10.156.74.60"
+#define NODE10 "10.156.79.233"
+#define NODE11 "10.156.79.234"
+#define NODE12 "10.156.79.235"
+#define NODE13 "10.156.79.236"
+#define NODE14 "10.156.79.237"
+#define DEBUG "10.156.77.155"
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
@@ -63,12 +67,12 @@
 //checks every bit, if bit in "byte" is 1, the "1", else "0"
 
 //in the build directory go to make files and normal node -change the link.txt
-//CMAKE again
-//then make
-//link.txt
-///usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -lm -o examples/normal-node  libndn-lite.a
+// CMAKE again
+// then make
+// link.txt
+// /usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -lm -o examples/normal-node  libndn-lite.a
 
-//sizeof returns the size of a the type if getting size of pointer, if size of an array, then it prints out length of an array
+// sizeof returns the size of a the type if getting size of pointer, if size of an array, then it prints out length of an array
 
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2);
 
@@ -80,7 +84,7 @@ typedef struct anchor_pit_entry {
 //for linking prefixes to a specific face
 typedef struct anchor_pit {
     //change size to be more dynamic when iterating through array
-    anchor_pit_entry_t slots[20];
+    anchor_pit_entry_t slots[40];
 } anchor_pit_t;
 
 typedef struct ip_table_entry {
@@ -90,7 +94,7 @@ typedef struct ip_table_entry {
 
 typedef struct ip_table {
     int last_entry;
-    ip_table_entry_t entries[10];
+    ip_table_entry_t entries[40];
 } ip_table_t;
 
 typedef struct udp_face_table_entry {
@@ -129,8 +133,8 @@ typedef struct anchor_data1_index {
 //-----------------------------
 
 typedef struct content_store {
-    content_store_entry_t entries[20];
-    anchor_data1_index_t data_indexes[20];
+    content_store_entry_t entries[100];
+    anchor_data1_index_t data_indexes[100];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -160,13 +164,15 @@ int time_slice = 3;
 //uint8_t selector[10] = {1,2,3,4,5,6,7,8,9,10}; //change from 0 to 9
 //uint8_t *selector_ptr = selector;
 
-bool stored_selectors[10];
 
-bool delay_start[10];
+// should scale with number of nodes in network: stored_selectors, delay_start, interface_num, did_flood
+bool stored_selectors[40];
+
+bool delay_start[40];
 //set array for multiple anchors for anchor/selector 1 - 10
-int interface_num[10];
+int interface_num[40];
 //for telling if a node has flooded for the specific anchor
-bool did_flood[10];
+bool did_flood[40];
 
 //clock time is in nano seconds, divide by 10^6 for actual time
 int delay = 3000000;
@@ -201,16 +207,16 @@ struct sockaddr_in serv_addr;
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 //for fill pit to see if max interfaces has been reached for that anchor
-int ancmt_num[10];
+int ancmt_num[40];
 
 //node_num future use for the third slot in prefix
 int node_num = 1;
 
 //list of neighbor selectors to current node
-int neighbor_list[10];
+int neighbor_list[20];
 
 //list of neighbor nodes that will be flooded to from current node (ancmt only)
-int flood_list[10];
+int flood_list[20];
 
 int send_debug_message(char *input) {
     if(debug_connected == true) {
@@ -605,16 +611,6 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
     face = generate_udp_face(input_ip, "6000", "4000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
 
-    // char *in = "";
-    // in = timestamp();
-
-    // char pub_message[100] = "";
-    // strcat(pub_message, "Layer 2 Data Sent -> ");
-    // // strcat(pub_message, data_string);
-    // // strcat(pub_message, " -> ");
-    // strcat(pub_message, in);
-    // strcat(pub_message, " ; ");
-    // send_debug_message(pub_message);
     send_debug_message("Layer 2 Data Sent ; ");
 }
 
@@ -687,89 +683,16 @@ void generate_data(char *data_string) {
     char pub_message[100] = "";
     strcat(pub_message, "1:");
     strcat(pub_message, in);
-    strcat(pub_message, "_");
+    strcat(pub_message, ">");
     strcat(pub_message, str);
+    strcat(pub_message, "_");
+    char tp_size[10] = "";
+    sprintf(tp_size, "%d", encoder.offset);
+    strcat(pub_message, tp_size);
     strcat(pub_message, " ; ");
     send_debug_message(pub_message);
 
     // send_debug_message("Layer 1 Data Sent ; ");
-}
-
-void latency_test() {
-    // for(int num_send = 0; num < 5; num_send++) {
-        clock_t timer = clock();
-        while (clock() < (timer + 200000)) {
-        }
-
-        ndn_data_t data;
-        ndn_name_t prefix_name;
-        ndn_udp_face_t *face;
-        ndn_encoder_t encoder;
-        uint8_t buf[4096];
-
-        char str[10] = "Data: ";
-        char num_send_char[10] = "";
-        //sprintf(num_send_char, "%d", num_send+1);
-        strcat(str, num_send_char);
-
-        for(size_t j = 0; j < sizeof(ancmt_num)/sizeof(ancmt_num[0]); j++) {
-            if(ancmt_num[j] != 0) {
-                int reply[10];
-                int counter = 0;
-                size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
-                for(size_t i = 0; i < nap_size; i++) {
-                    char *check_ancmt = "";
-                    check_ancmt = get_prefix_component(node_anchor_pit.slots[i].name_struct, 0);
-                    char *check_ancmt_anchor = "";
-                    check_ancmt_anchor =  get_prefix_component(node_anchor_pit.slots[i].name_struct, 1);
-                    if(strcmp(check_ancmt, "ancmt") == 0 && atoi(check_ancmt_anchor) == (j+1)) {
-                        reply[counter] = atoi(get_prefix_component(node_anchor_pit.slots[i].name_struct, 2));
-                        counter++;
-                    }
-                }
-
-                char local_num[10] = "";
-                sprintf(local_num, "%d", node_num);
-                char dest_num[10] = "";
-                sprintf(dest_num, "%d", (j+1));
-                char prefix_string[20] = "/l1data/";
-                strcat(prefix_string, dest_num);
-                strcat(prefix_string, "/");
-                strcat(prefix_string, local_num);
-
-                ndn_name_from_string(&prefix_name, prefix_string, strlen(prefix_string));
-
-                srand(time(0));
-                int rand_num = rand() % counter;
-
-                char *ip_string;
-                ip_string = search_ip_table(reply[rand_num]);
-
-                data.name = prefix_name;
-                ndn_data_set_content(&data, (uint8_t*)str, strlen(str) + 1);
-                ndn_metainfo_init(&data.metainfo);
-                ndn_metainfo_set_content_type(&data.metainfo, NDN_CONTENT_TYPE_BLOB);
-                encoder_init(&encoder, buf, 4096);
-                ndn_data_tlv_encode_digest_sign(&encoder, &data);
-
-                face = generate_udp_face(ip_string, "5000", "3000");
-                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-
-            }
-        }
-        char *in = "";
-        in = timestamp();
-
-        char pub_message[100] = "";
-        strcat(pub_message, "Layer 1 Data Sent: ");
-        strcat(pub_message, num_send_char);
-        strcat(pub_message, " -> ");
-        strcat(pub_message, in);
-        strcat(pub_message, " ; ");
-        printf("pubmessage good\n");
-        send_debug_message(pub_message);
-    // }
-    
 }
 
 void *start_delay(void *arguments) {
@@ -1312,8 +1235,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
             char pub_message[100] = "";
             strcat(pub_message, "2:");
             strcat(pub_message, in);
-            strcat(pub_message, "_");
+            strcat(pub_message, ">");
             strcat(pub_message, &data.content_value[0]);
+            strcat(pub_message, "_");
+            char tp_size[10] = "";
+            sprintf(tp_size, "%d", data_size);
+            strcat(pub_message, tp_size);
             strcat(pub_message, " ; ");
             send_debug_message(pub_message);
             
@@ -1435,8 +1362,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         char pub_message[100] = "";
         strcat(pub_message, "2:");
         strcat(pub_message, in);
-        strcat(pub_message, "_");
+        strcat(pub_message, ">");
         strcat(pub_message, &data.content_value[7]);
+        strcat(pub_message, "_");
+        char tp_size[10] = "";
+        sprintf(tp_size, "%d", data_size);
+        strcat(pub_message, tp_size);
         strcat(pub_message, " ; ");
         send_debug_message(pub_message);
 
@@ -1505,15 +1436,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
 
         //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
-
-        // char *in = "";
-        // in = timestamp();
-
-        // char pub_message[100] = "";
-        // strcat(pub_message, "Vector Data Received -> ");
-        // strcat(pub_message, in);
-        // strcat(pub_message, " ; ");
-        // send_debug_message(pub_message);
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
@@ -1584,7 +1506,7 @@ void *forwarding_process(void *var) {
 void *command_process(void *var) {
     int select = 1;
     while(select != 0) {
-        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n6: Latency Test\n");
+        printf("0: Exit\n2: Generate Layer 1 Data\n3: Generate UDP Face(Check Face Valid)\n4: Flood To Neighbors\n5: Connect to debug server\n6: Latency and Throughput Test\n");
         scanf("%d", &select);
         printf("SELECT: %d\n", select);
         switch (select) {
@@ -1681,7 +1603,8 @@ void *command_process(void *var) {
                 // strcat(pub_message, " ; ");
                 // send_debug_message(pub_message);
 
-                printf("Latency Test\n");
+                printf("Latency and Throughput Test\n");
+
                 for (int i = 0; i < 20; i++) {
                     clock_t latency_timer = clock();
 
@@ -1691,7 +1614,7 @@ void *command_process(void *var) {
 
                     while (clock() < (latency_timer + 5000000)) {
                     }
-                    
+
                     sprintf(test_num, "%d", i);
                     strcat(test_message, test_num);
                     generate_data(test_message);
@@ -1766,14 +1689,19 @@ int main(int argc, char *argv[]) {
     add_ip_table("8",NODE8);
     add_ip_table("9",NODE9);
     add_ip_table("10",NODE10);
+    add_ip_table("11",NODE11);
+    add_ip_table("12",NODE12);
+    add_ip_table("13",NODE13);
+    add_ip_table("14",NODE14);
 
     ndn_lite_startup();
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 10;
-    add_neighbor(8);
-    add_neighbor(9);
+    node_num = 1;
+    add_neighbor(5);
+    add_neighbor(7);
+    add_neighbor(10);
 
     last_interest = ndn_time_now_ms();
     
