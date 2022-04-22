@@ -90,6 +90,7 @@ node_colors = ['green']*10
 
 # node()
 
+G.add_edges_from([(1, 2), (1, 3)])
 plt.clf()
 plt.title("POS TEST")
 nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
