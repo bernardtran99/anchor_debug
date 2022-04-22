@@ -17,18 +17,17 @@ G.add_node(10, pos=(14, 10))
 G.add_node(11, pos=(6, 18))
 G.add_node(12, pos=(10, 18))
 G.add_node(13, pos=(6, 2))
-G.add_node(14, pos=(1, 2))
+G.add_node(14, pos=(10, 2))
 pos = nx.get_node_attributes(G, 'pos')
 
 node_sizes = [500] * 10
 node_colors = ['green'] * 10
 
-
-def node():
+# def node():
     #fig = plt.figure()
     #ax = fig.add_subplot(1, 1, 1)
-    for epoch in range(1,18):
-        plt.clf()
+    # for epoch in range(1,18):
+    #     plt.clf()
         # if epoch == 2:
         #     G.add_edges_from([(1, 2), (1, 3)])
         #     node_sizes[0] = 1200
@@ -71,14 +70,14 @@ def node():
         #     node_colors[3] = 'green'
         #     node_colors[0] = 'red'
 
-        plt.clf()
-        plt.title('Time {}s'.format(epoch))
-        nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
-        #display.clear_output(wait=True)
-        #display.display(plt.gcf())
-        #plt.show()
-        plt.show(block=False)
-        plt.pause(0.001)
+        # plt.clf()
+        # plt.title('Time {}s'.format(epoch))
+        # nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
+        # #display.clear_output(wait=True)
+        # #display.display(plt.gcf())
+        # #plt.show()
+        # plt.show(block=False)
+        # plt.pause(0.001)
         #plt.close()
         # time.sleep(0.002)
 
@@ -86,6 +85,6 @@ def node():
 
 plt.clf()
 plt.title("POS TEST")
-nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = "black", width = 1,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = "black", node_color=node_colors,connectionstyle='arc3, rad = 0.1')
 plt.show(block=False)
 plt.pause(0.000001)
