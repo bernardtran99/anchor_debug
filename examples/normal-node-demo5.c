@@ -430,8 +430,11 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
             if(do_skip == false) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
+                printf("search id done");
                 face = generate_udp_face(ip_string, "3000", "5000");
+                print("face gen");
                 ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                printf("add route")
                 route_added = true;
             }
         }
