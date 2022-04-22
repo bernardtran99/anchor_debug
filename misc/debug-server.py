@@ -37,7 +37,11 @@ ipDict = {
     NODE7 : 7,
     NODE8 : 8,
     NODE9 : 9,
-    NODE10 : 10
+    NODE10 : 10,
+    NODE11 : 11,
+    NODE12 : 12,
+    NODE13 : 13,
+    NODE14 : 14
 }
 
 G = nx.MultiDiGraph()
@@ -51,6 +55,11 @@ G.add_node(7,pos=(10,6))
 G.add_node(8,pos=(12,10))
 G.add_node(9,pos=(12,2))
 G.add_node(10,pos=(14,6))
+G.add_node(11,pos=(,14))
+G.add_node(12,pos=(,14))
+G.add_node(13,pos=(,))
+G.add_node(14,pos=(,))
+
 pos = nx.get_node_attributes(G,'pos')
 node_sizes = [500]*10
 node_colors = ['green']*10
@@ -224,20 +233,20 @@ class EchoServerProtocol(asyncio.Protocol):
                 selector = int(''.join(num_buffer))
                 H.add_edges_from([(selector, node_num)], color='yellow', weight = 2)
 
-        # calc_average()
+        calc_average()
 
-        # colors = list(nx.get_edge_attributes(G,'color').values())
-        # weights = list(nx.get_edge_attributes(G,'weight').values())
-        # colors_data = list(nx.get_edge_attributes(H,'color').values())
-        # weights_data = list(nx.get_edge_attributes(H,'weight').values())
-        # plt.clf()
-        # plt.title(graph_title)
-        # plt.figure(1)
-        # nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        # plt.figure(2)
-        # nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        # plt.show(block=False)
-        # plt.pause(0.000001)
+        colors = list(nx.get_edge_attributes(G,'color').values())
+        weights = list(nx.get_edge_attributes(G,'weight').values())
+        colors_data = list(nx.get_edge_attributes(H,'color').values())
+        weights_data = list(nx.get_edge_attributes(H,'weight').values())
+        plt.clf()
+        plt.title(graph_title)
+        plt.figure(1)
+        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.figure(2)
+        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        plt.show(block=False)
+        plt.pause(0.000001)
 
 async def main():
     # Get a reference to the event loop as we plan to use
