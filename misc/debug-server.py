@@ -59,10 +59,10 @@ G.add_node(11, pos=(6, 18))
 G.add_node(12, pos=(10, 18))
 G.add_node(13, pos=(6, 2))
 G.add_node(14, pos=(10, 2))
-
 pos = nx.get_node_attributes(G,'pos')
-node_sizes = [500]*10
-node_colors = ['green']*10
+#change [500]*(number of nodes)
+node_sizes = [500]*14
+node_colors = ['green']*14
 
 H = nx.MultiDiGraph()
 H.add_node(1, pos=(2, 10))
@@ -80,8 +80,8 @@ H.add_node(12, pos=(10, 18))
 H.add_node(13, pos=(6, 2))
 H.add_node(14, pos=(10, 2))
 pos = nx.get_node_attributes(H,'pos')
-node_sizes = [500]*10
-node_colors = ['green']*10
+node_sizes = [500]*14
+node_colors = ['green']*14
 
 #python3
 graph_title = "Anchor Demo"
