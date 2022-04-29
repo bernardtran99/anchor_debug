@@ -449,8 +449,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
 
     if(route_added == true) {
         printf("Route Added\n");
+        //add newlines to print statements for correct debug of seg fault to match gdb
         ndn_interest_from_name(&interest, &prefix_name);
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        int debug_for = ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        printf("%d\n",debug_for);
         printf("Route Added done\n");
     }
     else {

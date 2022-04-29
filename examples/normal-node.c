@@ -73,6 +73,7 @@
 // /usr/bin/cc  -std=c11 -Werror -Wno-format -Wno-int-to-void-pointer-cast -Wno-int-to-pointer-cast -O3   CMakeFiles/normal-node.dir/examples/normal-node.c.o  -pthread -lm -o examples/normal-node  libndn-lite.a
 
 // sizeof returns the size of a the type if getting size of pointer, if size of an array, then it prints out length of an array
+//add newlines to print statements for correct debug of seg fault to match gdb
 
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2);
 
