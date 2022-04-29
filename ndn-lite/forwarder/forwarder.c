@@ -486,14 +486,17 @@ fwd_multicast(uint8_t* packet,
   ndn_table_id_t id;
   ndn_face_intf_t* face;
   ndn_bitset_t ret = 0;
-
+  printf("here\n");
   while(out_faces != 0){
+    printf("here\n");
     id = bitset_pop_least(&out_faces);
     face = forwarder.facetab->slots[id];
     if(id != in_face && face != NULL){
+      printf("here\n");
       ndn_face_send(face, packet, length);
       ret = bitset_set(ret, id);
     }
+    printf("here\n");
   }
   return ret;
 }
