@@ -429,12 +429,13 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
             
             if(do_skip == false) {
                 char *ip_string = "";
+                printf("here\n");
                 ip_string = search_ip_table(neighbor_list[i]);
-                printf("search id done");
+                printf("search id done\n");
                 face = generate_udp_face(ip_string, "3000", "5000");
-                printf("face gen");
+                printf("face gen\n");
                 ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-                printf("add route");
+                printf("add route\n");
                 route_added = true;
             }
         }
@@ -447,10 +448,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     if(route_added == true) {
-        printf("Route Added");
+        printf("Route Added\n");
         ndn_interest_from_name(&interest, &prefix_name);
         ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
-        printf("Route Added done");
+        printf("Route Added done\n");
     }
     else {
         printf("Function Complete Without Sending\n");
