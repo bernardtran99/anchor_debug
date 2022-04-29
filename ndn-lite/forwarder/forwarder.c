@@ -269,7 +269,7 @@ ndn_forwarder_express_interest(uint8_t* interest, size_t length,
                                ndn_on_timeout_func on_timeout,
                                void* userdata)
 {
-  printf("Expi\n");
+  printf("1\n");
   int ret;
   interest_options_t options;
   uint8_t *name;
@@ -278,13 +278,15 @@ ndn_forwarder_express_interest(uint8_t* interest, size_t length,
 
   // if(interest == NULL || on_data == NULL)
   //   return NDN_INVALID_POINTER;
+  printf("2\n");
   if(interest == NULL)
     return NDN_INVALID_POINTER;
 
   ret = tlv_interest_get_header(interest, length, &options, &name, &name_len);
+  printf("3\n");
   if(ret != NDN_SUCCESS)
     return ret;
-
+  printf("4\n");
   pit_entry = ndn_pit_find_or_insert(forwarder.pit, name, name_len);
   if (pit_entry == NULL)
     return NDN_FWD_PIT_FULL;
@@ -294,6 +296,7 @@ ndn_forwarder_express_interest(uint8_t* interest, size_t length,
   pit_entry->userdata = userdata;
 
   pit_entry->last_time = pit_entry->express_time = ndn_time_now_ms();
+  printf("5\n");
 
   return fwd_on_outgoing_interest(interest, length, name, name_len, pit_entry, NDN_INVALID_ID);
 }
