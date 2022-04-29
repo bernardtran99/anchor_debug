@@ -434,8 +434,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
                 printf("search id done\n");
                 face = generate_udp_face(ip_string, "3000", "5000");
                 printf("face gen\n");
-                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-                printf("add route\n");
+                int add_route_check = ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                printf("Add Route Check: %d\n");
                 route_added = true;
             }
         }
