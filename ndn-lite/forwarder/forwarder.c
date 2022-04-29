@@ -510,24 +510,24 @@ fwd_on_outgoing_interest(uint8_t* interest,
   int strategy;
   uint8_t *hop_limit;
   ndn_bitset_t outfaces;
-  
+  printf("6\n");
   fib_entry = ndn_fib_prefix_match(forwarder.fib, name, name_len);
   if(fib_entry == NULL){
     NDN_LOG_ERROR("[FORWARDER] Drop by no route\n");
     return NDN_FWD_NO_ROUTE;
   }
-
+  printf("7\n");
   if(fib_entry->on_interest){
     strategy = fib_entry->on_interest(interest, length, fib_entry->userdata);
   }else{
     strategy = NDN_FWD_STRATEGY_MULTICAST;
   }
-
+  printf("8\n");
   // The interest may be satisfied immediately so check again
   if(entry->nametree_id == NDN_INVALID_ID){
     return NDN_SUCCESS;
   }
-
+  printf("9\n");
   hop_limit = tlv_interest_get_hoplimit_ptr(interest, length);
   if(hop_limit != NULL){
     if(*hop_limit <= 0){
@@ -538,11 +538,11 @@ fwd_on_outgoing_interest(uint8_t* interest,
       *hop_limit -= 1;
     }
   }
-
+  printf("10\n");
   outfaces = (fib_entry->nexthop & (~entry->outgoing_faces));
   if(strategy == NDN_FWD_STRATEGY_MULTICAST){
     entry->outgoing_faces |= fwd_multicast(interest, length, outfaces, face_id);
   }
-
+  printf("11\n");
   return NDN_SUCCESS;
 }

@@ -49,7 +49,7 @@ typedef uint16_t ndn_table_id_t;
 #define NDN_FACE_TABLE_MAX_SIZE 1024
 #define NDN_FACE_DEFAULT_COST 1
 #define NDN_AES_BLOCK_SIZE 16
-#define NDN_MAX_FACE_PER_PIT_ENTRY 6
+#define NDN_MAX_FACE_PER_PIT_ENTRY 10
 
 // fragmentation support
 #define NDN_FRAG_HDR_LEN 3 // Size of the NDN L2 fragmentation header
