@@ -42,7 +42,7 @@ typedef uint16_t ndn_table_id_t;
 
 #define NDN_INVALID_ID 0xFFFF
 #define NDN_NAMETREE_MAX_SIZE 256
-#define NDN_FIB_MAX_SIZE 20
+#define NDN_FIB_MAX_SIZE 256
 #define NDN_PIT_MAX_SIZE 256
 #define NDN_CS_MAX_SIZE 10
 //number of faces allowed in face table

@@ -510,7 +510,7 @@ fwd_on_outgoing_interest(uint8_t* interest,
   int strategy;
   uint8_t *hop_limit;
   ndn_bitset_t outfaces;
-
+  
   fib_entry = ndn_fib_prefix_match(forwarder.fib, name, name_len);
   if(fib_entry == NULL){
     NDN_LOG_ERROR("[FORWARDER] Drop by no route\n");
