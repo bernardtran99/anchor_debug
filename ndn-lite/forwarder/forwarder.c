@@ -493,6 +493,7 @@ fwd_multicast(uint8_t* packet,
     face = forwarder.facetab->slots[id];
     if(id != in_face && face != NULL){
       printf("--\n");
+      printf("ID: %d, FACE: %d, IN_FACE: %d, OUT_FACE: %d", id, face, in_face, out_faces);
       ndn_face_send(face, packet, length);
       printf("_\n");
       ret = bitset_set(ret, id);
