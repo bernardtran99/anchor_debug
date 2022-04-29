@@ -269,6 +269,7 @@ ndn_forwarder_express_interest(uint8_t* interest, size_t length,
                                ndn_on_timeout_func on_timeout,
                                void* userdata)
 {
+  printf("Expi\n");
   int ret;
   interest_options_t options;
   uint8_t *name;
