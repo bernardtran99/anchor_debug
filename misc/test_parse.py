@@ -50,7 +50,7 @@ def pop_lat(string_input):
 
 def calc_average():
     print("-------------------------------------")
-    overall_avg = overall_throughput = overall_largest_avg = overall_largest_lat = 0
+    overall_avg = overall_throughput = overall_largest_avg = overall_largest_lat = overall_cost = 0
     global lat_dict
     counter = 0
     if len(lat_dict) > 0:
@@ -58,7 +58,7 @@ def calc_average():
         for i in lat_dict:
             if (len(lat_dict[i]) > 1) and lat_dict[i][0] != 0:
                 counter += 1
-                total_hour = total_minute = total_sec = total_milsec = total_throughput = largest_lat =  0
+                total_hour = total_minute = total_sec = total_milsec = total_throughput = largest_lat = total_cost = 0
 
                 # iterating through list of lat_dict[i]
                 for j in (lat_dict[i])[1:]:
@@ -70,6 +70,7 @@ def calc_average():
                     total_latency = (((j.hour) - (lat_dict[i][0].hour)) * 3600) + (((j.minute) - (lat_dict[i][0].minute)) * 60) + ((j.sec) - (lat_dict[i][0].sec)) + (((j.milsec) - (lat_dict[i][0].milsec)) * (0.000001))
                     # throughput = j.pkt_size / total_latency # bytes / second
                     total_throughput += (j.pkt_size / total_latency)
+                    total_cost += (j.pkt_size)
                     if total_latency > largest_lat:
                         largest_lat = total_latency
                 
@@ -86,12 +87,14 @@ def calc_average():
                 overall_avg += total_avg
                 overall_throughput += avg_throughput
                 overall_largest_avg += largest_lat
-                print(i + ":" , lat_dict[i], str(round(total_avg,6)) + " seconds, " + str(round(avg_throughput,6)) + " bytes/sec, " + str(round(largest_lat,6)) + " seconds(large)")
+                overall_cost += total_cost
+                print(i + ":" , lat_dict[i], "Packet Latency: "+ str(round(total_avg,6)) + " seconds, Packet Throughput: " + str(round(avg_throughput,6)) + " bytes/sec, Largest Latency: " + str(round(largest_lat,6)) + " seconds(large), Bandwidth Cost: " + str(round(total_cost,6)) + " bytes")
         if(counter > 0):
             # print("Overall Average:", round((overall_avg / len(lat_dict)),6))
-            print("Overall Average: " + str(round((overall_avg / counter),6)) + " seconds")
-            print("Overall Throughput: " + str(round((overall_throughput / counter),6)) + " bytes/sec")
-            print("Overall Largest Average Latency: " + str(round((overall_largest_avg / counter),6)) + " seconds (" + str(round(overall_largest_lat,6)) + " sec)")
+            print("Overall Average Latency: " + str(round((overall_avg / counter),6)) + " seconds")
+            print("Overall Largest Average Latency: " + str(round((overall_largest_avg / counter),6)) + " seconds, Largest Overall: " + str(round(overall_largest_lat,6)) + " seconds")
+            print("Overall Average Bandwidth Cost: " + str(round(overall_cost / counter,6)) +" bytes")
+            print("Overall Average Throughput: " + str(round((overall_throughput / counter),6)) + " bytes/second")
     print("-------------------------------------")
 
 class time_struct:
