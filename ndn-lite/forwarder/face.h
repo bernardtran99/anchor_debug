@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 #include "../ndn-enums.h"
 #include "../ndn-constants.h"
 
@@ -130,9 +131,9 @@ static inline int
 ndn_face_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size)
 {
   if (self->state != NDN_FACE_STATE_UP)
-    printf("Good\n");
+    printf("Good1\n");
     self->up(self);
-    printf("Good\n");
+    printf("Good2\n");
   return self->send(self, packet, size);
 }
 
