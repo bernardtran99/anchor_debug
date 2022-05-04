@@ -120,6 +120,7 @@ ndn_udp_face_destroy(ndn_face_intf_t* self){
 
 static int
 ndn_udp_face_send(ndn_face_intf_t* self, const uint8_t* packet, uint32_t size){
+  printf("Again\n");
   ndn_udp_face_t* ptr = (ndn_udp_face_t*)self;
   ssize_t ret;
   ret = sendto(ptr->sock, packet, size, 0, 
