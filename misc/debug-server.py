@@ -59,7 +59,7 @@ G.add_node(11, pos=(6, 18))
 G.add_node(12, pos=(10, 18))
 G.add_node(13, pos=(6, 2))
 G.add_node(14, pos=(10, 2))
-pos = nx.get_node_attributes(G,'pos')
+pos = nx.circular_layout(G)
 #change [500]*(number of nodes)
 node_sizes = [500]*14
 node_colors = ['green']*14
@@ -79,7 +79,8 @@ H.add_node(11, pos=(6, 18))
 H.add_node(12, pos=(10, 18))
 H.add_node(13, pos=(6, 2))
 H.add_node(14, pos=(10, 2))
-pos = nx.get_node_attributes(H,'pos')
+# pos = nx.get_node_attributes(H,'pos')
+pos = nx.circular_layout(H)
 node_sizes = [500]*14
 node_colors = ['green']*14
 
