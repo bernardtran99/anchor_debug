@@ -355,6 +355,9 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
 
+    ndn_encoder_t encoder;
+    uint8_t encoding_buf[2048];
+
     char change_num[20] = "";
     sprintf(change_num, "%d", node_num);
     //change this to available ancmt prefix
@@ -373,7 +376,11 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         strcat(ancmt_string, change_num);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
+        
         ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        ndn_interest_from_name(&interest, &prefix_name);
+        encoder_init(&encoder, encoding_buf, sizeof(encoding_buf));
+        ndn_interest_tlv_encode(&encoder, &interest);
         
         size_t nl_size = sizeof(neighbor_list)/sizeof(neighbor_list[0]);
         for(size_t i = 0; i < nl_size; i++) {
@@ -381,7 +388,8 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
                 face = generate_udp_face(ip_string, "3000", "5000");
-                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
                 route_added = true;
             }
         }
@@ -392,7 +400,11 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
         strcat(ancmt_string, second_slot);
         strcat(ancmt_string, "/");
         strcat(ancmt_string, change_num);
+
         ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+        ndn_interest_from_name(&interest, &prefix_name);
+        encoder_init(&encoder, encoding_buf, sizeof(encoding_buf));
+        ndn_interest_tlv_encode(&encoder, &interest);
 
         int received_ancmts[10];
         int next_index = 0;
@@ -431,8 +443,10 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
             if(do_skip == false) {
                 char *ip_string = "";
                 ip_string = search_ip_table(neighbor_list[i]);
+                //TODO: change here to have an array of faces that all send at close to the same time
                 face = generate_udp_face(ip_string, "3000", "5000");
-                ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+                ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
                 route_added = true;
             }
         }
@@ -445,14 +459,13 @@ void flood(ndn_interest_t interest_pkt, char *second_slot) {
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
 
     if(route_added == true) {
-        ndn_interest_from_name(&interest, &prefix_name);
-        ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+        printf("Flooded Interest!\n");
+        // ndn_interest_from_name(&interest, &prefix_name);
+        // ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
     }
     else {
         printf("Function Complete Without Sending\n");
     }
-
-    printf("Flooded Interest!\n");
     // send_debug_message("Flooded Interest ; ");
 }
 
@@ -1695,6 +1708,7 @@ int main(int argc, char *argv[]) {
     add_ip_table("13",NODE13);
     add_ip_table("14",NODE14);
 
+    //start ndn_lite and init all data structures in forwarder
     ndn_lite_startup();
 
     //This is for adding 2 way neighbors in network
