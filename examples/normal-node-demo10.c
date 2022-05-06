@@ -548,6 +548,9 @@ void reply_ancmt(char *second_slot) {
     int reply[10];
     int counter = 0;
 
+    ndn_encoder_t encoder;
+    uint8_t encoding_buf[2048];
+
     //TODO: change all code when we iterate through pi to find ancmts
     //change to only send ancmts from second_slot input
     size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
@@ -579,13 +582,18 @@ void reply_ancmt(char *second_slot) {
     strcat(ancmt_string, second_slot);
     strcat(ancmt_string, "/");
     strcat(ancmt_string, change_num);
+
     ndn_name_from_string(&prefix_name, ancmt_string, strlen(ancmt_string));
+    ndn_interest_from_name(&interest, &prefix_name);
+    encoder_init(&encoder, encoding_buf, sizeof(encoding_buf));
+    ndn_interest_tlv_encode(&encoder, &interest);
 
     face = generate_udp_face(ip_string, "4000", "6000");
-    ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
-
-    ndn_interest_from_name(&interest, &prefix_name);
-    ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
+    ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
+    
+    // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
+    // ndn_interest_from_name(&interest, &prefix_name);
+    // ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
 }
 
 //input is name
@@ -1716,7 +1724,7 @@ int main(int argc, char *argv[]) {
     node_num = 10;
     add_neighbor(8);
     add_neighbor(9);
-    
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
