@@ -54,7 +54,7 @@ Graph_Matrix
 distance
 
 G = nx.MultiDiGraph()
-G.add_node(1, pos=(2, 10))
+G.add_node(1, pos=(0, 0))
 G.add_node(2, pos=(4, 14))
 G.add_node(3, pos=(4, 6))
 G.add_node(4, pos=(6, 10))
