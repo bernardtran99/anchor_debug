@@ -93,6 +93,7 @@ data_received_bool = 0
 colors = 0
 
 lat_dict = {}
+total_ban = 0
 #create a global module laters
 draw_graph_count = 0
 
@@ -100,9 +101,10 @@ def split_chars(word):
     return list(word)
 
 def calc_average():
+    global lat_dict
+    global total_ban
     print("-------------------------------------")
     overall_avg = overall_throughput = overall_largest_avg = overall_largest_lat = overall_cost = 0
-    global lat_dict
     counter = 0
     if len(lat_dict) > 0:
         # iterating through dictionary
@@ -138,12 +140,13 @@ def calc_average():
                 overall_largest_avg += largest_lat
                 overall_cost += total_cost
 
-                print(i + ":" , lat_dict[i], "Packet Latency: "+ str(round(total_avg,6)) + " seconds, Packet Throughput: " + str(round(avg_throughput,6)) + " bytes/sec, Largest Latency: " + str(round(largest_lat,6)) + " seconds(large), Bandwidth Cost: " + str(round(total_cost,6)) + " bytes")
+                print(i + ":" , lat_dict[i], "Packet Latency: "+ str(round(total_avg,6)) + " seconds, Packet Throughput: " + str(round(avg_throughput,6)) + " bytes/sec, Largest Latency: " + str(round(largest_lat,6)) + " seconds(large), Bandwidth Cost (Data): " + str(round(total_cost,6)) + " bytes")
         if(counter > 0):
             print("Overall Average Latency: " + str(round((overall_avg / counter),6)) + " seconds")
             print("Overall Largest Average Latency: " + str(round((overall_largest_avg / counter),6)) + " seconds, Largest Overall: " + str(round(overall_largest_lat,6)) + " seconds")
-            print("Overall Average Bandwidth Cost: " + str(round(overall_cost / counter,6)) +" bytes")
+            print("Overall Average Bandwidth Cost (Data): " + str(round(overall_cost / counter,6)) +" bytes")
             print("Overall Average Throughput: " + str(round((overall_throughput / counter),6)) + " bytes/second")
+            print("Overall Bandwidth Cost (All): " + str(total_ban) + " bytes")
     print("-------------------------------------")
 
 class time_struct:
@@ -172,6 +175,7 @@ class EchoServerProtocol(asyncio.Protocol):
         global G
         global H
         global lat_dict
+        global total_ban
 
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
@@ -205,6 +209,10 @@ class EchoServerProtocol(asyncio.Protocol):
                 if data not in lat_dict:
                     lat_dict[data] = [0]
                 lat_dict[data].append(time_entry)
+
+            if "Size:" in strings[i]:
+                sizep = (re.search(":(.*)",strings[i])).group(1)
+                total_ban += int(sizep)
 
             if "l2interest" in strings[i]:
                 dash_counter = 0
@@ -241,22 +249,21 @@ class EchoServerProtocol(asyncio.Protocol):
 
         calc_average()
 
-        colors = list(nx.get_edge_attributes(G,'color').values())
-        weights = list(nx.get_edge_attributes(G,'weight').values())
-        colors_data = list(nx.get_edge_attributes(H,'color').values())
-        weights_data = list(nx.get_edge_attributes(H,'weight').values())
-        plt.clf()
-        plt.title(graph_title)
-        plt.figure(1)
-        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.figure(2)
-        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.show(block=False)
-        plt.pause(0.000001)
+        # colors = list(nx.get_edge_attributes(G,'color').values())
+        # weights = list(nx.get_edge_attributes(G,'weight').values())
+        # colors_data = list(nx.get_edge_attributes(H,'color').values())
+        # weights_data = list(nx.get_edge_attributes(H,'weight').values())
+        # plt.clf()
+        # plt.title(graph_title)
+        # plt.figure(1)
+        # nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.figure(2)
+        # nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.show(block=False)
+        # plt.pause(0.000001)
 
 async def main():
-    # Get a reference to the event loop as we plan to use
-    # low-level APIs.
+    # Get a reference to the event loop as we plan to use low-level APIs
     loop = asyncio.get_running_loop()
 
     server = await loop.create_server(
