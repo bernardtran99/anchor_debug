@@ -78,7 +78,7 @@ for i in range(0,14):
     for j in range(0,14):
         if Graph_Matrix[i][j] == 1:
             print("%d " % j)
-            G.add_edge([(i + 1,j + 1)]) 
+            G.add_edge(i + 1,j + 1) 
 
 plt.clf()
 plt.title("POS TEST")
