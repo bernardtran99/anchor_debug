@@ -53,12 +53,6 @@ distance = Floyd(14)
 Graph_Matrix
 distance
 
-for i in range(0,14):
-    print("Node %d's neighbor is :" % i)
-    for j in range(0,14):
-        if Graph_Matrix[i][j] == 1:
-            print("%d " % j)
-
 G = nx.MultiDiGraph()
 G.add_node(1, pos=(2, 10))
 G.add_node(2, pos=(4, 14))
@@ -76,9 +70,15 @@ G.add_node(13, pos=(6, 2))
 G.add_node(14, pos=(10, 2))
 
 pos = nx.get_node_attributes(G,'pos')
-#make 
 node_sizes = [500]*14
 node_colors = ['green']*14
+
+for i in range(0,14):
+    print("Node %d's neighbor is :" % i)
+    for j in range(0,14):
+        if Graph_Matrix[i][j] == 1:
+            print("%d " % j)
+            G.add_edges_from([(4, 5), (4, 7), (4, 6), (5, 7), (5, 8), (6, 7), (6, 9)])
 
 plt.clf()
 plt.title("POS TEST")
