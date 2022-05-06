@@ -47,8 +47,8 @@ def Floyd(vertex_total):
                     distance[j][i] = distance[i][k] + distance[k][j]
     return distance
 
-Graph_Matrix = BuildGraph_Matrix_1(15)
-distance=Floyd(15)
+Graph_Matrix = BuildGraph_Matrix_1(14)
+distance = Floyd(14)
 
 Graph_Matrix
 distance
