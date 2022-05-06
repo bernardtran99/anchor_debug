@@ -58,3 +58,31 @@ for i in range(0,14):
     for j in range(0,14):
         if Graph_Matrix[i][j] == 1:
             print("%d " % j)
+
+G = nx.MultiDiGraph()
+G.add_node(1, pos=(2, 10))
+G.add_node(2, pos=(4, 14))
+G.add_node(3, pos=(4, 6))
+G.add_node(4, pos=(6, 10))
+G.add_node(5, pos=(8, 14))
+G.add_node(6, pos=(8, 6))
+G.add_node(7, pos=(10, 10))
+G.add_node(8, pos=(12, 14))
+G.add_node(9, pos=(12, 6))
+G.add_node(10, pos=(14, 10))
+G.add_node(11, pos=(6, 18))
+G.add_node(12, pos=(10, 18))
+G.add_node(13, pos=(6, 2))
+G.add_node(14, pos=(10, 2))
+
+pos = nx.get_node_attributes(G,'pos')
+#make 
+node_sizes = [500]*14
+node_colors = ['green']*14
+
+plt.clf()
+plt.title("POS TEST")
+plt.figure(1)
+nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
+plt.show(block=False)
+plt.pause(0)
