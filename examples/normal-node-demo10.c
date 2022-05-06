@@ -1713,11 +1713,10 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 1;
-    add_neighbor(5);
-    add_neighbor(7);
+    node_num = 10;
+    add_neighbor(8);
     add_neighbor(9);
-
+    
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
