@@ -69,7 +69,8 @@ G.add_node(12, pos=(10, 18))
 G.add_node(13, pos=(6, 2))
 G.add_node(14, pos=(10, 2))
 
-pos = nx.get_node_attributes(G,'pos')
+# pos = nx.get_node_attributes(G,'pos')
+pos = nx.circular_layout(G)
 node_sizes = [500]*14
 node_colors = ['green']*14
 
@@ -81,7 +82,7 @@ for i in range(0,14):
             G.add_edge(i + 1,j + 1) 
 
 plt.clf()
-plt.title("POS TEST")
+plt.title("Test")
 plt.figure(1)
 #nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors, connectionstyle='arc3, rad = 0.1')
 nx.draw(G, pos, with_labels=True, node_size=node_sizes, edgecolors='black', node_color=node_colors)
