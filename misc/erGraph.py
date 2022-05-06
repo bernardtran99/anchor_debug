@@ -53,8 +53,8 @@ distance = Floyd(14)
 Graph_Matrix
 distance
 
-for i in range(0,15):
+for i in range(0,14):
     print("Node %d's neighbor is :" % i)
-    for j in range(0,15):
-        if Graph_Matrix[i][j]==1:
+    for j in range(0,14):
+        if Graph_Matrix[i][j] == 1:
             print("%d " % j)
