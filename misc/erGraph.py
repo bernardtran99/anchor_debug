@@ -75,10 +75,10 @@ node_sizes = [500]*14
 node_colors = ['green']*14
 
 for i in range(0,14):
-    print("Node %d's neighbor is :" % i)
+    print("Node %d's neighbor is :" % (i+1))
     for j in range(0,14):
         if Graph_Matrix[i][j] == 1:
-            print("%d " % j)
+            print("%d " % (j+1))
             G.add_edge(i + 1,j + 1) 
 
 plt.clf()
