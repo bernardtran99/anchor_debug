@@ -590,7 +590,7 @@ void reply_ancmt(char *second_slot) {
 
     face = generate_udp_face(ip_string, "4000", "6000");
     ndn_face_send(&face->intf, encoder.output_value, encoder.offset);
-    
+
     // ndn_forwarder_add_route_by_name(&face->intf, &prefix_name);
     // ndn_interest_from_name(&interest, &prefix_name);
     // ndn_forwarder_express_interest_struct(&interest, NULL, NULL, NULL);
@@ -788,6 +788,12 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     strcat(temp_message, " ; ");
     send_debug_message(temp_message);
 
+    char size_message[20] = "";
+    strcat(size_message, "Size:");
+    strcat(size_message, interest_size);
+    strcat(size_message, " ; ");
+    send_debug_message(size_message);
+
     //int timestamp = interest_pkt.parameters.value[0];
     //printf("TIMESTAMP: %d\n", timestamp);
     int current_time = ndn_time_now_ms();
@@ -861,7 +867,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
         }
     }
 
-    //if l2interest do nothing, fill pi is enough
+    //if l2interest do nothing, fill pit is enough
     else if(strcmp(prefix, "l2interest") == 0) {
         
     }
@@ -1238,6 +1244,12 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     strcat(temp_message, prefix);
     strcat(temp_message, " ; ");
     send_debug_message(temp_message);
+
+    char size_message[20] = "";
+    strcat(size_message, "Size:");
+    strcat(size_message, data_size);
+    strcat(size_message, " ; ");
+    send_debug_message(size_message);
 
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
@@ -1721,10 +1733,10 @@ int main(int argc, char *argv[]) {
 
     //This is for adding 2 way neighbors in network
     //DEMO: CHANGE
-    node_num = 11;
-    add_neighbor(2);
+    node_num = 1;
     add_neighbor(5);
-    add_neighbor(12);
+    add_neighbor(7);
+    add_neighbor(9);
 
     last_interest = ndn_time_now_ms();
     
