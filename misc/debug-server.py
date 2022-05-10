@@ -98,6 +98,7 @@ total_ban_ancmt = 0
 total_ban_l2int = 0
 total_ban_l1dat = 0
 total_ban_l2dat = 0
+total_ban_vec = 0
 #create a global module laters
 draw_graph_count = 0
 
@@ -157,6 +158,7 @@ def calc_average():
             print("Overall Bandwidth Cost (L2Interest): " + str(total_ban_l2int) + " bytes")
             print("Overall Bandwidth Cost (L1Data): " + str(total_ban_l1dat) + " bytes")
             print("Overall Bandwidth Cost (L2Data): " + str(total_ban_l2dat) + " bytes")
+            print("Overall Bandwidth Cost (Vector): " + str(total_ban_vec) + " bytes")
     print("-------------------------------------")
 
 class time_struct:
@@ -189,6 +191,7 @@ class EchoServerProtocol(asyncio.Protocol):
         global total_ban_l2int
         global total_ban_l1dat
         global total_ban_l2dat
+        global total_ban_vec
 
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
@@ -238,6 +241,10 @@ class EchoServerProtocol(asyncio.Protocol):
             if "d2size:" in strings[i]:
                 sizep = (re.search(":(.*)",strings[i])).group(1)
                 total_ban_l2dat += int(sizep)
+
+            if "vecsize:" in strings[i]:
+                sizep = (re.search(":(.*)",strings[i])).group(1)
+                total_ban_vec += int(sizep)
 
             if "l2interest" in strings[i]:
                 dash_counter = 0
