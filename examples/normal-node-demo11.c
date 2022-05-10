@@ -789,8 +789,10 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     send_debug_message(temp_message);
 
     char size_message[20] = "";
+    char i_size[10] = "";
+    sprintf(i_size, "%d", interest_size);
     strcat(size_message, "Size:");
-    strcat(size_message, interest_size);
+    strcat(size_message, i_size);
     strcat(size_message, " ; ");
     send_debug_message(size_message);
 
@@ -1246,8 +1248,10 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     send_debug_message(temp_message);
 
     char size_message[20] = "";
+    char d_size[10] = "";
+    sprintf(d_size, "%d", data_size);
     strcat(size_message, "Size:");
-    strcat(size_message, data_size);
+    strcat(size_message, d_size);
     strcat(size_message, " ; ");
     send_debug_message(size_message);
 
