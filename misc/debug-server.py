@@ -94,7 +94,10 @@ data_received_bool = 0
 colors = 0
 
 lat_dict = {}
-total_ban = 0
+total_ban_ancmt = 0
+total_ban_l2int = 0
+total_ban_l1dat = 0
+total_ban_l2dat = 0
 #create a global module laters
 draw_graph_count = 0
 
@@ -103,7 +106,10 @@ def split_chars(word):
 
 def calc_average():
     global lat_dict
-    global total_ban
+    global total_ban_ancmt
+    global total_ban_l2int
+    global total_ban_l1dat
+    global total_ban_l2dat
     print("-------------------------------------")
     overall_avg = overall_throughput = overall_largest_avg = overall_largest_lat = overall_cost = 0
     counter = 0
@@ -147,7 +153,10 @@ def calc_average():
             print("Overall Largest Average Latency: " + str(round((overall_largest_avg / counter),6)) + " seconds, Largest Overall: " + str(round(overall_largest_lat,6)) + " seconds")
             print("Overall Average Bandwidth Cost (Data): " + str(round(overall_cost / counter,6)) +" bytes")
             print("Overall Average Throughput: " + str(round((overall_throughput / counter),6)) + " bytes/second")
-            print("Overall Bandwidth Cost (All): " + str(total_ban) + " bytes")
+            print("Overall Bandwidth Cost (Ancmt): " + str(total_ban_ancmt) + " bytes")
+            print("Overall Bandwidth Cost (L2Interest): " + str(total_ban_l2int) + " bytes")
+            print("Overall Bandwidth Cost (L1Data): " + str(total_ban_l1dat) + " bytes")
+            print("Overall Bandwidth Cost (L2Data): " + str(total_ban_l2dat) + " bytes")
     print("-------------------------------------")
 
 class time_struct:
@@ -176,7 +185,10 @@ class EchoServerProtocol(asyncio.Protocol):
         global G
         global H
         global lat_dict
-        global total_ban
+        global total_ban_ancmt
+        global total_ban_l2int
+        global total_ban_l1dat
+        global total_ban_l2dat
 
         message = data.decode("ISO-8859-1")
         node_info = self.transport.get_extra_info('peername')
@@ -211,9 +223,21 @@ class EchoServerProtocol(asyncio.Protocol):
                     lat_dict[data] = [0]
                 lat_dict[data].append(time_entry)
 
-            if "Size:" in strings[i]:
+            if "i1size:" in strings[i]:
                 sizep = (re.search(":(.*)",strings[i])).group(1)
-                total_ban += int(sizep)
+                total_ban_ancmt += int(sizep)
+
+            if "i2size:" in strings[i]:
+                sizep = (re.search(":(.*)",strings[i])).group(1)
+                total_ban_l2int += int(sizep)
+
+            if "d1size:" in strings[i]:
+                sizep = (re.search(":(.*)",strings[i])).group(1)
+                total_ban_l1dat += int(sizep)
+
+            if "d2size:" in strings[i]:
+                sizep = (re.search(":(.*)",strings[i])).group(1)
+                total_ban_l2dat += int(sizep)
 
             if "l2interest" in strings[i]:
                 dash_counter = 0
@@ -250,18 +274,18 @@ class EchoServerProtocol(asyncio.Protocol):
 
         calc_average()
 
-        colors = list(nx.get_edge_attributes(G,'color').values())
-        weights = list(nx.get_edge_attributes(G,'weight').values())
-        colors_data = list(nx.get_edge_attributes(H,'color').values())
-        weights_data = list(nx.get_edge_attributes(H,'weight').values())
-        plt.clf()
-        plt.title(graph_title)
-        plt.figure(1)
-        nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.figure(2)
-        nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
-        plt.show(block=False)
-        plt.pause(0.000001)
+        # colors = list(nx.get_edge_attributes(G,'color').values())
+        # weights = list(nx.get_edge_attributes(G,'weight').values())
+        # colors_data = list(nx.get_edge_attributes(H,'color').values())
+        # weights_data = list(nx.get_edge_attributes(H,'weight').values())
+        # plt.clf()
+        # plt.title(graph_title)
+        # plt.figure(1)
+        # nx.draw(G, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors, width = weights,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.figure(2)
+        # nx.draw(H, pos, with_labels=True,node_size=node_sizes,edgecolors='black', edge_color = colors_data, width = weights_data,node_color=node_colors,connectionstyle='arc3, rad = 0.1')
+        # plt.show(block=False)
+        # plt.pause(0.000001)
 
 async def main():
     # Get a reference to the event loop as we plan to use low-level APIs
