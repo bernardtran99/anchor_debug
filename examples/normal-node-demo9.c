@@ -788,14 +788,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     strcat(temp_message, " ; ");
     send_debug_message(temp_message);
 
-    char size_message[20] = "";
-    char i_size[10] = "";
-    sprintf(i_size, "%d", interest_size);
-    strcat(size_message, "Size:");
-    strcat(size_message, i_size);
-    strcat(size_message, " ; ");
-    send_debug_message(size_message);
-
     //int timestamp = interest_pkt.parameters.value[0];
     //printf("TIMESTAMP: %d\n", timestamp);
     int current_time = ndn_time_now_ms();
@@ -829,6 +821,28 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     //should be first slot in prefix
     prefix = get_prefix_component(interest_pkt.name, 0);
     prefix = trimwhitespace(prefix);
+
+    if(strcmp(prefix, "ancmt") == 0) {
+        char size_message[20] = "";
+        char i_size[10] = "";
+        sprintf(i_size, "%d", interest_size);
+        strcat(size_message, "i1size:");
+        strcat(size_message, i_size);
+        strcat(size_message, " ; ");
+        send_debug_message(size_message);
+    }
+
+    else if(strcmp(prefix, "l2interest") == 0) {
+        char size_message[20] = "";
+        char i_size[10] = "";
+        sprintf(i_size, "%d", interest_size);
+        strcat(size_message, "i2size:");
+        strcat(size_message, i_size);
+        strcat(size_message, " ; ");
+        send_debug_message(size_message);
+    }
+
+    //---------------------------------------------------
 
     //stored selectors == false means selector is not in the bool array yet
     if(strcmp(prefix, "ancmt") == 0 && stored_selectors[parameters] == false) {
@@ -867,11 +881,6 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
                 //pthread_exit(NULL);
             }
         }
-    }
-
-    //if l2interest do nothing, fill pit is enough
-    else if(strcmp(prefix, "l2interest") == 0) {
-        
     }
 
     last_interest = current_time;
@@ -1247,14 +1256,6 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     strcat(temp_message, " ; ");
     send_debug_message(temp_message);
 
-    char size_message[20] = "";
-    char d_size[10] = "";
-    sprintf(d_size, "%d", data_size);
-    strcat(size_message, "Size:");
-    strcat(size_message, d_size);
-    strcat(size_message, " ; ");
-    send_debug_message(size_message);
-
     char *first_slot = "";
     first_slot = get_prefix_component(data.name, 0);
 
@@ -1264,6 +1265,15 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     int third_slot = 0;
     
     if(strcmp(first_slot, "l1data") == 0) {
+
+        char size_message[20] = "";
+        char d_size[10] = "";
+        sprintf(d_size, "%d", data_size);
+        strcat(size_message, "d1size:");
+        strcat(size_message, d_size);
+        strcat(size_message, " ; ");
+        send_debug_message(size_message);
+
         if(atoi(second_slot_anchor) == node_num) {
             printf("Anchor Layer 1 Data Received\n");
 
@@ -1388,6 +1398,14 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         printf("Layer 2 Data Recieved\n");
         //need to check cs if duplicate data has already been received before
         //need to add extra fields into cs: bit vector, data(content_value), data1 index array
+
+        char size_message[20] = "";
+        char d_size[10] = "";
+        sprintf(d_size, "%d", data_size);
+        strcat(size_message, "d2size:");
+        strcat(size_message, d_size);
+        strcat(size_message, " ; ");
+        send_debug_message(size_message);
 
         int l2_face_index = 0;
         bool l2_interest_in = false;
@@ -1741,7 +1759,7 @@ int main(int argc, char *argv[]) {
     add_neighbor(2);
     add_neighbor(7);
     add_neighbor(10);
-
+    
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT
