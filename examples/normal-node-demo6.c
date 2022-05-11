@@ -1056,7 +1056,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     //node 1 = ancmt_num[0]
     anchor_num = atoi(get_prefix_component(interest_pkt.name, 1)) - 1;
 
-    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
+    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces && did_flood[anchor_num] == false) {
         ancmt_num[anchor_num]++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num[anchor_num]);
         entry.name_struct = interest_pkt.name;
@@ -1493,6 +1493,14 @@ void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
         //update content store from bit vector and forward updated bit vector, bit vector recevieced should be bit vector sent 9)
         //vector: /bit_vector(5)/anchor_num_old(2)/data_index_old(2)/data_index_new(2)/ and then associate data_index_new with the second slot anchor prefix to udpate cs index array
 
+        char size_message[20] = "";
+        char d_size[10] = "";
+        sprintf(d_size, "%d", data_size);
+        strcat(size_message, "vecsize:");
+        strcat(size_message, d_size);
+        strcat(size_message, " ; ");
+        send_debug_message(size_message);
+
         int l2_face_index = 0;
         bool l2_interest_in = false;
 
@@ -1668,7 +1676,7 @@ void *command_process(void *var) {
                     strcat(test_message, "test");
                     char test_num[10] = ""; 
 
-                    while (clock() < (latency_timer + 5000000)) {
+                    while (clock() < (latency_timer + 10000000)) {
                     }
 
                     sprintf(test_num, "%d", i);
