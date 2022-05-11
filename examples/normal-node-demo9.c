@@ -1669,7 +1669,7 @@ void *command_process(void *var) {
 
                 printf("Latency and Throughput Test\n");
 
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 100; i++) {
                     clock_t latency_timer = clock();
 
                     char test_message[20] = "";
@@ -1767,7 +1767,7 @@ int main(int argc, char *argv[]) {
     add_neighbor(2);
     add_neighbor(7);
     add_neighbor(10);
-    
+
     last_interest = ndn_time_now_ms();
     
     //FACE NEEDS TO BE INITIATED WITH CORRECT PARAMETERS BEFORE SENDING OR RECEIVING ANCMT

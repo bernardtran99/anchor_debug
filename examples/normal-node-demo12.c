@@ -1669,7 +1669,7 @@ void *command_process(void *var) {
 
                 printf("Latency and Throughput Test\n");
 
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 100; i++) {
                     clock_t latency_timer = clock();
 
                     char test_message[20] = "";
