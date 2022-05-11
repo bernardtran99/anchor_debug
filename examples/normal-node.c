@@ -1056,7 +1056,7 @@ void fill_pit(const uint8_t* interest, uint32_t interest_size) {
     //node 1 = ancmt_num[0]
     anchor_num = atoi(get_prefix_component(interest_pkt.name, 1)) - 1;
 
-    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces) {
+    if(strcmp(cmp_string, "ancmt") == 0 && ancmt_num[anchor_num] < max_interfaces && did_flood[anchor_num - 1] == false) {
         ancmt_num[anchor_num]++;
         printf("FILL PIT ANCMT NUM: %d\n", ancmt_num[anchor_num]);
         entry.name_struct = interest_pkt.name;
