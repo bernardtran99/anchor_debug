@@ -1676,7 +1676,7 @@ void *command_process(void *var) {
                     strcat(test_message, "test");
                     char test_num[10] = ""; 
 
-                    while (clock() < (latency_timer + 10000000)) {
+                    while (clock() < (latency_timer + 5000000)) {
                     }
 
                     sprintf(test_num, "%d", i);
