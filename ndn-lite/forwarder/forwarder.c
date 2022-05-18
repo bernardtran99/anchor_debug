@@ -359,6 +359,7 @@ ndn_forwarder_receive(ndn_face_intf_t* face, uint8_t* packet, size_t length)
     ret = tlv_data_get_name(packet, length, &name, &name_len);
     //make sure to include normal node.h in here
     //when inside this statement call this inside normal node
+    printf("NDN forwarder recieve data: %s\n", name);
     holder->on_data_func(packet, length, NULL);
     if (ret != NDN_SUCCESS)
       return ret;

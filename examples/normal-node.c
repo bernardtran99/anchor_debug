@@ -134,8 +134,8 @@ typedef struct anchor_data1_index {
 //-----------------------------
 
 typedef struct content_store {
-    content_store_entry_t entries[100];
-    anchor_data1_index_t data_indexes[100];
+    content_store_entry_t entries[120];
+    anchor_data1_index_t data_indexes[120];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -641,7 +641,7 @@ void generate_layer_2_data(char *input_ip, char *second_slot, uint8_t *data_stri
 //actually this used the 5000 3000 interface to send data(this is along the same face as ancmt)
 //prefix: /l1data/anchor_num/sender_num
 void generate_data(char *data_string) {
-    printf("\nGenerate Layer 1 Data\n");
+    printf("\nGenerate Layer 1 Data: %s\n", data_string);
     ndn_data_t data;
     ndn_name_t prefix_name;
     ndn_udp_face_t *face;
