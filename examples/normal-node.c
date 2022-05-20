@@ -1216,6 +1216,8 @@ int vector_cs_store(ndn_data_t input_vector_packet) {
 
 //https://stackoverflow.com/questions/1163624/memcpy-with-startindex
 
+//NOTE: IF PACKETS NOT SENDING TRY AGAIN AFTER CHECKING MSGQUEUE SIZE msg-queue.h
+//might have to add udp faces to a table to solve this problem so we can reuse faces instead of creating new ones every time
 void on_data(const uint8_t* rawdata, uint32_t data_size, void* userdata) {
     printf("On data\n");
 
