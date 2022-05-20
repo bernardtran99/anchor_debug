@@ -1673,6 +1673,7 @@ void *command_process(void *var) {
                     printf("\n");
                     // udp_table.entries[i].face_entry = NULL;
                 }
+                ndn_udp_face_t *test = generate_udp_face(NODE5, "3000", "5000");
                 break;
             }
 
