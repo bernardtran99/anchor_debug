@@ -1610,6 +1610,7 @@ void *command_process(void *var) {
                     printf("Is filled [%d]: %d\t", i, udp_table.entries[i].is_filled);
                     // udp_table.entries[i].face_entry = NULL;
                 }
+                printf("\n");
                 break;
             }
 
