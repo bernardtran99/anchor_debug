@@ -1622,7 +1622,8 @@ void *command_process(void *var) {
                     }
                     else {
                         char check_ip[40] = "";
-                        struct in_addr_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
+                        struct in_addr_t input;
+                        input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
                         inet_ntop(AF_INET, input, check_ip, INET_ADDRSTRLEN);
                         printf("UDP face [%d]: %s", i, check_ip);
                     }
