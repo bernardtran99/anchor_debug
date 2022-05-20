@@ -915,6 +915,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     for(size_t i = 0; i < udp_table_size; i++) {
         if(udp_table.entries[i].is_filled == false) {
             udp_table.entries[i].face_entry = face;
+            return face;
         }
     }
 
