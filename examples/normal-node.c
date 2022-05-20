@@ -1624,7 +1624,9 @@ void *command_process(void *var) {
                         char check_ip[40] = "";
                         uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
                         inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
-                        printf("UDP face [%d]: %s", i, check_ip);
+                        printf("UDP face [%d]: %s, %d, %d", i, check_ip, 
+                        htons(udp_table.entries[i].face_entry->local_addr.sin_port), 
+                        htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
                     }
                     printf("\n");
                     // udp_table.entries[i].face_entry = NULL;
