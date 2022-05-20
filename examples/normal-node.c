@@ -551,7 +551,7 @@ void reply_ancmt(char *second_slot) {
     ndn_encoder_t encoder;
     uint8_t encoding_buf[2048];
 
-    //TODO: change all code when we iterate through pi to find ancmts
+    //TODO: change all code when we iterate through pit to find ancmts
     //change to only send ancmts from second_slot input
     size_t nap_size = sizeof(node_anchor_pit.slots)/sizeof(node_anchor_pit.slots[0]);
     for(size_t i = 0; i < nap_size; i++) {
@@ -1214,6 +1214,8 @@ int vector_cs_store(ndn_data_t input_vector_packet) {
     return 0;
 }
 
+//TODO: clean out pit, cstable, and face table every time slot or periodically
+
 //https://stackoverflow.com/questions/1163624/memcpy-with-startindex
 
 //NOTE: IF PACKETS NOT SENDING TRY AGAIN AFTER CHECKING MSGQUEUE SIZE msg-queue.h
@@ -1599,8 +1601,14 @@ void *command_process(void *var) {
                 printf("Check Face Valid\n");
                 //ndn_udp_face_t *face;
                 //face = generate_udp_face("0.0.0.0", "7000", "8000");
-                if(udp_table.entries[30].face_entry == NULL) {
-                    printf("Entry is null\n");
+                // if(udp_table.entries[30].face_entry == NULL) {
+                //     printf("Entry is null\n");
+                // }
+                //false = 0
+                size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
+                for(size_t i = 0; i < udp_table_size; i++) {
+                    printf("Is filled [%d]: %d", i, udp_table.entries[i].is_filled); false
+                    // udp_table.entries[i].face_entry = NULL;
                 }
                 break;
             }
@@ -1678,7 +1686,7 @@ void *command_process(void *var) {
                     strcat(test_message, "test");
                     char test_num[10] = ""; 
 
-                    while (clock() < (latency_timer + 5000000)) {
+                    while (clock() < (latency_timer + 2000000)) {
                     }
 
                     sprintf(test_num, "%d", i);
@@ -1787,52 +1795,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-    //initializing face_table
-    /*
-    for(int i = 0; i < udp_table.size; i++) {
-        ndn_udp_face_t *face;
-        in_port_t port1, port2;
-        in_addr_t server_ip;
-        char *sz_port1, *sz_port2, *sz_addr;
-        uint32_t ul_port;
-        struct hostent * host_addr;
-        struct in_addr ** paddrs;
-        sz_port1 = "1000";
-        sz_addr = "0.0.0.0";
-        sz_port2 = "1001";
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        udp_table.faces[i] = face;
-    }
-
-    char *check_ip, *check_port_1, *check_port_2;
-    check_ip = malloc(40);
-    check_ip[0] = 0;
-    check_port_1 = malloc(40);
-    check_port_1[0] = 0;
-    check_port_2 = malloc(40);
-    check_port_2[0] = 0;
-    //char buf[INET_ADDRSTRLEN];
-
-    in_addr_t input;
-    int last_face = 0;
-    bool found = false;
-
-    for(int i = 0; i < 5; i++) {
-        //error because of nothing in the table
-        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
-        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
-        printf("IP: %s, ", check_ip);
-        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
-        printf("PORT1: %s, ", check_port_1);
-        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
-        printf("PORT2: %s\n", check_port_2);
-    }
-    */
