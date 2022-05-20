@@ -912,7 +912,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
-    for(size_t i = 0; i < udp_table_size; i++) {
+    for(size_t i = 0; i < udp_table_size; i++) {    
         if(udp_table.entries[i].is_filled == false) {
             udp_table.entries[i].face_entry = face;
             udp_table.entries[i].is_filled = true;
@@ -1621,7 +1621,9 @@ void *command_process(void *var) {
                         printf("UDP face [%d]: %s", i, "NULL");
                     }
                     else {
-                        printf("UDP face [%d]: %s", i, "NOT NULL");
+                        char check_ip[40] = "";
+                        inet_ntop(AF_INET, udp_table.faces[i]->remote_addr.sin_addr.s_addr, check_ip, sizeof(check_ip));
+                        printf("UDP face [%d]: %s", i, check_ip);
                     }
                     printf("\n");
                     // udp_table.entries[i].face_entry = NULL;
