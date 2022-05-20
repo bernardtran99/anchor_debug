@@ -913,7 +913,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
     for(size_t i = 0; i < udp_table_size; i++) {    
         if(udp_table.entries[i].is_filled == false) {
-            printf("Constructing new face\n");
+            printf("Constructing new face [%d]: %s, %s, %s\n", i, input_ip, port_1, port_2);
             face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
             udp_table.entries[i].face_entry = face;
             udp_table.entries[i].is_filled = true;
@@ -932,7 +932,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
             if(strcmp(input_ip, check_ip) == 0 && 
             atoi(port_1) == htons(udp_table.entries[i].face_entry->local_addr.sin_port) && 
             atoi(port_2) == htons(udp_table.entries[i].face_entry->remote_addr.sin_port)) {
-                printf("Found old face\n");
+                printf("Found old face[%d]: %s, %d, %d\n", i, check_ip, htons(udp_table.entries[i].face_entry->local_addr.sin_port), htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
                 face = udp_table.entries[i].face_entry;
                 return face;
             }
