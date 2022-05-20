@@ -1608,9 +1608,15 @@ void *command_process(void *var) {
                 size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
                 for(size_t i = 0; i < udp_table_size; i++) {
                     printf("Is filled [%d]: %d\t", i, udp_table.entries[i].is_filled);
+                    if(udp_table.entries[i].face_entry == NULL) {
+                        printf("UDP face [%d]: %s", i, "NULL");
+                    }
+                    else {
+                        printf("UDP face [%d]: %s", i, "NOT NULL");
+                    }
+                    printf("\n");
                     // udp_table.entries[i].face_entry = NULL;
                 }
-                printf("\n");
                 break;
             }
 
