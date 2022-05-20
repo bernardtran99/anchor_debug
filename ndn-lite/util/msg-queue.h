@@ -31,7 +31,7 @@ extern "C" {
 
 /** The size of message queue in bytes.
  */
-#define NDN_MSGQUEUE_SIZE 4096
+#define NDN_MSGQUEUE_SIZE 8192
 
 #pragma pack(1)
 struct ndn_msg;
