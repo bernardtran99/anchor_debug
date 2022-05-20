@@ -909,14 +909,33 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     port1 = htons((uint16_t) ul_port);
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
-    face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
 
     size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
     for(size_t i = 0; i < udp_table_size; i++) {    
         if(udp_table.entries[i].is_filled == false) {
+            printf("Constructing new face\n");
+            face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
             udp_table.entries[i].face_entry = face;
             udp_table.entries[i].is_filled = true;
             return face;
+        }
+        else {
+            // char check_ip[40] = "";
+            // uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
+            // inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
+            // printf("UDP face [%d]: %s, %d, %d", i, check_ip, 
+            // htons(udp_table.entries[i].face_entry->local_addr.sin_port), 
+            // htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
+            char check_ip[40] = "";
+            uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
+            inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
+            if(strcmp(input_ip, check_ip) == 0 && 
+            atoi(port_1) == htons(udp_table.entries[i].face_entry->local_addr.sin_port) && 
+            atoi(port_2) == htons(udp_table.entries[i].face_entry->remote_addr.sin_port)) {
+                printf("Found old face\n");
+                face = udp_table.entries[i].face_entry;
+                return face;
+            }
         }
     }
 
@@ -989,6 +1008,29 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
 
     return face;
     */
+
+    // ndn_udp_face_t *face;
+
+    // in_port_t port1, port2;
+    // in_addr_t server_ip;
+    // char *sz_port1, *sz_port2, *sz_addr;
+    // uint32_t ul_port;
+    // struct hostent * host_addr;
+    // struct in_addr ** paddrs;
+
+    // sz_port1 = port_1;
+    // sz_addr = input_ip;
+    // sz_port2 = port_2;
+    // host_addr = gethostbyname(sz_addr);
+    // paddrs = (struct in_addr **)host_addr->h_addr_list;
+    // server_ip = paddrs[0]->s_addr;
+    // ul_port = strtoul(sz_port1, NULL, 10);
+    // port1 = htons((uint16_t) ul_port);
+    // ul_port = strtoul(sz_port2, NULL, 10);
+    // port2 = htons((uint16_t) ul_port);
+    // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
+
+    // return face;
 }
 
 void register_interest_prefix(char *input_prefix) {
