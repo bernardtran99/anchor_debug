@@ -910,6 +910,8 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     ul_port = strtoul(sz_port2, NULL, 10);
     port2 = htons((uint16_t) ul_port);
 
+    //return face;
+
     size_t udp_table_size = sizeof(udp_table.entries)/sizeof(udp_table.entries[0]);
     for(size_t i = 0; i < udp_table_size; i++) {    
         if(udp_table.entries[i].is_filled == false) {
@@ -920,18 +922,10 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
             return face;
         }
         else {
-            // char check_ip[40] = "";
-            // uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
-            // inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
-            // printf("UDP face [%d]: %s, %d, %d", i, check_ip, 
-            // htons(udp_table.entries[i].face_entry->local_addr.sin_port), 
-            // htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
             char check_ip[40] = "";
             uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
             inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
-            if(strcmp(input_ip, check_ip) == 0 && 
-            atoi(port_1) == htons(udp_table.entries[i].face_entry->local_addr.sin_port) && 
-            atoi(port_2) == htons(udp_table.entries[i].face_entry->remote_addr.sin_port)) {
+            if(strcmp(input_ip, check_ip) == 0 && atoi(port_1) == htons(udp_table.entries[i].face_entry->local_addr.sin_port) && atoi(port_2) == htons(udp_table.entries[i].face_entry->remote_addr.sin_port)) {
                 printf("Found old face[%d]: %s, %d, %d\n", i, check_ip, htons(udp_table.entries[i].face_entry->local_addr.sin_port), htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
                 face = udp_table.entries[i].face_entry;
                 return face;
@@ -940,97 +934,6 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     }
 
     return face;
-
-    /*
-    ndn_udp_face_t *face;
-
-    in_port_t port1, port2;
-    in_addr_t server_ip;
-    char *sz_port1, *sz_port2, *sz_addr;
-    uint32_t ul_port;
-    struct hostent * host_addr;
-    struct in_addr ** paddrs;
-
-    char *check_ip, *check_port_1, *check_port_2;
-    check_ip = malloc(40);
-    check_port_1[0] = 0;
-    check_port_1 = malloc(40);
-    check_port_1[0] = 0;
-    check_port_2 = malloc(40);
-    check_port_2[0] = 0;
-
-    struct in_addr_t input;
-    int last_face = 0;
-    bool found = false;
-
-    printf("1\n");
-    for(int i = 0; i < 5; i++) {
-        //maybe error because of nothing in the table
-        input = udp_table.faces[i]->remote_addr.sin_addr.s_addr;
-        printf("1\n");
-        inet_ntop(AF_INET, input, check_ip, sizeof(check_ip));
-        printf("1\n");
-        printf("IP: %s, ", check_ip);
-        sprintf(check_port_1, "%d", htons(udp_table.faces[i]->local_addr.sin_port));
-        printf("PORT1: %s, ", check_port_1);
-        sprintf(check_port_2, "%d", htons(udp_table.faces[i]->remote_addr.sin_port));
-        printf("PORT2: %s\n", check_port_2);
-        printf("CHECK IP: %s, CHECK PORT1: %s, CHECK PORT2: %s\n", input_ip, port_1, port_2);
-        if(strcmp(input_ip, check_ip) == 0 && strcmp(port_1, check_port_1) == 0 && strcmp(port_2, check_port_2) == 0) {
-            printf("Exiting\n");
-            found = true;
-            face = udp_table.faces[i];
-            break;
-        }
-    }
-
-    if(found == true) {
-        printf("Face already in udp_face_table.\n");
-    }
-
-    else {
-        printf("Face not in udp_face_table, creating new face\n");
-        sz_port1 = port_1;
-        sz_addr = input_ip;
-        sz_port2 = port_2;
-        host_addr = gethostbyname(sz_addr);
-        paddrs = (struct in_addr **)host_addr->h_addr_list;
-        server_ip = paddrs[0]->s_addr;
-        ul_port = strtoul(sz_port1, NULL, 10);
-        port1 = htons((uint16_t) ul_port);
-        ul_port = strtoul(sz_port2, NULL, 10);
-        port2 = htons((uint16_t) ul_port);
-        face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-        printf("Added face to table at: %d\n", udp_table.last_udp);
-        udp_table.faces[udp_table.last_udp] = face;
-        udp_table.last_udp++;
-    }
-
-    return face;
-    */
-
-    // ndn_udp_face_t *face;
-
-    // in_port_t port1, port2;
-    // in_addr_t server_ip;
-    // char *sz_port1, *sz_port2, *sz_addr;
-    // uint32_t ul_port;
-    // struct hostent * host_addr;
-    // struct in_addr ** paddrs;
-
-    // sz_port1 = port_1;
-    // sz_addr = input_ip;
-    // sz_port2 = port_2;
-    // host_addr = gethostbyname(sz_addr);
-    // paddrs = (struct in_addr **)host_addr->h_addr_list;
-    // server_ip = paddrs[0]->s_addr;
-    // ul_port = strtoul(sz_port1, NULL, 10);
-    // port1 = htons((uint16_t) ul_port);
-    // ul_port = strtoul(sz_port2, NULL, 10);
-    // port2 = htons((uint16_t) ul_port);
-    // face = ndn_udp_unicast_face_construct(INADDR_ANY, port1, server_ip, port2);
-
-    // return face;
 }
 
 void register_interest_prefix(char *input_prefix) {
