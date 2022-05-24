@@ -120,7 +120,7 @@ typedef struct content_store_entry {
     ndn_data_t data_pkt;
     uint8_t vector_num[5];
     //data1_array[0] = anchor 1
-    node_data1_index_t data1_array[20];
+    node_data1_index_t data1_array[40];
     bool is_filled;
 } content_store_entry_t;
 
@@ -134,8 +134,8 @@ typedef struct anchor_data1_index {
 //-----------------------------
 
 typedef struct content_store {
-    content_store_entry_t entries[120];
-    anchor_data1_index_t data_indexes[120];
+    content_store_entry_t entries[4096];
+    anchor_data1_index_t data_indexes[4096];
 } content_store_t;
 
 typedef struct delay_struct {
@@ -1546,7 +1546,7 @@ void *command_process(void *var) {
                 printf("Generate Data Text Input: %s\n", input_string);
                 send_debug_message("Clear Graph");
                 clock_t debug_timer = clock();
-                while (clock() < (debug_timer + 5000000)) {
+                while (clock() < (debug_timer + 1000000)) {
                 }
                 generate_data(input_string);
                 break;
@@ -1647,7 +1647,7 @@ void *command_process(void *var) {
 
                 printf("Latency and Throughput Test\n");
 
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 4096; i++) {
                     clock_t latency_timer = clock();
 
                     char test_message[300] = "";
