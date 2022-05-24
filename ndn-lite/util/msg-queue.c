@@ -87,8 +87,6 @@ ndn_msgqueue_post(void *target,
     space = (&msg_queue[NDN_MSGQUEUE_SIZE] - ((uint8_t*)ptail));
   }
 
-  printf("MSG_QUEUE Space: %d\n", space);
-
   // After tail?
   if(pfront >= ptail || space >= len + sizeof(ndn_msg_t)){
     // No-padding (= is to prevent ptail == pfront after call)
