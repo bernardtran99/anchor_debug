@@ -927,7 +927,7 @@ ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
             uint32_t input = udp_table.entries[i].face_entry->remote_addr.sin_addr.s_addr;
             inet_ntop(AF_INET, &input, check_ip, INET_ADDRSTRLEN);
             if(strcmp(input_ip, check_ip) == 0 && atoi(port_1) == htons(udp_table.entries[i].face_entry->local_addr.sin_port) && atoi(port_2) == htons(udp_table.entries[i].face_entry->remote_addr.sin_port)) {
-                printf("Found old face[%d]: %s, %d, %d\n", i, check_ip, htons(udp_table.entries[i].face_entry->local_addr.sin_port), htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
+                //printf("Found old face[%d]: %s, %d, %d\n", i, check_ip, htons(udp_table.entries[i].face_entry->local_addr.sin_port), htons(udp_table.entries[i].face_entry->remote_addr.sin_port));
                 face = udp_table.entries[i].face_entry;
                 return face;
             }
