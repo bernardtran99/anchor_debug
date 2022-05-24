@@ -889,6 +889,7 @@ int on_interest(const uint8_t* interest, uint32_t interest_size, void* userdata)
     return NDN_FWD_STRATEGY_SUPPRESS;
 }
 
+//if we reuse faces when sending and receiving packets, then msgqueue will also be scalable
 ndn_udp_face_t *generate_udp_face(char* input_ip, char *port_1, char *port_2) {
     ndn_udp_face_t *face;
 

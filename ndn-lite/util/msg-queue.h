@@ -31,7 +31,7 @@ extern "C" {
 
 /** The size of message queue in bytes.
  */
-#define NDN_MSGQUEUE_SIZE 65536
+#define NDN_MSGQUEUE_SIZE 8192
 //NOTE: THIS IS IMPORTANT FOR GETTING MULTIPLE MESSAGES AND ENSURE THAT UDP FACES WORK CORRECTLY
 //size of 4096 bytes stopped after 78 data2 packets with 1 anchor 14 nodes with 
 
