@@ -1546,7 +1546,7 @@ void *command_process(void *var) {
                 printf("Generate Data Text Input: %s\n", input_string);
                 send_debug_message("Clear Graph");
                 clock_t debug_timer = clock();
-                while (clock() < (debug_timer + 5000000)) {
+                while (clock() < (debug_timer + 1000000)) {
                 }
                 generate_data(input_string);
                 break;
@@ -1650,11 +1650,16 @@ void *command_process(void *var) {
                 for (int i = 0; i < 100; i++) {
                     clock_t latency_timer = clock();
 
-                    char test_message[20] = "";
-                    strcat(test_message, "test");
+                    char test_message[300] = "";
+                    strcat(test_message, 
+                    "0000000000000000000000000000000000000000000000000000000000000000
+                    0000000000000000000000000000000000000000000000000000000000000000
+                    0000000000000000000000000000000000000000000000000000000000000000
+                    0000000000000000000000000000000000000000000000000000000000000000
+                    test");
                     char test_num[10] = ""; 
 
-                    while (clock() < (latency_timer + 2000000)) {
+                    while (clock() < (latency_timer + 1000000)) {
                     }
 
                     sprintf(test_num, "%d", i);
