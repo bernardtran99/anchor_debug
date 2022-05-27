@@ -153,6 +153,7 @@ bool running;
 
 //boolean to check if node is connected to debug server
 bool debug_connected;
+bool debug_connected_graph;
 
 //To set whether this node is anchor
 bool is_anchor = false;
@@ -205,6 +206,9 @@ uint8_t secp256r1_pub_key_str[64] = {
 int sock = 0;
 struct sockaddr_in serv_addr;
 
+int sock_graph = 0;
+struct sockaddr_in serv_addr_graph;
+
 //ndn_udp_face_t *face1, *face2, *face3, *face4, *face5, *face6, *face7, *face8, *face9, *face10, *data_face;
 
 //for fill pit to see if max interfaces has been reached for that anchor
@@ -230,6 +234,11 @@ int send_debug_message(char *input) {
         //printf("Hello message sent\n");
         //valread = read( sock , buffer, 1024);
         //printf("%s\n",buffer);
+    }
+    if(debug_connected_graph == true) {
+        char *debug_message;
+        debug_message = input;
+        send(sock_graph , debug_message, strlen(debug_message) , 0 );
     }
     return 0;
 }
@@ -1625,6 +1634,38 @@ void *command_process(void *var) {
                 break;
             }
 
+            case 11: {
+                printf("Connecting to Debug Server\n");
+
+                //socket connection
+                if ((sock_graph = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+                {
+                    printf("\n Socket creation error \n");
+                }
+
+                // int flags = 1;
+                // if (setsockopt(sock, SOL_TCP, TCP_NODELAY, (void *)&flags, sizeof(flags))) { 
+                //     printf("\nERROR: setsocketopt(), TCP_NODELAY\n");
+                //     exit(0); 
+                // }
+            
+                serv_addr_graph.sin_family = AF_INET;
+                serv_addr_graph.sin_port = htons(8887);
+
+                if(inet_pton(AF_INET, DEBUG, &serv_addr_graph.sin_addr)<=0) 
+                {
+                    printf("\nInvalid address/ Address not supported \n");
+                }
+            
+                if (connect(sock, (struct sockaddr *)&serv_addr_graph, sizeof(serv_addr_graph)) < 0)
+                {
+                    printf("\nConnection Failed \n");
+                }
+
+                debug_connected_graph = true;
+                break;
+            }
+
             case 6: {
                 // char *input_string = malloc(40);
                 // printf("Generate Data -> Please input data string:\n");
@@ -1647,7 +1688,7 @@ void *command_process(void *var) {
 
                 printf("Latency and Throughput Test\n");
 
-                for (int i = 0; i < 4096; i++) {
+                for (int i = 0; i < 100; i++) {
                     clock_t latency_timer = clock();
 
                     char test_message[300] = "";
