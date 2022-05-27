@@ -1657,7 +1657,7 @@ void *command_process(void *var) {
                     printf("\nInvalid address/ Address not supported \n");
                 }
             
-                if (connect(sock, (struct sockaddr *)&serv_addr_graph, sizeof(serv_addr_graph)) < 0)
+                if (connect(sock_graph, (struct sockaddr *)&serv_addr_graph, sizeof(serv_addr_graph)) < 0)
                 {
                     printf("\nConnection Failed \n");
                 }
